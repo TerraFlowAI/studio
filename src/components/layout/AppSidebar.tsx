@@ -92,7 +92,7 @@ export function AppSidebar() {
                 </SidebarGroupLabel>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.href}>
-                    <Link href={item.href} passHref asChild>
+                    <Link href={item.href} asChild>
                       <SidebarMenuButton
                         isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard')}
                         tooltip={item.label}
@@ -114,7 +114,7 @@ export function AppSidebar() {
       <SidebarFooter className="p-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link href="/settings" passHref asChild>
+            <Link href="/settings" asChild>
               <SidebarMenuButton 
                 isActive={pathname === '/settings'} 
                 tooltip="Settings" 

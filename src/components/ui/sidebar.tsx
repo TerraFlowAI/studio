@@ -532,38 +532,37 @@ type SidebarMenuButtonProps = (React.ComponentPropsWithoutRef<"button"> | React.
 
 
 const SidebarMenuButton = React.forwardRef<
-  HTMLButtonElement | HTMLAnchorElement, // Ref can be button or anchor
+  HTMLButtonElement | HTMLAnchorElement,
   SidebarMenuButtonProps
 >(
   (
     {
-      asChild: localAsChild = false,
+      asChild: localAsChild, 
       isActive = false,
-      variant, // from cva
-      size,    // from cva
+      variant,
+      size,
       tooltip,
       className,
       children,
-      href, // Can be passed from Link asChild or directly
-      type, // For button type
-      ...props // Rest of the props
+      href,
+      type,
+      ...remainingProps 
     },
     ref
   ) => {
     const { isMobile, state } = useSidebar();
-    const isLink = typeof href === "string";
     
-    let Comp: React.ElementType;
-    if (isLink) {
-      Comp = "a";
-    } else if (localAsChild) {
-      Comp = Slot;
-    } else {
-      Comp = "button";
+    // Defensively remove `asChild` from remainingProps if it exists,
+    // to prevent it from reaching a native DOM element.
+    // This is important if a parent component (like Link) incorrectly passes its own asChild.
+    const sanitizedProps = { ...remainingProps };
+    if ('asChild' in sanitizedProps) {
+      delete (sanitizedProps as any).asChild;
     }
 
-    const combinedProps: any = {
-      ...props,
+    let Comp: React.ElementType;
+    let finalProps: any = {
+      ...sanitizedProps,
       ref: ref,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       "data-sidebar": "menu-button",
@@ -571,22 +570,23 @@ const SidebarMenuButton = React.forwardRef<
       "data-active": isActive,
     };
 
-    if (isLink) {
-      combinedProps.href = href;
-      // If it's a link, 'type' (like "button") is generally not needed unless for specific styling/JS hooks,
-      // but native <a> doesn't have a 'type' attribute in the same way <button> does.
-      // We remove `type` if it was explicitly passed for an anchor.
-      if (combinedProps.type) delete combinedProps.type;
-    } else if (Comp === "button") {
-      combinedProps.type = type || "button"; // Default button type
-      // Ensure 'href' is not passed to a button
-      if (combinedProps.href) delete combinedProps.href;
+    if (href) {
+      Comp = "a";
+      finalProps.href = href;
+      if (finalProps.type && Comp === "a") delete finalProps.type;
+    } else if (localAsChild) { 
+      Comp = Slot;
+      // When Comp is Slot, `localAsChild` has done its job.
+      // Props like `type` might not be applicable to the child of Slot.
+      if (finalProps.type) delete finalProps.type; 
+    } else {
+      Comp = "button";
+      finalProps.type = type || "button";
+      if (finalProps.href) delete finalProps.href;
     }
-    // If Comp is Slot, it will merge combinedProps with its child's props.
-    // If Link asChild is used, `href` will be in combinedProps, and Slot should pass it to its child.
-
+    
     const buttonElement = (
-      <Comp {...combinedProps}>
+      <Comp {...finalProps}>
         {children}
       </Comp>
     );
