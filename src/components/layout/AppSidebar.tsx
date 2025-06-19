@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -92,7 +93,7 @@ export function AppSidebar() {
                 </SidebarGroupLabel>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.href}>
-                    <Link href={item.href} passHref legacyBehavior>
+                    <Link href={item.href}>
                       <SidebarMenuButton
                         asChild
                         isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard')}
@@ -100,10 +101,10 @@ export function AppSidebar() {
                         onClick={() => setOpenMobile(false)}
                         className="justify-start"
                       >
-                        <a>
+                        <>
                           <item.icon className="h-5 w-5" />
                           <span>{item.label}</span>
-                        </a>
+                        </>
                       </SidebarMenuButton>
                     </Link>
                   </SidebarMenuItem>
@@ -117,12 +118,12 @@ export function AppSidebar() {
       <SidebarFooter className="p-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link href="/settings" passHref legacyBehavior>
+            <Link href="/settings">
               <SidebarMenuButton asChild isActive={pathname === '/settings'} tooltip="Settings" onClick={() => setOpenMobile(false)} className="justify-start">
-                <a>
+                <>
                   <Settings className="h-5 w-5" />
                   <span>Settings</span>
-                </a>
+                </>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
