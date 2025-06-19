@@ -58,7 +58,7 @@ const SidebarProvider = React.forwardRef<
 >(
   (
     {
-      defaultOpen = true,
+      defaultOpen = true, // Server will always use this for initial render
       open: openProp,
       onOpenChange: setOpenProp,
       className,
@@ -68,30 +68,56 @@ const SidebarProvider = React.forwardRef<
     },
     ref
   ) => {
-    const isMobile = useIsMobile()
+    const isMobile = useIsMobile() // This is now hydration-safe
     const [openMobile, setOpenMobile] = React.useState(false)
 
-    const [_open, _setOpen] = React.useState(defaultOpen)
-    const open = openProp ?? _open
-    const setOpen = React.useCallback(
-      (value: boolean | ((value: boolean) => boolean)) => {
-        const openState = typeof value === "function" ? value(open) : value
-        if (setOpenProp) {
-          setOpenProp(openState)
-        } else {
-          _setOpen(openState)
-        }
+    // Initial state is based on defaultOpen or openProp, NOT cookie, for SSR consistency
+    const [_openState, _setOpenState] = React.useState(openProp ?? defaultOpen);
+    const open = openProp ?? _openState;
 
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+    const setOpen = React.useCallback(
+      (value: boolean | ((prevOpen: boolean) => boolean)) => {
+        const newOpenState = typeof value === "function" ? value(open) : value;
+        if (setOpenProp) {
+          setOpenProp(newOpenState);
+        } else {
+          _setOpenState(newOpenState);
+        }
+        // Set cookie only on client-side change
+        if (typeof window !== 'undefined') {
+          document.cookie = `${SIDEBAR_COOKIE_NAME}=${newOpenState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        }
       },
-      [setOpenProp, open]
-    )
+      [open, setOpenProp] 
+    );
+
+    // Effect to synchronize with cookie on client-side after hydration
+    React.useEffect(() => {
+      if (typeof window !== 'undefined' && openProp === undefined) { // Only if not controlled
+        const cookieValue = document.cookie
+          .split('; ')
+          .find(row => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`))
+          ?.split('=')[1];
+        
+        if (cookieValue !== undefined) {
+          const cookieOpenState = cookieValue === 'true';
+          // Update state only if cookie differs from the current state
+          // and current state is still the initial defaultOpen (or prop-controlled state)
+          if (open !== cookieOpenState) { 
+             setOpen(cookieOpenState); // Use the setOpen callback to also update cookie
+          }
+        }
+      }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [openProp]); // Run when openProp changes (relevant for controlled scenarios) or once on mount for uncontrolled
 
     const toggleSidebar = React.useCallback(() => {
-      return isMobile
-        ? setOpenMobile((open) => !open)
-        : setOpen((open) => !open)
-    }, [isMobile, setOpen, setOpenMobile])
+      if (isMobile) {
+        setOpenMobile((current) => !current);
+      } else {
+        setOpen((current) => !current);
+      }
+    }, [isMobile, setOpen, setOpenMobile]);
 
     React.useEffect(() => {
       const handleKeyDown = (event: KeyboardEvent) => {
@@ -210,7 +236,7 @@ const Sidebar = React.forwardRef<
       <div
         ref={ref}
         className="group peer hidden md:block text-sidebar-foreground"
-        data-state={state}
+        data-state={state} // This state is now hydration-safe
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-variant={variant}
         data-side={side}
@@ -525,7 +551,7 @@ const sidebarMenuButtonVariants = cva(
 )
 
 type SidebarMenuButtonProps = (React.ComponentPropsWithoutRef<"button"> | React.ComponentPropsWithoutRef<"a">) & {
-  asChild?: boolean;
+  asChild?: boolean; // This is SidebarMenuButton's own asChild prop
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
 } & VariantProps<typeof sidebarMenuButtonVariants>;
@@ -543,45 +569,49 @@ const SidebarMenuButton = React.forwardRef<
       isActive = false,
       tooltip,
       children,
-      asChild: localAsChild, // SidebarMenuButton's own asChild prop
-      href, // Can come from Link or be passed directly
-      type, // Standard HTML attribute
-      ...otherDomProps // All other props, which might include an 'asChild' from Link if not careful
+      href, // This comes from Link when Link has asChild
+      asChild: ownAsChild, // SidebarMenuButton's own asChild prop
+      type,
+      ...otherProps // This might contain 'asChild' from Link or other parents
     } = props;
 
     const { isMobile, state } = useSidebar();
 
-    // Create a mutable copy of otherDomProps to safely delete asChild if it exists
-    const cleanDomProps = { ...otherDomProps };
-    if ('asChild' in cleanDomProps) {
-      delete (cleanDomProps as any).asChild;
+    // Prepare elementProps, starting with otherProps that might contain a rogue 'asChild'
+    const elementProps: Record<string, any> = { ...otherProps };
+
+    // CRUCIAL: Explicitly delete 'asChild' from elementProps if it exists.
+    // This prevents a parent's 'asChild' from reaching the final DOM element or Slot.
+    if ('asChild' in elementProps) {
+      delete elementProps.asChild;
     }
     
-    let Comp: React.ElementType;
-    const resolvedProps: any = {
-      ...cleanDomProps, // Use the cleaned props
-      ref,
-      className: cn(sidebarMenuButtonVariants({ variant, size, className })),
-      "data-sidebar": "menu-button",
-      "data-size": size,
-      "data-active": isActive,
-    };
+    // Now, add the controlled props
+    elementProps.ref = ref;
+    elementProps.className = cn(sidebarMenuButtonVariants({ variant, size, className }));
+    elementProps['data-sidebar'] = "menu-button"; // Use bracket notation for data attributes
+    elementProps['data-size'] = size;
+    elementProps['data-active'] = isActive;
 
-    if (href) { // If an href is present (from Link asChild or directly)
+
+    let Comp: React.ElementType;
+
+    if (href) { // If Link is parent with asChild, href will be present
       Comp = 'a';
-      resolvedProps.href = href;
-      if (resolvedProps.type) delete resolvedProps.type; // 'type' is not valid for <a>
-    } else if (localAsChild) { // If SidebarMenuButton itself is used with asChild
+      elementProps.href = href;
+      // 'type' is not valid for <a>, ensure it's not passed if Comp is 'a'
+      if (elementProps.type) delete elementProps.type; 
+    } else if (ownAsChild) { // If SidebarMenuButton is used with its own asChild
       Comp = Slot;
-      // type might not be relevant for Slot's children, remove if it exists
-      if (resolvedProps.type) delete resolvedProps.type;
+      // 'type' might not be relevant for Slot's children, remove if it exists
+      if (elementProps.type) delete elementProps.type;
     } else { // Default to button
       Comp = 'button';
-      resolvedProps.type = type || 'button';
+      elementProps.type = type || 'button';
     }
     
     const buttonElement = (
-      <Comp {...resolvedProps}>
+      <Comp {...elementProps}>
         {children}
       </Comp>
     );
