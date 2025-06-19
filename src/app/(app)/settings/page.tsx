@@ -1,4 +1,7 @@
 // src/app/(app)/settings/page.tsx
+"use client";
+
+import { useState, useEffect } from 'react';
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,9 +10,79 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Mail, Bell, Shield, Palette } from "lucide-react";
+import { User, Mail, Bell, Shield, Palette, KeyRound, Copy, RotateCcw, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SettingsPage() {
+  const { toast } = useToast();
+  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check initial dark mode state from localStorage or system preference
+    const darkModePreference = localStorage.getItem('darkMode') === 'true' || 
+      (localStorage.getItem('darkMode') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setIsDarkMode(darkModePreference);
+    if (darkModePreference) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // Load API key from local storage if available
+    const storedApiKey = localStorage.getItem("apiKey");
+    if (storedApiKey) {
+      setApiKey(storedApiKey);
+    }
+  }, []);
+
+  const handleToggleDarkMode = (checked: boolean) => {
+    setIsDarkMode(checked);
+    if (checked) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('darkMode', 'true');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('darkMode', 'false');
+    }
+     toast({
+        title: `Theme Changed`,
+        description: `Switched to ${checked ? 'Dark' : 'Light'} Mode.`,
+      });
+  };
+
+  const generateApiKey = () => {
+    // Simulate API key generation
+    const newKey = `tfai_live_${[...Array(32)].map(() => Math.random().toString(36)[2]).join('')}`;
+    setApiKey(newKey);
+    localStorage.setItem("apiKey", newKey);
+    toast({
+      title: "API Key Generated",
+      description: "Your new API key has been generated and saved.",
+    });
+  };
+
+  const copyApiKey = () => {
+    if (apiKey) {
+      navigator.clipboard.writeText(apiKey);
+      toast({
+        title: "API Key Copied",
+        description: "The API key has been copied to your clipboard.",
+      });
+    }
+  };
+  
+  const revokeApiKey = () => {
+    setApiKey(null);
+    localStorage.removeItem("apiKey");
+    toast({
+      variant: "destructive",
+      title: "API Key Revoked",
+      description: "Your API key has been revoked and removed.",
+    });
+  };
+
+
   return (
     <div className="container mx-auto">
       <PageHeader title="Settings" description="Manage your account and application preferences." />
@@ -76,6 +149,44 @@ export default function SettingsPage() {
 
           <Card className="shadow-lg">
             <CardHeader>
+              <CardTitle className="font-headline text-xl">API Keys</CardTitle>
+              <CardDescription>Manage API keys for integrations.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {apiKey ? (
+                <>
+                  <div>
+                    <Label htmlFor="apiKey" className="font-medium flex items-center"><KeyRound className="mr-2 h-4 w-4 text-primary"/>Your API Key</Label>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Input id="apiKey" type="text" value={apiKey} readOnly className="bg-muted/50"/>
+                      <Button variant="outline" size="icon" onClick={copyApiKey} aria-label="Copy API Key">
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                     <p className="text-xs text-muted-foreground mt-1">Store this key securely. You will not be able to see it again.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={generateApiKey}>
+                      <RotateCcw className="mr-2 h-4 w-4" /> Regenerate Key
+                    </Button>
+                     <Button variant="destructive" onClick={revokeApiKey}>
+                      <Trash2 className="mr-2 h-4 w-4" /> Revoke Key
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground">You don&apos;t have any active API keys.</p>
+                  <Button onClick={generateApiKey} className="w-full sm:w-auto bg-primary hover:bg-primary/90">
+                    <KeyRound className="mr-2 h-4 w-4" /> Generate API Key
+                  </Button>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-lg">
+            <CardHeader>
               <CardTitle className="font-headline text-xl">Notification Preferences</CardTitle>
               <CardDescription>Control how you receive notifications.</CardDescription>
             </CardHeader>
@@ -103,6 +214,7 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
+
            <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline text-xl">Appearance</CardTitle>
@@ -114,10 +226,11 @@ export default function SettingsPage() {
                   <Label htmlFor="darkMode" className="font-medium flex items-center"><Palette className="mr-2 h-4 w-4 text-primary"/>Dark Mode</Label>
                   <p className="text-sm text-muted-foreground">Toggle between light and dark themes.</p>
                 </div>
-                <Switch id="darkMode" onCheckedChange={(checked) => {
-                  if (checked) document.documentElement.classList.add('dark');
-                  else document.documentElement.classList.remove('dark');
-                }} />
+                <Switch 
+                  id="darkMode" 
+                  checked={isDarkMode}
+                  onCheckedChange={handleToggleDarkMode} 
+                />
               </div>
             </CardContent>
           </Card>

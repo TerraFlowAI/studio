@@ -64,6 +64,9 @@ export function LoginForm() {
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-headline text-primary">Welcome Back!</CardTitle>
         <CardDescription>Sign in to access your TerraFlowAI dashboard.</CardDescription>
+        <CardDescription className="text-xs text-amber-600 dark:text-amber-400 pt-2">
+          Hint: Use <code className="font-semibold text-amber-700 dark:text-amber-500">test@example.com</code> and <code className="font-semibold text-amber-700 dark:text-amber-500">password</code> to sign in.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
