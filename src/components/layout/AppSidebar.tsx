@@ -93,18 +93,15 @@ export function AppSidebar() {
                 </SidebarGroupLabel>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.href}>
-                    <Link href={item.href}>
+                    <Link href={item.href} asChild>
                       <SidebarMenuButton
-                        asChild
                         isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard')}
                         tooltip={item.label}
                         onClick={() => setOpenMobile(false)}
                         className="justify-start"
                       >
-                        <>
-                          <item.icon className="h-5 w-5" />
-                          <span>{item.label}</span>
-                        </>
+                        <item.icon className="h-5 w-5" />
+                        <span>{item.label}</span>
                       </SidebarMenuButton>
                     </Link>
                   </SidebarMenuItem>
@@ -118,12 +115,10 @@ export function AppSidebar() {
       <SidebarFooter className="p-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link href="/settings">
-              <SidebarMenuButton asChild isActive={pathname === '/settings'} tooltip="Settings" onClick={() => setOpenMobile(false)} className="justify-start">
-                <>
-                  <Settings className="h-5 w-5" />
-                  <span>Settings</span>
-                </>
+            <Link href="/settings" asChild>
+              <SidebarMenuButton isActive={pathname === '/settings'} tooltip="Settings" onClick={() => setOpenMobile(false)} className="justify-start">
+                <Settings className="h-5 w-5" />
+                <span>Settings</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
