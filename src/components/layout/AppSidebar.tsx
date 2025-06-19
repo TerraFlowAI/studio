@@ -35,7 +35,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
 } from '@/components/ui/sidebar';
-import { useRouter } from 'next/navigation'; // Correct import path
+import { useRouter } from 'next/navigation'; 
 
 export interface NavItem {
   href: string;
@@ -54,7 +54,7 @@ export const navItems: NavItem[] = [
   { href: '/recommendations', label: 'Recommendations', icon: Sparkles, group: 'AI Tools' },
   { href: '/market-analytics', label: 'Market Analytics', icon: BarChart3, group: 'Insights' },
   { href: '/virtual-tours', label: 'Virtual Tours', icon: Camera, group: 'Insights' },
-  { href: '/fraud-detection', label: 'Fraud &amp; Compliance', icon: ShieldCheck, group: 'Insights' },
+  { href: '/fraud-detection', label: 'Fraud & Compliance', icon: ShieldCheck, group: 'Insights' },
 ];
 
 const groupedNavItems = navItems.reduce((acc, item) => {
@@ -69,11 +69,10 @@ const groupedNavItems = navItems.reduce((acc, item) => {
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { setOpenMobile } = useSidebar(); // For closing mobile sidebar on nav
+  const { setOpenMobile } = useSidebar(); 
   const router = useRouter();
 
   const handleLogout = () => {
-    // Simulate logout
     setOpenMobile(false);
     router.push('/login');
   };
@@ -95,13 +94,16 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.href}>
                     <Link href={item.href} asChild>
                       <SidebarMenuButton
+                        asChild 
                         isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard')}
                         tooltip={item.label}
                         onClick={() => setOpenMobile(false)}
                         className="justify-start"
                       >
-                        <item.icon className="h-5 w-5" />
-                        <span>{item.label}</span>
+                        <>
+                          <item.icon className="h-5 w-5" />
+                          <span>{item.label}</span>
+                        </>
                       </SidebarMenuButton>
                     </Link>
                   </SidebarMenuItem>
@@ -116,14 +118,26 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <Link href="/settings" asChild>
-              <SidebarMenuButton isActive={pathname === '/settings'} tooltip="Settings" onClick={() => setOpenMobile(false)} className="justify-start">
-                <Settings className="h-5 w-5" />
-                <span>Settings</span>
+              <SidebarMenuButton 
+                asChild
+                isActive={pathname === '/settings'} 
+                tooltip="Settings" 
+                onClick={() => setOpenMobile(false)} 
+                className="justify-start"
+              >
+                <>
+                  <Settings className="h-5 w-5" />
+                  <span>Settings</span>
+                </>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleLogout} tooltip="Logout" className="justify-start text-destructive hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive">
+            <SidebarMenuButton 
+              onClick={handleLogout} 
+              tooltip="Logout" 
+              className="justify-start text-destructive hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
+            >
               <LogOut className="h-5 w-5" />
               <span>Logout</span>
             </SidebarMenuButton>
