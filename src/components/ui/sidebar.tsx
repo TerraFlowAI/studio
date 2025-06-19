@@ -524,54 +524,78 @@ const sidebarMenuButtonVariants = cva(
   }
 )
 
+type SidebarMenuButtonProps = (React.ComponentPropsWithoutRef<"button"> | React.ComponentPropsWithoutRef<"a">) & {
+  asChild?: boolean;
+  isActive?: boolean;
+  tooltip?: string | React.ComponentProps<typeof TooltipContent>;
+} & VariantProps<typeof sidebarMenuButtonVariants>;
+
+
 const SidebarMenuButton = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentProps<"button"> & {
-    asChild?: boolean;
-    isActive?: boolean;
-    tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-    children?: React.ReactNode; // Explicitly declare children
-  } & VariantProps<typeof sidebarMenuButtonVariants>
+  HTMLButtonElement | HTMLAnchorElement, // Ref can be button or anchor
+  SidebarMenuButtonProps
 >(
   (
     {
-      asChild: localAsChild = false, // Use a distinct name for the prop that controls Slot behavior
+      asChild: localAsChild = false,
       isActive = false,
-      variant = "default",
-      size = "default",
+      variant, // from cva
+      size,    // from cva
       tooltip,
       className,
-      children, // Explicitly destructure children
-      ...restProps // All other props like href, onClick
+      children,
+      href, // Can be passed from Link asChild or directly
+      type, // For button type
+      ...props // Rest of the props
     },
     ref
   ) => {
-    const Comp = localAsChild ? Slot : "button";
     const { isMobile, state } = useSidebar();
+    const isLink = typeof href === "string";
+    
+    let Comp: React.ElementType;
+    if (isLink) {
+      Comp = "a";
+    } else if (localAsChild) {
+      Comp = Slot;
+    } else {
+      Comp = "button";
+    }
 
-    // Defensively remove `asChild` from `restProps` if it exists,
-    // though standard prop destructuring of `localAsChild` should prevent it from being in `restProps`.
-    const { asChild: _strayAsChildInRest, ...safeRestProps } = restProps;
+    const combinedProps: any = {
+      ...props,
+      ref: ref,
+      className: cn(sidebarMenuButtonVariants({ variant, size, className })),
+      "data-sidebar": "menu-button",
+      "data-size": size,
+      "data-active": isActive,
+    };
+
+    if (isLink) {
+      combinedProps.href = href;
+      // If it's a link, 'type' (like "button") is generally not needed unless for specific styling/JS hooks,
+      // but native <a> doesn't have a 'type' attribute in the same way <button> does.
+      // We remove `type` if it was explicitly passed for an anchor.
+      if (combinedProps.type) delete combinedProps.type;
+    } else if (Comp === "button") {
+      combinedProps.type = type || "button"; // Default button type
+      // Ensure 'href' is not passed to a button
+      if (combinedProps.href) delete combinedProps.href;
+    }
+    // If Comp is Slot, it will merge combinedProps with its child's props.
+    // If Link asChild is used, `href` will be in combinedProps, and Slot should pass it to its child.
 
     const buttonElement = (
-      <Comp
-        ref={ref}
-        data-sidebar="menu-button"
-        data-size={size}
-        data-active={isActive}
-        className={cn(sidebarMenuButtonVariants({ variant, size, className }))}
-        {...safeRestProps} // Spread the cleaned restProps
-      >
-        {children} {/* Pass children explicitly */}
+      <Comp {...combinedProps}>
+        {children}
       </Comp>
     );
 
     if (!tooltip) {
       return buttonElement;
     }
-
-    // Ensure tooltip is an object for spreading, if it's a string convert it
-    const tooltipProps = typeof tooltip === 'string' ? { children: tooltip } : tooltip;
+    
+    const tooltipContentProps = typeof tooltip === 'string' ? { children: tooltip } : tooltip;
 
     return (
       <Tooltip>
@@ -580,7 +604,7 @@ const SidebarMenuButton = React.forwardRef<
           side="right"
           align="center"
           hidden={state !== "collapsed" || isMobile}
-          {...tooltipProps}
+          {...tooltipContentProps}
         />
       </Tooltip>
     );
