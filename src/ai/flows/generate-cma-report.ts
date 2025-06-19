@@ -21,7 +21,8 @@ const GenerateCmaReportInputSchema = z.object({
   comparableProperties: z
     .string()
     .describe(
-      'Information about comparable properties in the area (e.g., recent sales, listings).'n    ),
+      'Information about comparable properties in the area (e.g., recent sales, listings).'
+    ),
 });
 export type GenerateCmaReportInput = z.infer<typeof GenerateCmaReportInputSchema>;
 
@@ -75,3 +76,4 @@ const generateCmaReportFlow = ai.defineFlow(
     return output!;
   }
 );
+
