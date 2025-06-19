@@ -535,10 +535,7 @@ const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
   SidebarMenuButtonProps
 >(
-  (
-    props, // Use props directly
-    ref
-  ) => {
+  (props, ref) => {
     const {
       className,
       variant,
@@ -546,22 +543,23 @@ const SidebarMenuButton = React.forwardRef<
       isActive = false,
       tooltip,
       children,
-      href: propHref,
-      type: propType,
-      // Not destructuring `asChild` here, it will be in `...otherProps` if passed
-      ...otherProps 
+      asChild: localAsChild, // SidebarMenuButton's own asChild prop
+      href, // Can come from Link or be passed directly
+      type, // Standard HTML attribute
+      ...otherDomProps // All other props, which might include an 'asChild' from Link if not careful
     } = props;
 
     const { isMobile, state } = useSidebar();
-    
-    // Determine if SidebarMenuButton itself should behave as a Slot
-    // This is based on the `asChild` prop passed to SidebarMenuButton itself.
-    const useSlotForSelf = props.asChild;
 
+    // Create a mutable copy of otherDomProps to safely delete asChild if it exists
+    const cleanDomProps = { ...otherDomProps };
+    if ('asChild' in cleanDomProps) {
+      delete (cleanDomProps as any).asChild;
+    }
+    
     let Comp: React.ElementType;
-    // Start with otherProps, which might include `asChild` from a parent like Link
-    const elementProps: any = {
-      ...otherProps,
+    const resolvedProps: any = {
+      ...cleanDomProps, // Use the cleaned props
       ref,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       "data-sidebar": "menu-button",
@@ -569,26 +567,21 @@ const SidebarMenuButton = React.forwardRef<
       "data-active": isActive,
     };
 
-    // Explicitly delete `asChild` from elementProps if it exists,
-    // to prevent it from reaching a native DOM element or Slot.
-    if ('asChild' in elementProps) {
-      delete elementProps.asChild;
-    }
-    
-    if (propHref) { // If Link asChild passes href, or if SidebarMenuButton has href directly
-      Comp = "a";
-      elementProps.href = propHref;
-      if (elementProps.type) delete elementProps.type; // 'type' is not valid for <a>
-    } else if (useSlotForSelf) { // If SidebarMenuButton itself is used with asChild
+    if (href) { // If an href is present (from Link asChild or directly)
+      Comp = 'a';
+      resolvedProps.href = href;
+      if (resolvedProps.type) delete resolvedProps.type; // 'type' is not valid for <a>
+    } else if (localAsChild) { // If SidebarMenuButton itself is used with asChild
       Comp = Slot;
-      if (elementProps.type) delete elementProps.type; 
-    } else {
-      Comp = "button";
-      elementProps.type = propType || "button";
+      // type might not be relevant for Slot's children, remove if it exists
+      if (resolvedProps.type) delete resolvedProps.type;
+    } else { // Default to button
+      Comp = 'button';
+      resolvedProps.type = type || 'button';
     }
     
     const buttonElement = (
-      <Comp {...elementProps}>
+      <Comp {...resolvedProps}>
         {children}
       </Comp>
     );

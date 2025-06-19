@@ -1,3 +1,4 @@
+
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { PlusCircle, Search, Filter, Edit3, Trash2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 const clientsData = [
   { id: "1", name: "Alice Wonderland", email: "alice@example.com", phone: "555-1234", status: "Lead", lastContact: "2024-07-20", avatar: "https://placehold.co/40x40.png?text=AW" },
