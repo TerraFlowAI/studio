@@ -7,7 +7,6 @@ import { useState, useEffect } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
 import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation';
-import ComponentShowcase from '@/components/ComponentShowcase';
 import { AIDemoVisual } from '@/components/landing/AIDemoVisual';
 import BeforeAfterAI from '@/components/landing/BeforeAfterAI';
 
@@ -564,8 +563,9 @@ export default function LandingPage() {
       
       <AIDemoVisual />
       <BeforeAfterAI />
-      <ComponentShowcase />
       {/* You might want a footer here as well */}
     </>
   );
 };
+
+    
