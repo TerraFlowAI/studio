@@ -19,7 +19,7 @@ const mockProperties: Property[] = [
     title: "Luxury Seafront Villa",
     address: "12 Beach Road, Juhu, Mumbai",
     locality: "Juhu",
-    imageUrl: "https://placehold.co/600x400.png",
+    imageUrl: "https://images.unsplash.com/photo-1740497708249-555d807a157a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxOHx8THV4dXJ5JTIwU2VhZnJvbnQlMjBWaWxsYXxlbnwwfHx8fDE3NTA0Mjk1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
     aiHint: "luxury villa sea",
     status: "Active",
     hasVrTour: true,
@@ -344,3 +344,5 @@ export default function PropertiesPage() {
     </div>
   );
 }
+
+    
