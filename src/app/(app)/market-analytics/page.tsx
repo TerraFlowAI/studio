@@ -1,6 +1,9 @@
+
+"use client"; // Add this directive
+
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChart, TrendingUp, AreaChart } from "lucide-react";
+import { BarChart, LineChart, TrendingUp, AreaChart } from "lucide-react"; // Lucide icons are fine
 import { ResponsiveContainer, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Line, ComposedChart } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart"; // Assuming Chart components are available
 
