@@ -2,23 +2,23 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation'; // Added useRouter
 import {
   LayoutDashboard,
   Users,
   Briefcase,
   BarChart3,
-  PenSquare, // Icon for Scribe Studio
+  PenSquare, 
   Zap,
   FileSignature,
   Settings,
   LogOut,
   HelpCircle,
   type LucideIcon,
-  HomeIcon, // Added HomeIcon for Scribe Studio's Property Listing
-  MailIcon, // Added MailIcon
-  Share2Icon, // Added Share2Icon
-  FileTextIcon, // Added FileTextIcon
+  HomeIcon, 
+  MailIcon, 
+  Share2Icon, 
+  FileTextIcon, 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -38,6 +38,7 @@ export interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
+  subItems?: NavItem[]; // For Scribe Studio
 }
 
 export const mainNavItems: NavItem[] = [
@@ -45,8 +46,12 @@ export const mainNavItems: NavItem[] = [
   { href: '/leads', label: 'Leads', icon: Users },
   { href: '/properties', label: 'Properties', icon: Briefcase },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { href: '/scribe', label: 'Scribe Studio', icon: PenSquare }, // Updated for Scribe Studio
-  { href: '/smartflow', label: 'SmartFlow', icon: Zap },
+  { 
+    href: '/scribe', 
+    label: 'Scribe Studio', 
+    icon: PenSquare,
+  },
+  { href: '/smartflow', label: 'SmartFlow', icon: Zap }, // Corrected href
   { href: '/documents', label: 'Documents', icon: FileSignature },
 ];
 
@@ -58,6 +63,7 @@ export const utilityNavItems: NavItem[] = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter(); // Initialize router
   const { setOpenMobile, isMobile, state } = useSidebar();
 
   const navItemsToRender = mainNavItems;
@@ -82,17 +88,22 @@ export function AppSidebar() {
         <SidebarMenu>
           {navItemsToRender.map((item) => (
             <SidebarMenuItem key={item.href} className="mb-1">
-              <Link href={item.href} asChild>
+              <Link href={item.href} passHref legacyBehavior>
                 <SidebarMenuButton
-                  isActive={pathname.startsWith(item.href)} // Use startsWith for nested routes
+                  isActive={pathname.startsWith(item.href)} 
                   tooltip={item.label}
-                  onClick={() => setOpenMobile(false)}
+                  onClick={() => {
+                    if (isMobile) setOpenMobile(false);
+                    // For actual navigation with Link passHref, we don't call router.push here
+                  }}
                   className={cn(
                     "justify-start w-full h-11 px-3 rounded-lg text-sm",
                     (pathname.startsWith(item.href))
                       ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
                       : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   )}
+                  // Pass href to SidebarMenuButton only if it's not being used with Link asChild or passHref
+                  // In this case, Link handles the href
                 >
                   <item.icon className={cn("h-5 w-5 mr-3 shrink-0",
                     (pathname.startsWith(item.href))
@@ -109,11 +120,13 @@ export function AppSidebar() {
       <SidebarFooter className="p-4 border-t border-sidebar-border space-y-2">
          {utilityNavItems.map((item) => (
             <SidebarMenuItem key={item.href} className="mb-1">
-              <Link href={item.href} asChild>
+              <Link href={item.href} passHref legacyBehavior>
                 <SidebarMenuButton
                   isActive={pathname.startsWith(item.href)}
                   tooltip={item.label}
-                  onClick={() => setOpenMobile(false)}
+                  onClick={() => {
+                     if (isMobile) setOpenMobile(false);
+                  }}
                   className={cn(
                     "justify-start w-full h-11 px-3 rounded-lg text-sm",
                     pathname.startsWith(item.href)
