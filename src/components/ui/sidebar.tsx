@@ -328,24 +328,6 @@ const SidebarRail = React.forwardRef<
 })
 SidebarRail.displayName = "SidebarRail"
 
-// const SidebarInset = React.forwardRef< // Commented out as it was removed from app layout
-//   HTMLDivElement,
-//   React.ComponentProps<"main">
-// >(({ className, ...props }, ref) => {
-//   return (
-//     <main
-//       ref={ref}
-//       className={cn(
-//         "relative flex min-h-svh flex-1 flex-col bg-background",
-//         "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
-//         className
-//       )}
-//       {...props}
-//     />
-//   )
-// })
-// SidebarInset.displayName = "SidebarInset"
-
 const SidebarInput = React.forwardRef<
   React.ElementRef<typeof Input>,
   React.ComponentProps<typeof Input>
@@ -549,7 +531,6 @@ const sidebarMenuButtonVariants = cva(
 type SidebarMenuButtonProps = (React.ComponentPropsWithoutRef<"button"> | React.ComponentPropsWithoutRef<"a">) & {
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-  asChild?: boolean; // Added to explicitly type the prop if SidebarMenuButton itself could take it
 } & VariantProps<typeof sidebarMenuButtonVariants>;
 
 
@@ -564,54 +545,51 @@ const SidebarMenuButton = React.forwardRef<
       size,
       isActive = false,
       tooltip,
-      children,
-      href: propHref,
-      type: propType,
-      asChild: propAsChild, // Capture asChild from props
-      ...otherProps // All other props (e.g., onClick from Link)
+      children, // These are the icon and span for the button/link content
+      // href, type, and asChild might be passed in `otherProps` if coming from Link
+      ...otherProps
     } = props;
 
     const { isMobile, state } = useSidebar();
-    const Comp = propHref ? 'a' : 'button'; // Determine component type based on href
 
-    // Prepare elementProps, ensure asChild from otherProps is not included
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { asChild, ...domSafeRestProps } = otherProps; 
+    // Determine the component type: 'a' if an href is present, otherwise 'button'.
+    const isLink = !!(props.href || (otherProps as any).href);
+    const Comp = isLink ? 'a' : 'button';
 
+    // Prepare the props for the actual DOM element (a or button)
     const elementProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
-      ...domSafeRestProps,
+      ...otherProps, // Spread all other props first (includes props from Link like onClick, and its asChild)
       ref: ref,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       'data-sidebar': "menu-button",
       'data-size': size,
       'data-active': isActive,
     };
-    
-    if (Comp === 'a') {
-      elementProps.href = propHref;
-      delete elementProps.type; // Remove button-specific 'type'
-    } else {
-      elementProps.type = propType || 'button';
-      delete elementProps.href; // Remove anchor-specific 'href'
-    }
 
-    // Explicitly delete asChild from elementProps if it exists
-    // This is the crucial step to prevent the prop from reaching the DOM element
+    if (isLink) {
+      elementProps.href = props.href || (otherProps as any).href;
+      delete elementProps.type; // Links don't have a 'type' attribute in the same way buttons do
+    } else {
+      elementProps.type = (props as React.ButtonHTMLAttributes<HTMLButtonElement>).type || (otherProps as any).type || 'button'; // Default to 'button' type for buttons
+      delete elementProps.href; // Buttons don't have 'href'
+    }
+    
+    // Critically, remove `asChild` from elementProps so it's not passed to the DOM element.
+    // This `asChild` could have come from `otherProps` (e.g., from a parent Link).
     delete elementProps.asChild;
 
-
-    const coreInteractiveElement = React.createElement(Comp, elementProps, children);
+    const actualInteractiveElement = React.createElement(Comp, elementProps, children);
 
     if (!tooltip) {
-      return coreInteractiveElement;
+      return actualInteractiveElement;
     }
 
     const tooltipContentProps = typeof tooltip === 'string' ? { children: tooltip } : tooltip;
 
     return (
       <Tooltip>
-        <TooltipTrigger asChild={propAsChild}>
-          {coreInteractiveElement}
+        <TooltipTrigger asChild={true}>
+          {actualInteractiveElement}
         </TooltipTrigger>
         <TooltipContent
           side="right"
@@ -776,7 +754,6 @@ export {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarInput,
-  // SidebarInset, // Commented out as it was removed from app layout
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuBadge,
