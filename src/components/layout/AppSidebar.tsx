@@ -13,7 +13,7 @@ import {
   FileSignature,
   Settings,
   LogOut,
-  HelpCircle, // Added HelpCircle icon
+  HelpCircle,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -36,7 +36,6 @@ export interface NavItem {
   icon: LucideIcon;
 }
 
-// Updated main navigation items
 export const mainNavItems: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/leads', label: 'Leads', icon: Users },
@@ -47,7 +46,6 @@ export const mainNavItems: NavItem[] = [
   { href: '/documents', label: 'Documents', icon: FileSignature },
 ];
 
-// Updated utility navigation items for the footer
 export const utilityNavItems: NavItem[] = [
    { href: '/settings', label: 'Settings', icon: Settings },
    { href: '/help-support', label: 'Help & Support', icon: HelpCircle },
@@ -58,14 +56,17 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { setOpenMobile, isMobile, state } = useSidebar();
 
-  const navItemsToRender = mainNavItems; // Use the mainNavItems for the primary scrollable area
+  const navItemsToRender = mainNavItems;
 
   return (
     <Sidebar
         collapsible={isMobile ? "offcanvas" : "icon"}
         variant="sidebar"
         side="left"
-        className="border-r-0 shadow-md bg-sidebar text-sidebar-foreground fixed md:sticky top-0 h-screen md:h-auto z-40"
+        // Removed fixed, md:sticky, top-0, h-screen, md:h-auto
+        // Kept border, shadow, background, text color, and z-index for appearance and layering.
+        // The Sidebar component from ui/sidebar handles its own positioning and height.
+        className="border-r-0 shadow-md bg-sidebar text-sidebar-foreground z-40"
         style={ isMobile ? {} : {width: state === 'expanded' ? '250px' : 'var(--sidebar-width-icon, 3rem)'}}
     >
       <SidebarHeader className="p-4 h-20 flex items-center justify-between border-b border-sidebar-border">
@@ -82,7 +83,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.href} className="mb-1">
               <Link href={item.href} asChild>
                 <SidebarMenuButton
-                  isActive={pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/dashboard'))} // Adjusted active check for dashboard
+                  isActive={pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/dashboard'))}
                   tooltip={item.label}
                   onClick={() => setOpenMobile(false)}
                   className={cn(
@@ -105,7 +106,7 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-4 border-t border-sidebar-border space-y-2">
-         {utilityNavItems.map((item) => ( // Iterate over new utilityNavItems
+         {utilityNavItems.map((item) => (
             <SidebarMenuItem key={item.href} className="mb-1">
               <Link href={item.href} asChild>
                 <SidebarMenuButton
@@ -129,7 +130,7 @@ export function AppSidebar() {
               </Link>
             </SidebarMenuItem>
           ))}
-        <div className="flex items-center gap-3 pt-2"> {/* Added padding top for spacing */}
+        <div className="flex items-center gap-3 pt-2">
             <Image
                 src="https://placehold.co/40x40.png"
                 alt="User Avatar"
