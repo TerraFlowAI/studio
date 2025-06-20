@@ -56,8 +56,13 @@ import {
   FileUp,
   FolderUp,
   ShieldQuestion,
+  FileArchive, // For general files or zip
+  FileImage, // For images
+  FileSpreadsheet, // For Excel
+  FileCode2, // Could use for DOCX or just FileText
+  Search, // For search bar
 } from "lucide-react";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -74,7 +79,7 @@ interface FileItem {
   lastModified: string;
   size?: string;
   parentId?: string | null; // For folder structure
-  fileType?: "pdf" | "docx" | "xlsx" | "jpg" | "png"; // For file icons
+  fileType?: "pdf" | "docx" | "xlsx" | "jpg" | "png" | "zip" | "other"; // For file icons
 }
 
 interface FolderItem {
@@ -103,6 +108,8 @@ const mockFiles: FileItem[] = [
   { id: "f6", name: "Project Blueprint Q1.pdf", type: "file", fileType: "pdf", verificationStatus: "Verified", owner: "Me", lastModified: "2024-07-15", size: "10.2 MB", parentId: "verified" },
   { id: "folder_photos_prop1", name: "Property Photos", type: "folder", verificationStatus: "Not Verified", owner: "Me", lastModified: "2024-07-27", parentId: "prop1" },
   { id: "f7_in_photos", name: "Living Room.jpg", type: "file", fileType: "jpg", verificationStatus: "Not Verified", owner: "Me", lastModified: "2024-07-27", size: "1.1 MB", parentId: "folder_photos_prop1" },
+  { id: "f8", name: "Archive.zip", type: "file", fileType: "zip", verificationStatus: "Not Verified", owner: "Me", lastModified: "2024-07-25", size: "15.3 MB", parentId: "root" },
+  { id: "f9", name: "Miscellaneous Doc.txt", type: "file", fileType: "other", verificationStatus: "Not Verified", owner: "Riya S.", lastModified: "2024-07-24", size: "50 KB", parentId: "root" },
 ];
 
 const getVerificationBadge = (status: VerificationStatus) => {
@@ -134,37 +141,55 @@ const getFileIcon = (item: FileItem) => {
   if (item.type === "folder") return <Folder className="h-5 w-5 text-primary" />;
   switch (item.fileType) {
     case "pdf": return <FileText className="h-5 w-5 text-red-500" />;
-    case "docx": return <FileText className="h-5 w-5 text-blue-500" />;
-    case "xlsx": return <FileText className="h-5 w-5 text-green-500" />;
+    case "docx": return <FileText className="h-5 w-5 text-blue-500" />; // Using FileText as FileCode2 might be confusing
+    case "xlsx": return <FileSpreadsheet className="h-5 w-5 text-green-500" />;
     case "jpg":
-    case "png": return <FileText className="h-5 w-5 text-purple-500" />; // Simplified for images
+    case "png": return <FileImage className="h-5 w-5 text-purple-500" />;
+    case "zip": return <FileArchive className="h-5 w-5 text-orange-500" />;
     default: return <FileText className="h-5 w-5 text-gray-500" />;
   }
 };
 
+type VerificationStepStatus = "pending" | "loading" | "success" | "warning";
+interface VerificationChecklistItemProps {
+  label: string;
+  status: VerificationStepStatus;
+}
 
-const VerificationChecklistItem: React.FC<{ label: string; status: "pending" | "loading" | "success" | "warning" }> = ({ label, status }) => {
+const VerificationChecklistItem: React.FC<VerificationChecklistItemProps> = ({ label, status }) => {
   const Icon = status === "loading" ? Loader2 : status === "success" ? CheckCircle2 : status === "warning" ? XCircle : Clock;
-  const color = status === "success" ? "text-green-500 dark:text-green-400" : status === "warning" ? "text-amber-500 dark:text-amber-400" : "text-muted-foreground";
+  const color = status === "success" ? "text-green-600 dark:text-green-400" : status === "warning" ? "text-amber-600 dark:text-amber-400" : status === "pending" ? "text-muted-foreground/70" : "text-muted-foreground";
 
   return (
     <div className={cn("flex items-center text-sm py-1.5", color)}>
-      <Icon className={cn("h-4 w-4 mr-2", status === "loading" && "animate-spin")} />
+      <Icon className={cn("h-4 w-4 mr-2.5 shrink-0", status === "loading" && "animate-spin")} />
       {label}
     </div>
   );
 };
 
+const verificationStepsConfig: {label: string; id: string}[] = [
+    {label: "Analyzing Document Layout...", id: "layout"},
+    {label: "Cross-referencing Public Records...", id: "records"},
+    {label: "Scanning for Clause Anomalies...", id: "anomalies"},
+    {label: "Checking for Digital Tampering...", id: "tampering"},
+];
+
 
 export default function DocumentsPage() {
   const [selectedFolderId, setSelectedFolderId] = useState<string>("root");
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
-  const [verificationProgress, setVerificationProgress] = useState(0); // 0-100
-  const [currentVerificationStep, setCurrentVerificationStep] = useState(0);
+  const [verificationProgress, setVerificationProgress] = useState(0);
+  const [currentVerificationStepIndex, setCurrentVerificationStepIndex] = useState(-1); // -1 means not started
+  const [verificationStepStatuses, setVerificationStepStatuses] = useState<Record<string, VerificationStepStatus>>(
+    verificationStepsConfig.reduce((acc, step) => ({...acc, [step.id]: 'pending'}), {})
+  );
+  const [overallVerificationMessage, setOverallVerificationMessage] = useState<string | null>(null);
+
+
   const { toast } = useToast();
 
   const handleFileUpload = () => {
-    // This would trigger a file input
     toast({ title: "File Upload", description: "File upload functionality coming soon." });
   };
   
@@ -175,33 +200,68 @@ export default function DocumentsPage() {
   const handleNewFolder = () => {
     const folderName = prompt("Enter new folder name:");
     if (folderName) {
-      // Add to mockFolders - in real app, API call
       toast({ title: "Folder Created", description: `Folder "${folderName}" created (mock).` });
     }
   };
 
-  const handleVerifyDocument = () => {
+  const startMockVerification = () => {
     setIsVerifyModalOpen(true);
     setVerificationProgress(0);
-    setCurrentVerificationStep(0);
-    // Simulate verification steps
-    const steps = ["Analyzing Document Layout...", "Cross-referencing...", "Scanning for Anomalies...", "Checking Tampering..."];
-    let step = 0;
-    const interval = setInterval(() => {
-      step++;
-      setCurrentVerificationStep(step);
-      setVerificationProgress(prev => Math.min(100, prev + 25));
-      if (step >= steps.length) {
-        clearInterval(interval);
-        // Simulate result
+    setCurrentVerificationStepIndex(0);
+    setOverallVerificationMessage(null);
+    
+    const initialStatuses = verificationStepsConfig.reduce((acc, step) => ({...acc, [step.id]: 'pending'}), {});
+    setVerificationStepStatuses(initialStatuses);
+
+    let stepIndex = 0;
+    const intervalTime = 1200; // ms per step
+
+    const processStep = () => {
+      if (stepIndex < verificationStepsConfig.length) {
+        const currentStepId = verificationStepsConfig[stepIndex].id;
+        
+        // Set current to loading
+        setVerificationStepStatuses(prev => ({...prev, [currentStepId]: 'loading'}));
+        setCurrentVerificationStepIndex(stepIndex); // To update progress bar accurately for current step
+
+        // Simulate processing time for this step
         setTimeout(() => {
-            // Logic to close and show result (or show in modal footer)
-             toast({ title: "Verification Complete!", description: "2 potential issues found (mock)." });
-             // setIsVerifyModalOpen(false); // Or update modal to show results
-        }, 500);
+          // Simulate success or warning for the completed step
+          const isSuccess = Math.random() > 0.2; // 80% chance of success for demo
+          setVerificationStepStatuses(prev => ({...prev, [currentStepId]: isSuccess ? 'success' : 'warning'}));
+          
+          // Update overall progress
+          setVerificationProgress(((stepIndex + 1) / verificationStepsConfig.length) * 100);
+          
+          stepIndex++;
+          processStep(); // Move to next step
+        }, intervalTime);
+      } else {
+        // All steps done
+        const hasWarnings = Object.values(verificationStepStatuses).includes('warning');
+        if (hasWarnings) {
+            setOverallVerificationMessage("Verification Complete. Potential issues found.");
+             toast({ variant: "destructive", title: "Verification Complete!", description: "Potential issues found (mock)." });
+        } else {
+            setOverallVerificationMessage("Verification Complete! Document appears secure.");
+            toast({ title: "Verification Complete!", description: "Document appears secure (mock)." });
+        }
       }
-    }, 1000);
+    };
+    processStep(); // Start the first step
   };
+  
+   useEffect(() => {
+    if (currentVerificationStepIndex >= 0 && currentVerificationStepIndex < verificationStepsConfig.length) {
+        const stepId = verificationStepsConfig[currentVerificationStepIndex].id;
+        if (verificationStepStatuses[stepId] !== 'loading') { // If current step is not loading, start it
+            setVerificationStepStatuses(prev => ({
+                ...prev,
+                [stepId]: 'loading'
+            }));
+        }
+    }
+  }, [currentVerificationStepIndex, verificationStepStatuses]); // Rerun when index changes
 
   const currentPath = useMemo(() => {
     const path = [];
@@ -219,9 +279,8 @@ export default function DocumentsPage() {
   }, [selectedFolderId]);
 
   const displayedItems = useMemo(() => {
-    // Show folders first, then files, both sorted alphabetically
     const currentFolderItems = mockFolders.filter(item => item.parentId === selectedFolderId)
-      .map(f => ({ ...f, type: 'folder', verificationStatus: 'Not Verified', owner: 'Me', lastModified: new Date().toISOString().split('T')[0] } as FileItem)) // Treat folders as FileItem for display
+      .map(f => ({ ...f, type: 'folder', verificationStatus: 'Not Verified', owner: 'Me', lastModified: new Date().toISOString().split('T')[0] } as FileItem))
       .sort((a, b) => a.name.localeCompare(b.name));
     const currentFileItems = mockFiles.filter(item => item.parentId === selectedFolderId)
       .sort((a, b) => a.name.localeCompare(b.name));
@@ -231,10 +290,15 @@ export default function DocumentsPage() {
   const FolderTreeItem: React.FC<{ folder: FolderItem; level: number }> = ({ folder, level }) => {
     const childFolders = mockFolders.filter(f => f.parentId === folder.id);
     return (
-      <div style={{ paddingLeft: `${level * 1}rem` }}>
+      <div style={{ paddingLeft: `${level * 0.5}rem` }}> {/* Reduced padding for tighter tree */}
         <Button
           variant={selectedFolderId === folder.id ? "secondary" : "ghost"}
-          className="w-full justify-start h-8 px-2 text-sm text-muted-foreground hover:text-primary dark:hover:text-primary"
+          className={cn(
+            "w-full justify-start h-9 px-2.5 text-sm font-normal hover:bg-accent dark:hover:bg-accent/70",
+            selectedFolderId === folder.id 
+              ? "bg-primary/10 text-primary hover:bg-primary/15 dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/25 font-medium" 
+              : "text-muted-foreground hover:text-foreground"
+          )}
           onClick={() => setSelectedFolderId(folder.id)}
         >
           <Folder className="h-4 w-4 mr-2 shrink-0" />
@@ -251,7 +315,7 @@ export default function DocumentsPage() {
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button>
+              <Button variant="outline">
                 <Plus className="mr-2 h-4 w-4" /> New
               </Button>
             </DropdownMenuTrigger>
@@ -261,19 +325,18 @@ export default function DocumentsPage() {
               <DropdownMenuItem onClick={handleFolderUpload}><FolderUp className="mr-2 h-4 w-4"/>Folder Upload</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleVerifyDocument}>
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={startMockVerification}>
             <Sparkles className="mr-2 h-4 w-4" /> Verify Document
           </Button>
         </div>
       </PageHeader>
 
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Left Column: Folder Navigation Tree */}
         <Card className="w-full md:w-1/4 shadow-sm">
           <CardHeader className="p-3 border-b">
-            <CardTitle className="text-sm font-semibold text-primary">Folders</CardTitle>
+            <CardTitle className="text-sm font-semibold text-primary">My Drive</CardTitle>
           </CardHeader>
-          <ScrollArea className="h-[60vh] md:h-[calc(100vh-220px)]"> {/* Adjust height as needed */}
+          <ScrollArea className="h-[calc(100vh-280px)] md:h-[calc(100vh-220px)]">
             <CardContent className="p-2">
               {mockFolders.filter(f => !f.parentId).map(rootFolder => (
                  <FolderTreeItem key={rootFolder.id} folder={rootFolder} level={0} />
@@ -282,24 +345,28 @@ export default function DocumentsPage() {
           </ScrollArea>
         </Card>
 
-        {/* Right Column: File List View */}
         <div className="flex-1">
           <Card className="shadow-sm">
             <CardHeader className="p-4 border-b">
-              {/* Breadcrumbs */}
-              <div className="flex items-center text-sm text-muted-foreground overflow-x-auto whitespace-nowrap pb-1">
-                {currentPath.map((p, index) => (
-                  <React.Fragment key={p.id}>
-                    <Button variant="link" className="p-0 h-auto text-muted-foreground hover:text-primary dark:hover:text-primary" onClick={() => setSelectedFolderId(p.id)}>
-                      {p.name}
-                    </Button>
-                    {index < currentPath.length - 1 && <ChevronRight className="h-4 w-4 mx-1 shrink-0" />}
-                  </React.Fragment>
-                ))}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-sm text-muted-foreground overflow-x-auto whitespace-nowrap pb-1">
+                  {currentPath.map((p, index) => (
+                    <React.Fragment key={p.id}>
+                      <Button variant="link" className="p-0 h-auto text-muted-foreground hover:text-primary dark:hover:text-primary" onClick={() => setSelectedFolderId(p.id)}>
+                        {p.name}
+                      </Button>
+                      {index < currentPath.length - 1 && <ChevronRight className="h-4 w-4 mx-1 shrink-0" />}
+                    </React.Fragment>
+                  ))}
+                </div>
+                <div className="relative w-full max-w-xs ml-auto">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input placeholder="Search in this folder..." className="pl-8 h-9" />
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <ScrollArea className="h-[60vh] md:h-[calc(100vh-250px)]"> {/* Adjust height */}
+              <ScrollArea className="h-[calc(100vh-310px)] md:h-[calc(100vh-250px)]">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -322,7 +389,7 @@ export default function DocumentsPage() {
                     {displayedItems.map((item) => {
                       const { badge, tooltip } = getVerificationBadge(item.verificationStatus);
                       return (
-                        <TableRow key={item.id} className="hover:bg-muted/50 cursor-pointer dark:hover:bg-muted/30" onClick={() => item.type === 'folder' && setSelectedFolderId(item.id)}>
+                        <TableRow key={item.id} className="hover:bg-muted/50 dark:hover:bg-muted/30 cursor-pointer" onClick={() => item.type === 'folder' && setSelectedFolderId(item.id)}>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               {getFileIcon(item)}
@@ -354,7 +421,7 @@ export default function DocumentsPage() {
                                 {item.type === 'file' && item.verificationStatus === "Not Verified" && (
                                   <>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={handleVerifyDocument}>
+                                    <DropdownMenuItem onClick={startMockVerification}>
                                       <Sparkles className="mr-2 h-4 w-4 text-primary" /> Verify with TerraSecure™
                                     </DropdownMenuItem>
                                   </>
@@ -375,7 +442,6 @@ export default function DocumentsPage() {
         </div>
       </div>
 
-      {/* Verify Document Modal */}
       <Dialog open={isVerifyModalOpen} onOpenChange={setIsVerifyModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -393,29 +459,36 @@ export default function DocumentsPage() {
               <Input type="file" className="hidden" />
             </div>
             
-            {verificationProgress > 0 && (
+            {currentVerificationStepIndex >= -1 && ( // Show progress and checklist if verification has started or is about to
                 <div className="mt-4 space-y-2">
-                    <Progress value={verificationProgress} className="w-full h-2" />
-                    <VerificationChecklistItem label="Analyzing Document Layout..." status={currentVerificationStep >= 1 ? (Math.random() > 0.1 ? "success" : "warning") : "loading"} />
-                    <VerificationChecklistItem label="Cross-referencing Public Records..." status={currentVerificationStep >= 2 ? (Math.random() > 0.05 ? "success" : "warning") : currentVerificationStep === 1 ? "loading" : "pending"} />
-                    <VerificationChecklistItem label="Scanning for Clause Anomalies..." status={currentVerificationStep >= 3 ? (Math.random() > 0.15 ? "success" : "warning") : currentVerificationStep === 2 ? "loading" : "pending"} />
-                    <VerificationChecklistItem label="Checking for Digital Tampering..." status={currentVerificationStep >= 4 ? "success" : currentVerificationStep === 3 ? "loading" : "pending"} />
+                    <Progress value={verificationProgress} className="w-full h-2 mb-3" />
+                    {verificationStepsConfig.map((step, index) => (
+                        <VerificationChecklistItem 
+                            key={step.id}
+                            label={step.label} 
+                            status={verificationStepStatuses[step.id]}
+                        />
+                    ))}
                 </div>
             )}
 
-             {currentVerificationStep >= 4 && verificationProgress === 100 && (
-                <div className="mt-4 p-3 bg-green-50 border-green-200 rounded-md dark:bg-green-700/20 dark:border-green-600">
-                    <h4 className="font-semibold text-green-700 dark:text-green-300">Verification Complete!</h4>
-                    <p className="text-sm text-green-600 dark:text-green-400">Mock: 0 issues found. Document appears secure.</p>
+             {overallVerificationMessage && (
+                <div className={cn("mt-4 p-3 rounded-md text-sm",
+                    overallVerificationMessage.includes("issues found") 
+                        ? "bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-700/20 dark:border-amber-600 dark:text-amber-300" 
+                        : "bg-green-50 border-green-200 text-green-700 dark:bg-green-700/20 dark:border-green-600 dark:text-green-300"
+                )}>
+                    <h4 className="font-semibold">{overallVerificationMessage.startsWith("Verification Complete!") ? "Verification Complete!" : "Notice"}</h4>
+                    <p>{overallVerificationMessage.substring(overallVerificationMessage.indexOf("!") + 1).trim() || overallVerificationMessage}</p>
                 </div>
             )}
 
           </div>
-          <DialogFooter>
+          <DialogFooter className="mt-2">
             <Button variant="outline" onClick={() => setIsVerifyModalOpen(false)}>Cancel</Button>
             <Button 
               onClick={() => alert("View Full Report Clicked (Placeholder)")} 
-              disabled={verificationProgress < 100}
+              disabled={verificationProgress < 100 || overallVerificationMessage === null}
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               View Full Report
@@ -426,7 +499,5 @@ export default function DocumentsPage() {
     </div>
   );
 }
-
-    
 
     
