@@ -113,11 +113,11 @@ export const LandingPageNavigation = () => {
 
           <div className="hidden lg:flex items-center space-x-2">            
             <Link href="/login" passHref>
-              <Button>Login</Button>
+              <Button variant="ghost" className="text-foreground hover:bg-accent/50 hover:text-accent-foreground">Login</Button>
             </Link>
             <StarBorder
               as="button" 
-              className="font-semibold" // Button variant="outline" is applied inside StarBorder
+              className="font-semibold" 
               data-cta-click="nav-demo-request"
             >
               <span className="animate-text-shimmer text-sm">Request Free Demo</span>
@@ -148,7 +148,7 @@ export const LandingPageNavigation = () => {
               <Link href="#resources" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Resources</Link>
               <Link href="/login" passHref>
                 <Button
-                  variant="outline" 
+                  variant="ghost" 
                   className="w-full justify-start px-3 py-2 text-foreground hover:bg-accent hover:text-accent-foreground"
                   onClick={() => setIsOpen(false)} 
                 >
