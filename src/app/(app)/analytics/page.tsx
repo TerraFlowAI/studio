@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DateRangePicker, type DateRange } from "@/components/shared/DateRangePicker"; // Updated import
+import { DateRangePicker, type DateRange } from "@/components/shared/DateRangePicker";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
-import { TrendingUp, DollarSign, Users, BarChartHorizontal, Download, Filter, Map, Layers, Target, Calculator, FileText, Activity, CheckSquare } from "lucide-react";
-import { KpiCard } from "@/components/dashboard/KpiCard"; 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TrendingUp, DollarSign, Users, BarChartHorizontal, Download, Filter, Map, Layers, Target, Calculator, FileText, Activity, CheckSquare, Package, Landmark } from "lucide-react";
+import { KpiCard } from "@/components/dashboard/KpiCard";
 
 // Mock Data for Sales Performance Tab
 const salesKpiData = [
@@ -21,18 +22,19 @@ const salesKpiData = [
   { title: "Sales Cycle", value: "42 Days", icon: Filter, trend: "-3 days from last month", trendDirection: "down" as "up" | "down" },
 ];
 
-const revenueChartData = [
-  { month: "Jan", revenue: 1500000, profit: 400000 },
-  { month: "Feb", revenue: 1800000, profit: 550000 },
-  { month: "Mar", revenue: 2200000, profit: 700000 },
-  { month: "Apr", revenue: 1900000, profit: 600000 },
-  { month: "May", revenue: 2500000, profit: 850000 },
-  { month: "Jun", revenue: 2800000, profit: 950000 },
+const initialSalesChartData = [
+  { month: "Jan", revenue: 1500000, profit: 400000, deals: 5 },
+  { month: "Feb", revenue: 1800000, profit: 550000, deals: 7 },
+  { month: "Mar", revenue: 2200000, profit: 700000, deals: 9 },
+  { month: "Apr", revenue: 1900000, profit: 600000, deals: 6 },
+  { month: "May", revenue: 2500000, profit: 850000, deals: 10 },
+  { month: "Jun", revenue: 2800000, profit: 950000, deals: 11 },
 ];
 
-const revenueChartConfig = {
+const salesChartConfig = {
   revenue: { label: "Revenue", color: "hsl(var(--primary))" },
   profit: { label: "Profit", color: "hsl(var(--chart-2))" },
+  deals: { label: "Deals", color: "hsl(var(--chart-3))" },
 } satisfies ChartConfig;
 
 const propertyTypeSalesData = [
@@ -58,7 +60,7 @@ const leadFunnelData = [
 ];
 
 const leadFunnelChartConfig = {
-  value: { label: "Leads", color: "hsl(var(--primary))" }, // Default color, will be overridden by item fill
+  value: { label: "Leads", color: "hsl(var(--primary))" },
 } satisfies ChartConfig;
 
 const leadSourceData = [
@@ -74,11 +76,25 @@ const leadSourceChartConfig = {
   conversion: { label: "Conversion Rate (%)", color: "hsl(var(--accent))" },
 } satisfies ChartConfig;
 
+type SalesChartMetric = 'revenue_profit' | 'deals_count';
+
 export default function AnalyticsPage() {
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
-    from: new Date(new Date().getFullYear(), new Date().getMonth() -1, new Date().getDate()), // Approx last 30 days
+    from: new Date(new Date().getFullYear(), new Date().getMonth() -1, new Date().getDate()),
     to: new Date(),
   });
+  const [selectedSalesMetric, setSelectedSalesMetric] = React.useState<SalesChartMetric>('revenue_profit');
+
+  const handleMetricChange = (value: string) => {
+    setSelectedSalesMetric(value as SalesChartMetric);
+  };
+
+  const yAxisTickFormatter = (metric: SalesChartMetric) => (value: number) => {
+    if (metric === 'revenue_profit') {
+      return `₹${value / 100000}L`;
+    }
+    return value.toString(); // For deals count
+  };
 
   return (
     <div className="container mx-auto">
@@ -90,7 +106,7 @@ export default function AnalyticsPage() {
             onUpdate={(values) => {
               const { range } = values;
               setDateRange(range);
-              console.log("Date range updated:", range); // Placeholder for actual data refetching
+              // console.log("Date range updated:", range); // Placeholder for actual data refetching
             }}
             align="end"
             triggerClassName="h-10"
@@ -114,7 +130,7 @@ export default function AnalyticsPage() {
           <div className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {salesKpiData.map((kpi) => (
-                <KpiCard 
+                <KpiCard
                   key={kpi.title}
                   title={kpi.title}
                   value={kpi.value}
@@ -126,21 +142,38 @@ export default function AnalyticsPage() {
             </div>
 
             <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="font-headline text-xl">Revenue & Profit Over Time</CardTitle>
-                {/* Placeholder for metric switcher dropdown */}
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="font-headline text-xl">
+                  {selectedSalesMetric === 'revenue_profit' ? 'Revenue & Profit Over Time' : 'Deals Over Time'}
+                </CardTitle>
+                <Select value={selectedSalesMetric} onValueChange={handleMetricChange}>
+                  <SelectTrigger className="w-[200px] h-9">
+                    <SelectValue placeholder="Select metric" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="revenue_profit">Revenue & Profit</SelectItem>
+                    <SelectItem value="deals_count">Number of Deals</SelectItem>
+                  </SelectContent>
+                </Select>
               </CardHeader>
               <CardContent className="h-[350px] p-0">
-                <ChartContainer config={revenueChartConfig} className="w-full h-full">
+                <ChartContainer config={salesChartConfig} className="w-full h-full">
                     <ResponsiveContainer>
-                        <LineChart data={revenueChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                        <LineChart data={initialSalesChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
                             <XAxis dataKey="month" tickLine={false} axisLine={false} dy={10} />
-                            <YAxis tickFormatter={(value) => `₹${value/100000}L`} tickLine={false} axisLine={false} dx={-5} />
+                            <YAxis tickFormatter={yAxisTickFormatter(selectedSalesMetric)} tickLine={false} axisLine={false} dx={-5} />
                             <Tooltip content={<ChartTooltipContent indicator="dot" />} cursor={{stroke: 'hsl(var(--primary))', strokeWidth:1, strokeDasharray: "3 3"}} />
                             <Legend verticalAlign="top" align="right" iconSize={12} wrapperStyle={{paddingBottom: "10px"}} />
-                            <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Revenue" />
-                            <Line type="monotone" dataKey="profit" stroke="var(--color-profit)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Profit" />
+                            {selectedSalesMetric === 'revenue_profit' && (
+                              <>
+                                <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Revenue" />
+                                <Line type="monotone" dataKey="profit" stroke="var(--color-profit)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Profit" />
+                              </>
+                            )}
+                            {selectedSalesMetric === 'deals_count' && (
+                                <Line type="monotone" dataKey="deals" stroke="var(--color-deals)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Deals" />
+                            )}
                         </LineChart>
                     </ResponsiveContainer>
                 </ChartContainer>
@@ -269,7 +302,7 @@ export default function AnalyticsPage() {
         <TabsContent value="market-intel" className="mt-0">
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle className="font-headline text-xl flex items-center"><Map className="mr-2 h-5 w-5 text-primary" /> MarketIntel™ Dashboard</CardTitle>
+              <CardTitle className="font-headline text-xl flex items-center"><Landmark className="mr-2 h-5 w-5 text-primary" /> MarketIntel™ Dashboard</CardTitle>
               <CardDescription>Interactive market map and predictive analytics. (Coming Soon)</CardDescription>
             </CardHeader>
             <CardContent className="h-[400px] flex flex-col items-center justify-center text-center">
