@@ -33,19 +33,19 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }, // Assumed /dashboard is the overview
-  { href: '/leads', label: 'Leads', icon: Users }, // TerraLead™
-  { href: '/properties', label: 'Properties', icon: Briefcase }, // TerraVision™
-  { href: '/analytics', label: 'Analytics', icon: BarChart3 }, // MarketIntel™
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }, 
+  { href: '/leads', label: 'Leads', icon: Users }, 
+  { href: '/properties', label: 'Properties', icon: Briefcase }, 
+  { href: '/analytics', label: 'Analytics', icon: BarChart3 }, 
   { href: '/terrascribe', label: 'TerraScribe', icon: PenSquare },
   { href: '/smartflow', label: 'SmartFlow', icon: Zap },
-  { href: '/documents', label: 'Documents', icon: FileSignature }, // TerraSecure™
+  { href: '/documents', label: 'Documents', icon: FileSignature }, 
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar(); 
-  const router = useRouter(); // Not used for logout here, can be removed if not needed elsewhere
+  const router = useRouter(); 
 
   return (
     <Sidebar 
@@ -55,7 +55,7 @@ export function AppSidebar() {
         className="border-r-0 shadow-md bg-sidebar text-sidebar-foreground"
         style={{width: '250px'}}
     >
-      <SidebarHeader className="p-4 h-20 flex items-center border-b border-border">
+      <SidebarHeader className="p-4 h-20 flex items-center border-b border-sidebar-border">
         <Link href="/dashboard" className="flex items-center gap-3">
           <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
             <span className="text-lg font-bold text-primary-foreground">T</span>
@@ -67,9 +67,8 @@ export function AppSidebar() {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href} className="mb-1">
-              <Link href={item.href} passHref legacyBehavior>
+              <Link href={item.href} asChild>
                 <SidebarMenuButton
-                  asChild={false} // Ensure it renders as a button or anchor internally managed by SidebarMenuButton
                   isActive={pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/overview'))}
                   tooltip={item.label}
                   onClick={() => setOpenMobile(false)}
@@ -79,7 +78,7 @@ export function AppSidebar() {
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   )}
-                  iconClassName={cn( // Custom prop for icon styling if needed, or style directly
+                  iconClassName={cn( 
                      (pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/overview')))
                        ? "text-primary-foreground"
                        : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
@@ -97,8 +96,7 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-4 border-t border-border">
-        {/* Placeholder for User Profile Avatar */}
+      <SidebarFooter className="p-4 border-t border-sidebar-border">
         <div className="flex items-center gap-3">
             <Image 
                 src="https://placehold.co/40x40.png" 
@@ -108,7 +106,6 @@ export function AppSidebar() {
                 className="rounded-full"
                 data-ai-hint="person avatar"
             />
-             {/* Can add user name/email if design allows when not collapsed */}
         </div>
       </SidebarFooter>
     </Sidebar>
