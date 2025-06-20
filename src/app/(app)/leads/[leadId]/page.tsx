@@ -86,13 +86,14 @@ export default function LeadDetailPage() {
         currentStatus={lead.status}
         onStatusChange={handleStatusChange}
       />
+      {/* Top section: Activity Hub on left, AI Insights & Contact Info on right */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column (Activity Hub) */}
         <div className="lg:col-span-2">
           <ActivityHub activities={activities} onAddActivity={handleAddActivity} leadName={lead.name} />
         </div>
 
-        {/* Right Column (Profile & Intel Cards) */}
+        {/* Right Column (Top Profile & Intel Cards) */}
         <div className="lg:col-span-1 space-y-3">
           <AiInsightsCard
             leadScore={lead.aiScore}
@@ -105,13 +106,17 @@ export default function LeadDetailPage() {
             source={lead.source}
             assignedTo="Loushik" // Mocked
           />
-          <LeadPreferencesCard
-            location="Bandra West, Juhu" // Mocked
-            budget="₹3.5 Cr - ₹4.0 Cr" // Mocked
-            propertyType="3 BHK+ Apartment" // Mocked
-          />
-          <MatchedPropertiesCard properties={mockMatchedProperties} />
         </div>
+      </div>
+
+      {/* Bottom section: Client Preferences and Matched Properties side-by-side */}
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <LeadPreferencesCard
+          location="Bandra West, Juhu" // Mocked
+          budget="₹3.5 Cr - ₹4.0 Cr" // Mocked
+          propertyType="3 BHK+ Apartment" // Mocked
+        />
+        <MatchedPropertiesCard properties={mockMatchedProperties} />
       </div>
     </div>
   );
