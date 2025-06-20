@@ -6,7 +6,8 @@ import { ArrowDown, Sparkles, Zap, TrendingUp, Brain, BarChart3, Users, Target, 
 import { useState, useEffect } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
-import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation'; // Import the new navigation
+import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation';
+import ComponentShowcase from '@/components/ComponentShowcase'; // Import the new component
 
 const STATIC_HEADLINE_PART = "AI-Powered Real Estate is Here. ";
 const TYPING_PHRASES = ["Business on Auto-pilot with AI", "Start Closing More Deals", "Reclaim Your Time", "Automate- Analyze- Accelerate"];
@@ -15,7 +16,7 @@ const DELETING_SPEED_MS = 50;
 const DELAY_BETWEEN_PHRASES_MS = 2000;
 
 
-export default function LandingPage() { // Renamed Hero to LandingPage and made it default export
+export default function LandingPage() { 
   const [isVisible, setIsVisible] = useState(false);
   const [currentFeature, setCurrentFeature] = useState(0);
   const [aiProcessing, setAiProcessing] = useState(false);
@@ -557,6 +558,8 @@ export default function LandingPage() { // Renamed Hero to LandingPage and made 
           </div>
         </div>
       </section>
+      <ComponentShowcase /> {/* Added the new component here */}
+      {/* You might want a footer here as well */}
     </>
   );
 };
