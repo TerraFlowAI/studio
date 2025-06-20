@@ -7,7 +7,10 @@ import { useState, useEffect } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
 import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation';
-import ComponentShowcase from '@/components/ComponentShowcase'; // Import the new component
+import ComponentShowcase from '@/components/ComponentShowcase';
+import { AIDemoVisual } from '@/components/landing/AIDemoVisual';
+import BeforeAfterAI from '@/components/landing/BeforeAfterAI';
+
 
 const STATIC_HEADLINE_PART = "AI-Powered Real Estate is Here. ";
 const TYPING_PHRASES = ["Business on Auto-pilot with AI", "Start Closing More Deals", "Reclaim Your Time", "Automate- Analyze- Accelerate"];
@@ -558,9 +561,10 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      <ComponentShowcase /> {/* Added the new component here */}
+      <AIDemoVisual />
+      <BeforeAfterAI />
+      <ComponentShowcase />
       {/* You might want a footer here as well */}
     </>
   );
 };
-

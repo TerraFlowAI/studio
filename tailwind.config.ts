@@ -106,6 +106,26 @@ export default {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+        'pulse-custom': {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.7', transform: 'scale(1.05)' },
+        },
+        'ripple-custom': {
+          '0%': { transform: 'scale(.8)', opacity: '1' },
+          '100%': { transform: 'scale(2.4)', opacity: '0' },
+        },
+        'data-flow-custom': {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
+        textShimmerStrong: {
+          '0%': { backgroundPosition: '200% center' },
+          '100%': { backgroundPosition: '-200% center' },
+        },
+        fadeInAnimation: {
+          from: { opacity: '0', transform: 'translateY(10px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -114,6 +134,11 @@ export default {
         'text-shimmer': 'textShimmer 3s linear infinite alternate',
         'moving-dashboard-border': 'movingBorder 6s linear infinite',
         'scroll-companies': 'scrollCompanies 30s linear infinite',
+        'pulse-custom': 'pulse-custom 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'ripple-custom': 'ripple-custom 1.5s cubic-bezier(0, 0, 0.2, 1) infinite',
+        'data-flow-custom': 'data-flow-custom 2s linear infinite',
+        'text-shimmer-strong': 'textShimmerStrong 3.5s linear infinite',
+        'fade-in': 'fadeInAnimation 0.5s ease-out forwards',
       },
     },
   },

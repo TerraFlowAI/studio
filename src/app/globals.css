@@ -40,6 +40,12 @@
     --sidebar-accent-foreground: 197 71% 52%;
     --sidebar-border: 210 20% 85%;
     --sidebar-ring: 197 71% 52%;
+
+    /* Gradients for AIDemoVisual */
+    --gradient-teal-start: hsl(174, 72%, 56%);
+    --gradient-teal-end: hsl(197, 71%, 52%);
+    --gradient-purple-blue-start: hsl(250, 60%, 60%);
+    --gradient-purple-blue-end: hsl(220, 70%, 65%);
   }
 
   .dark {
@@ -77,6 +83,12 @@
     --sidebar-accent-foreground: 197 71% 52%;
     --sidebar-border: 220 10% 25%;
     --sidebar-ring: 197 71% 52%;
+
+    /* Gradients for AIDemoVisual - Dark Theme */
+    --gradient-teal-start: hsl(174, 65%, 45%);
+    --gradient-teal-end: hsl(197, 65%, 42%);
+    --gradient-purple-blue-start: hsl(250, 50%, 50%);
+    --gradient-purple-blue-end: hsl(220, 60%, 55%);
   }
 }
 
@@ -151,6 +163,7 @@
   }
 
   .animation-delay-200 { animation-delay: 0.2s; }
+  .animation-delay-500 { animation-delay: 0.5s; }
   .animation-delay-600 { animation-delay: 0.6s; }
   .animation-delay-700 { animation-delay: 0.7s; }
   .animation-delay-800 { animation-delay: 0.8s; }
@@ -160,3 +173,4 @@
   .animation-delay-2000 { animation-delay: 2s; }
   .animation-delay-2500 { animation-delay: 2.5s; }
 }
+
