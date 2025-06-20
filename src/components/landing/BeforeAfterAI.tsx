@@ -1,8 +1,9 @@
-
+// src/components/landing/BeforeAfterAI.tsx
 "use client";
 
 import React from 'react';
 import { MessageSquare, Phone, Mail, DollarSign, CheckCircle, Repeat, Truck, Zap, ArrowRight } from 'lucide-react';
+import { motion } from "framer-motion"; // Added for potential animations if needed
 
 const BeforeAfterAI = () => {
   const beforeActivities = [
@@ -62,22 +63,35 @@ const BeforeAfterAI = () => {
               <h3 className="text-2xl font-semibold mb-8 text-primary dark:text-green-400">TerraLead AI Automated</h3>
                <div className="w-full space-y-4">
                 {afterActivities.map((activity, index) => (
-                  <div key={index} className="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg flex items-start space-x-3 border border-green-200 dark:border-green-700 animate-fade-in" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
-                    <div className="mt-0.5 text-green-700 dark:text-green-300 animate-pulse-custom flex-shrink-0">{activity.icon}</div>
+                  <motion.div 
+                    key={index} 
+                    className="bg-green-100 dark:bg-green-800 p-4 rounded-lg flex items-start space-x-3 border border-green-300 dark:border-green-700"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 + 0.3, duration: 0.5 }}
+                  >
+                     {/* Subtle pulse animation for icons */}
+                    <div className="mt-0.5 text-green-800 dark:text-green-300 animate-pulse-custom flex-shrink-0">{activity.icon}</div>
                     <div className="flex-1 text-left">
                        {activity.title && <p className="font-semibold text-foreground text-sm leading-tight">{activity.title}</p>}
                       <p className="text-foreground/80 text-sm leading-tight">{activity.text}</p>
                     </div>
                     <span className="text-gray-600 dark:text-gray-400 text-xs flex-shrink-0 self-start">{activity.time}</span>
-                  </div>
+                  </motion.div>
                 ))}
-                 <div className="w-full bg-purple-100/50 dark:bg-purple-800/30 p-4 rounded-lg flex items-center justify-around text-foreground/70 mt-8 border border-purple-300 dark:border-purple-600">
+                 {/* Simplified AI Process Visualization */}
+                 <motion.div 
+                    className="w-full bg-purple-200/50 dark:bg-purple-800/50 p-4 rounded-lg flex items-center justify-around text-foreground/70 mt-8 border border-purple-400 dark:border-purple-600"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: afterActivities.length * 0.1 + 0.5, duration: 0.5 }}
+                  >
                     <Zap size={24} className="text-purple-600 dark:text-purple-400 animate-bounce"/>
                     <ArrowRight size={20} className="text-purple-600 dark:text-purple-400"/>
                     <span className="text-sm font-semibold">Processing</span>
                      <ArrowRight size={20} className="text-purple-600 dark:text-purple-400"/>
                     <Zap size={24} className="text-purple-600 dark:text-purple-400 animate-bounce animation-delay-500"/>
-                 </div>
+                 </motion.div>
               </div>
                <p className="text-lg text-foreground/70 mt-8 leading-relaxed">
                 TerraLead AI Suite automates processes, provides deep insights, and accelerates deal closure. Leverage AI for smart lead scoring, market trend analysis, and personalized communication.
@@ -96,4 +110,4 @@ const BeforeAfterAI = () => {
   );
 };
 
-export default BeforeAfterAI;
+export default BeforeAfterAI; // Ensure default export

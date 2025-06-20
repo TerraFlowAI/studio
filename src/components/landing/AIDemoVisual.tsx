@@ -4,7 +4,6 @@
 import { motion } from "framer-motion";
 import { FileText, BrainCircuit, BarChart3 } from "lucide-react";
 import type { LucideProps } from "lucide-react";
-import type React from 'react';
 
 interface AIDemoVisualProps {
   // Props can be added later if variations per feature are needed
@@ -58,10 +57,8 @@ const ConnectingLine = ({ delay }: { delay: number }) => (
 
 export const AIDemoVisual: React.FC<AIDemoVisualProps> = () => {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center relative p-4 md:p-0 my-12">
-      <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
-        How TerraFlow AI Works
-      </h2>
+    <div className="w-full h-full flex flex-col items-center justify-center relative p-4 md:p-0">
+      {/* Data Flow Visualization */}
       <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-0 mb-8 md:mb-12">
         <Node
           icon={FileText}
