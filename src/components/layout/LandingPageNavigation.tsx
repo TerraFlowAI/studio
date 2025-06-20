@@ -1,8 +1,8 @@
+
 "use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-// Removed direct Image import, will use Logo component
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import {
@@ -16,8 +16,8 @@ import {
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
-import { StarBorder } from '@/components/ui/star-border'; 
-import { Logo } from '@/components/shared/Logo'; // Import the Logo component
+import { StarBorder } from '@/components/ui/star-border';
+import { Logo } from '@/components/shared/Logo';
 
 export const LandingPageNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,12 +42,13 @@ export const LandingPageNavigation = () => {
     { title: "Webinars", href: "/webinars", description: "Join our live sessions and learn more." },
   ];
 
+  const navItemBaseClass = "bg-transparent hover:bg-accent/50 focus:bg-accent/50 text-foreground hover:text-accent-foreground data-[active]:bg-accent/50 data-[state=open]:bg-accent/50";
+
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
-            {/* Use the Logo component here */}
             <Logo size="md" />
           </Link>
 
@@ -55,7 +56,7 @@ export const LandingPageNavigation = () => {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50 focus:bg-accent/50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 text-foreground hover:text-accent-foreground">
+                  <NavigationMenuTrigger className={navItemBaseClass}>
                     Solutions
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -70,7 +71,7 @@ export const LandingPageNavigation = () => {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50 focus:bg-accent/50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 text-foreground hover:text-accent-foreground">
+                  <NavigationMenuTrigger className={navItemBaseClass}>
                     Platform
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -85,7 +86,7 @@ export const LandingPageNavigation = () => {
                 </NavigationMenuItem>
                 
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-accent/50 focus:bg-accent/50 text-foreground hover:text-accent-foreground")}>
+                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), navItemBaseClass)}>
                     <Link href="/pricing">
                       Pricing
                     </Link>
@@ -93,7 +94,7 @@ export const LandingPageNavigation = () => {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50 focus:bg-accent/50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 text-foreground hover:text-accent-foreground">
+                  <NavigationMenuTrigger className={navItemBaseClass}>
                     Resources
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -116,7 +117,7 @@ export const LandingPageNavigation = () => {
             </Link>
             <StarBorder
               as="button" 
-              className="font-semibold"
+              className="font-semibold" // Button variant="outline" is applied inside StarBorder
               data-cta-click="nav-demo-request"
             >
               <span className="animate-text-shimmer text-sm">Request Free Demo</span>
@@ -141,11 +142,10 @@ export const LandingPageNavigation = () => {
         {isOpen && (
           <div className="lg:hidden py-4 border-t border-border">
             <div className="space-y-2 px-2">
-              {/* Mobile links - simplified for now, can be enhanced with dropdowns later */}
-              <Link href="#solutions" className="block px-3 py-2 text-foreground hover:bg-accent/50 rounded-md" onClick={() => setIsOpen(false)}>Solutions</Link>
-              <Link href="#platform" className="block px-3 py-2 text-foreground hover:bg-accent/50 rounded-md" onClick={() => setIsOpen(false)}>Platform</Link>
-              <Link href="/pricing" className="block px-3 py-2 text-foreground hover:bg-accent/50 rounded-md" onClick={() => setIsOpen(false)}>Pricing</Link>
-              <Link href="#resources" className="block px-3 py-2 text-foreground hover:bg-accent/50 rounded-md" onClick={() => setIsOpen(false)}>Resources</Link>
+              <Link href="#solutions" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Solutions</Link>
+              <Link href="#platform" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Platform</Link>
+              <Link href="/pricing" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Pricing</Link>
+              <Link href="#resources" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Resources</Link>
               <Link href="/login" passHref>
                 <Button
                   variant="outline" 
@@ -160,6 +160,7 @@ export const LandingPageNavigation = () => {
                 className="w-full mt-2 font-semibold"
                 onClick={() => {
                   setIsOpen(false);
+                  // Potentially trigger demo request action here
                 }}
                 data-cta-click="nav-mobile-demo-request"
               >
