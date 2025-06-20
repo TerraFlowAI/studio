@@ -22,7 +22,13 @@ import { useToast } from "@/hooks/use-toast";
 import { generatePropertyDescription, GeneratePropertyDescriptionInput, GeneratePropertyDescriptionOutput } from "@/ai/flows/generate-property-description";
 import { useState } from "react";
 import { Loader2, Wand2, Sparkles, RefreshCcw, Edit3, Check, Copy, Save, DatabaseZap } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area"; // Added ScrollArea
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 
 const propertyFormSchema = z.object({
@@ -51,6 +57,7 @@ const refinementActions = [
 export function PropertyDescriptionGenerator() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefining, setIsRefining] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<GeneratePropertyDescriptionOutput | null>(null);
 
   const form = useForm<z.infer<typeof propertyFormSchema>>({
@@ -68,15 +75,18 @@ export function PropertyDescriptionGenerator() {
   });
 
   async function onSubmit(values: z.infer<typeof propertyFormSchema>) {
-    setIsLoading(true);
-    // Keep previous generated content for a smoother UX during refinement unless it's a brand new generation
-    // setGeneratedContent(null); 
+    if (!isRefining) setIsLoading(true); // Full loading state for initial generation
+    // For refinement, setIsLoading is already true if isRefining is true.
+    
+    // Keep previous content if refining, clear if brand new generation
+    // setGeneratedContent(isRefining ? generatedContent : null);
+    
     try {
       const input: GeneratePropertyDescriptionInput = values;
       const result = await generatePropertyDescription(input);
       setGeneratedContent(result);
       toast({
-        title: "Content Generated!",
+        title: isRefining ? "Content Refined!" : "Content Generated!",
         description: "Property description and headline are ready.",
       });
     } catch (error) {
@@ -88,12 +98,14 @@ export function PropertyDescriptionGenerator() {
       });
     } finally {
       setIsLoading(false);
+      setIsRefining(false);
     }
   }
 
   const handleRefine = (newStyle: string) => {
+    setIsRefining(true);
+    setIsLoading(true); // Set loading true for refinement
     form.setValue("style", newStyle);
-    // Programmatically trigger form submission with the new style
     form.handleSubmit(onSubmit)(); 
   };
 
@@ -108,14 +120,22 @@ export function PropertyDescriptionGenerator() {
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="font-headline text-xl flex items-center"><Edit3 className="mr-2 h-5 w-5 text-primary" /> 1. Input Key Details</CardTitle>
-           <Button 
-              variant="link" 
-              className="p-0 h-auto text-sm text-primary hover:underline justify-start -mt-1" 
-              onClick={() => alert("Feature: Load property data from existing listing (Coming Soon!)")}
-              title="Coming Soon: Load data from an existing property"
-            >
-              <DatabaseZap className="mr-1.5 h-4 w-4" /> Or, load from existing property...
-            </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                 <Button 
+                    variant="link" 
+                    className="p-0 h-auto text-sm text-primary hover:underline justify-start -mt-1" 
+                    onClick={() => alert("Feature: Load property data from existing listing (Coming Soon!)")}
+                  >
+                    <DatabaseZap className="mr-1.5 h-4 w-4" /> Or, load from existing property...
+                  </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Coming Soon: Automatically populate fields from your existing property listings.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -194,8 +214,10 @@ export function PropertyDescriptionGenerator() {
                 />
               </div>
               <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground !mt-6" disabled={isLoading}>
-                {isLoading && generatedContent ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                {isLoading && generatedContent ? "Refining..." : isLoading ? "Generating..." : "Generate Description"}
+                {isLoading && !isRefining ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 
+                 isLoading && isRefining ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 
+                 <Sparkles className="mr-2 h-4 w-4" />}
+                {isLoading && isRefining ? "Refining..." : isLoading ? "Generating..." : "Generate Description"}
               </Button>
             </form>
           </Form>
@@ -208,7 +230,7 @@ export function PropertyDescriptionGenerator() {
           <CardTitle className="font-headline text-xl flex items-center"><Wand2 className="mr-2 h-5 w-5 text-primary" /> 2. Refine & Use</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {isLoading && !generatedContent && ( // Only show this loader on initial generation
+          {isLoading && !generatedContent && !isRefining && ( 
             <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
               <Loader2 className="h-10 w-10 animate-spin text-primary mb-3" />
               <p>Crafting your perfect listing...</p>
@@ -226,8 +248,12 @@ export function PropertyDescriptionGenerator() {
                 <FormLabel className="text-base">AI-Generated Headline</FormLabel>
                 <div className="flex items-center gap-2 mt-1">
                   <Textarea value={generatedContent.headline} readOnly rows={2} className="bg-muted/30 text-lg font-semibold"/>
-                  <Button variant="ghost" size="icon" onClick={() => form.handleSubmit(onSubmit)()} title="Regenerate Headline" disabled={isLoading}><RefreshCcw className="h-4 w-4 text-primary"/></Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleCopy(generatedContent.headline, "Headline")} title="Copy Headline"><Copy className="h-4 w-4 text-primary"/></Button>
+                  <TooltipProvider><Tooltip><TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" onClick={() => form.handleSubmit(onSubmit)()} title="Regenerate Headline" disabled={isLoading}><RefreshCcw className="h-4 w-4 text-primary"/></Button>
+                  </TooltipTrigger><TooltipContent><p>Regenerate</p></TooltipContent></Tooltip></TooltipProvider>
+                  <TooltipProvider><Tooltip><TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" onClick={() => handleCopy(generatedContent.headline, "Headline")} title="Copy Headline"><Copy className="h-4 w-4 text-primary"/></Button>
+                  </TooltipTrigger><TooltipContent><p>Copy Headline</p></TooltipContent></Tooltip></TooltipProvider>
                 </div>
               </div>
               <div>
@@ -244,7 +270,9 @@ export function PropertyDescriptionGenerator() {
                       size="sm" 
                       onClick={() => handleRefine(action.style)}
                       disabled={isLoading || form.getValues("style") === action.style}
+                      className={form.getValues("style") === action.style ? "border-primary text-primary" : ""}
                     >
+                      {isLoading && form.getValues("style") === action.style && isRefining ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : null}
                       {action.label}
                     </Button>
                   ))}
@@ -258,9 +286,11 @@ export function PropertyDescriptionGenerator() {
             <Button variant="outline" className="w-full sm:w-auto" onClick={() => handleCopy(`Headline: ${generatedContent.headline}\n\nDescription: ${generatedContent.description}`, "Full Content")}>
               <Copy className="mr-2 h-4 w-4"/> Copy All
             </Button>
-            <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => alert("Save to Property Clicked (Placeholder)")}>
-              <Save className="mr-2 h-4 w-4"/> Save to Property
-            </Button>
+            <TooltipProvider><Tooltip><TooltipTrigger asChild>
+              <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => alert("Save to Property Clicked (Placeholder)")}>
+                <Save className="mr-2 h-4 w-4"/> Save to Property
+              </Button>
+            </TooltipTrigger><TooltipContent><p>Coming Soon: Save this content directly to a property listing.</p></TooltipContent></Tooltip></TooltipProvider>
           </CardFooter>
         )}
       </Card>
