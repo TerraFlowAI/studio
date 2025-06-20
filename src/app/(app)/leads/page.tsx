@@ -12,6 +12,7 @@ import { PlusCircle, Upload, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { LEAD_SOURCES, LEAD_STATUSES } from "@/lib/constants";
 import type { LeadStatusId, LeadSourceId } from "@/lib/constants";
+import { Card } from "@/components/ui/card"; // Added import for Card
 
 const initialMockLeads: Lead[] = [
   {

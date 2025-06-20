@@ -239,11 +239,12 @@ const Sidebar = React.forwardRef<
         <div
           className={cn(
             "duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear",
+            "group-data-[collapsible=icon]:w-[--sidebar-width-icon]",
             "group-data-[collapsible=offcanvas]:w-0",
             "group-data-[side=right]:rotate-180",
             variant === "floating" || variant === "inset"
               ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]"
-              : "group-data-[collapsible=icon]:w-[--sidebar-width-icon]"
+              : ""
           )}
         />
         <div
@@ -565,18 +566,20 @@ const SidebarMenuButton = React.forwardRef<
       children,
       href,
       type,
-      ...otherProps 
+      asChild: consumerAsChild, // Renamed to avoid conflict with internal asChild
+      ...otherProps
     } = props;
 
     const { isMobile, state } = useSidebar();
 
-    // Explicitly remove asChild from otherProps if it exists, as it's from the parent Link
-    const { asChild: parentAsChild, ...restOfOtherProps } = otherProps as any;
+    // Remove 'asChild' from otherProps if it exists, to prevent passing it to the DOM element
+    const { asChild, ...cleanOtherProps } = otherProps as any;
+
 
     const Comp = href ? 'a' : 'button';
 
-    const elementProps: Record<string, any> = {
-      ...restOfOtherProps, // Use restOfOtherProps which does NOT have parentAsChild
+    const elementProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
+      ...cleanOtherProps,
       ref: ref,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       'data-sidebar': "menu-button",
@@ -584,13 +587,15 @@ const SidebarMenuButton = React.forwardRef<
       'data-active': isActive,
     };
 
-    if (href) {
-      elementProps.href = href;
-    } else {
+    if (Comp === 'button') {
       elementProps.type = type || 'button';
     }
+    // If Comp === 'a', href should be part of cleanOtherProps if passed down by Link
+    if (href && !elementProps.href) {
+        elementProps.href = href;
+    }
     
-    const coreInteractiveElement = <Comp {...elementProps}>{children}</Comp>;
+    const coreInteractiveElement = React.createElement(Comp, elementProps, children);
 
     if (!tooltip) {
       return coreInteractiveElement;
