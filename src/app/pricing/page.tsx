@@ -97,7 +97,7 @@ const testimonialsData: Testimonial[] = [
 const faqsData = [
   {
     question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards (Visa, Mastercard, American Express) and direct bank transfers for annual subscriptions."
+    answer: "We accept all major credit cards (Visa, Mastercard, American Express), UPI, and direct bank transfers for annual subscriptions."
   },
   {
     question: "Can I change my plan later?",
@@ -133,7 +133,7 @@ export default function PricingPage() {
             Find Your Perfect AI Edge
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Transparent pricing for every scale. Unlock powerful AI tools designed to elevate your real estate business, from individual agents to large enterprises.
+            Transparent pricing for every scale. Unlock powerful AI tools designed to elevate your real estate business in India, from individual agents to large enterprises.
           </p>
           <div className="flex justify-center gap-3 text-sm text-muted-foreground">
             <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-1.5 text-green-500"/> No Hidden Fees</span>
@@ -196,7 +196,7 @@ export default function PricingPage() {
       <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold font-headline text-center text-primary mb-12">
-            Loved by Real Estate Innovators
+            Loved by Real Estate Innovators in India
           </h2>
           <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
             {testimonialsData.map((testimonial, index) => (
