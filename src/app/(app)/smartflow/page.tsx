@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { PlusCircle, Zap, PlayCircle, Edit3, Trash2, Eye, Briefcase, Layers, PackageSearch, GanttChartSquare, AlertTriangle, CheckCircle, Search, ListFilter, ChevronDown, MoreVertical, CalendarDays, Database, MessageSquare, Users as LeadUsersIcon, Home as PropertyIcon, Mail } from "lucide-react"; // Added Mail here
+import { PlusCircle, Zap, PlayCircle, Edit3, Trash2, Eye, Briefcase, Layers, PackageSearch, GanttChartSquare, AlertTriangle, CheckCircle, Search, ListFilter, ChevronDown, MoreVertical, CalendarDays, Database, MessageSquare, Users as LeadUsersIcon, Home as PropertyIcon, Mail, Share2 } from "lucide-react"; // Added Share2 here
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
