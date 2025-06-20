@@ -556,7 +556,7 @@ const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
   SidebarMenuButtonProps
 >(
-  (props, ref) => {
+  (componentProps, forwardedRef) => {
     const {
       className,
       variant,
@@ -564,35 +564,35 @@ const SidebarMenuButton = React.forwardRef<
       isActive = false,
       tooltip,
       children,
-      href,
-      type,
-      asChild: consumerAsChild, // Renamed to avoid conflict with internal asChild
-      ...otherProps
-    } = props;
+      // Capture href and type from the incoming props
+      href: propHref,
+      type: propType,
+      // All other props, including `asChild` if passed from a parent Link, go into `rest`
+      ...rest
+    } = componentProps;
+
+    // Explicitly destructure and remove `asChild` if it came in `rest`
+    const { asChild, ...domSafeRestProps } = rest as any;
 
     const { isMobile, state } = useSidebar();
-
-    // Remove 'asChild' from otherProps if it exists, to prevent passing it to the DOM element
-    const { asChild, ...cleanOtherProps } = otherProps as any;
-
-
-    const Comp = href ? 'a' : 'button';
+    
+    const Comp = propHref ? 'a' : 'button';
 
     const elementProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
-      ...cleanOtherProps,
-      ref: ref,
+      ...domSafeRestProps, // Use props that are safe for the DOM element (asChild removed)
+      ref: forwardedRef,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       'data-sidebar': "menu-button",
       'data-size': size,
       'data-active': isActive,
     };
 
-    if (Comp === 'button') {
-      elementProps.type = type || 'button';
-    }
-    // If Comp === 'a', href should be part of cleanOtherProps if passed down by Link
-    if (href && !elementProps.href) {
-        elementProps.href = href;
+    if (Comp === 'a') {
+      // If it's an anchor, ensure href is set from propHref
+      elementProps.href = propHref;
+    } else { // Comp === 'button'
+      // If it's a button, ensure type is set
+      elementProps.type = propType || 'button';
     }
     
     const coreInteractiveElement = React.createElement(Comp, elementProps, children);
@@ -605,7 +605,7 @@ const SidebarMenuButton = React.forwardRef<
 
     return (
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger asChild> 
           {coreInteractiveElement}
         </TooltipTrigger>
         <TooltipContent
