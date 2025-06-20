@@ -8,13 +8,17 @@ import {
   Users,
   Briefcase,
   BarChart3,
-  PenSquare,
+  PenSquare, // Icon for Scribe Studio
   Zap,
   FileSignature,
   Settings,
   LogOut,
   HelpCircle,
   type LucideIcon,
+  HomeIcon, // Added HomeIcon for Scribe Studio's Property Listing
+  MailIcon, // Added MailIcon
+  Share2Icon, // Added Share2Icon
+  FileTextIcon, // Added FileTextIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -40,8 +44,8 @@ export const mainNavItems: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/leads', label: 'Leads', icon: Users },
   { href: '/properties', label: 'Properties', icon: Briefcase },
-  { href: '/market-analytics', label: 'Analytics', icon: BarChart3 },
-  { href: '/terrascribe', label: 'TerraScribe', icon: PenSquare },
+  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/scribe', label: 'Scribe Studio', icon: PenSquare }, // Updated for Scribe Studio
   { href: '/smartflow', label: 'SmartFlow', icon: Zap },
   { href: '/documents', label: 'Documents', icon: FileSignature },
 ];
@@ -63,9 +67,6 @@ export function AppSidebar() {
         collapsible={isMobile ? "offcanvas" : "icon"}
         variant="sidebar"
         side="left"
-        // Removed fixed, md:sticky, top-0, h-screen, md:h-auto
-        // Kept border, shadow, background, text color, and z-index for appearance and layering.
-        // The Sidebar component from ui/sidebar handles its own positioning and height.
         className="border-r-0 shadow-md bg-sidebar text-sidebar-foreground z-40"
         style={ isMobile ? {} : {width: state === 'expanded' ? '250px' : 'var(--sidebar-width-icon, 3rem)'}}
     >
@@ -83,18 +84,18 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.href} className="mb-1">
               <Link href={item.href} asChild>
                 <SidebarMenuButton
-                  isActive={pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/dashboard'))}
+                  isActive={pathname.startsWith(item.href)} // Use startsWith for nested routes
                   tooltip={item.label}
                   onClick={() => setOpenMobile(false)}
                   className={cn(
                     "justify-start w-full h-11 px-3 rounded-lg text-sm",
-                    (pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/dashboard')))
+                    (pathname.startsWith(item.href))
                       ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
                       : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   )}
                 >
                   <item.icon className={cn("h-5 w-5 mr-3 shrink-0",
-                    (pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/dashboard')))
+                    (pathname.startsWith(item.href))
                        ? "text-sidebar-primary-foreground"
                        : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
                   )} />
@@ -146,7 +147,7 @@ export function AppSidebar() {
               </div>
             )}
         </div>
-         <Button variant="ghost" className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-11 px-3" onClick={() => alert('Logout clicked')}>
+         <Button variant="ghost" className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-11 px-3" onClick={() => router.push('/login')}>
             <LogOut className="h-5 w-5 mr-3 shrink-0" />
              {(state === 'expanded' || isMobile) && <span>Logout</span>}
         </Button>
