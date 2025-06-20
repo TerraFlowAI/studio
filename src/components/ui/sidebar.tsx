@@ -564,22 +564,16 @@ const SidebarMenuButton = React.forwardRef<
       isActive = false,
       tooltip,
       children,
-      // Capture href and type from the incoming props
-      href: propHref,
-      type: propType,
-      // All other props, including `asChild` if passed from a parent Link, go into `rest`
-      ...rest
+      href: propHref, 
+      type: propType, 
+      ...otherProps 
     } = componentProps;
 
-    // Explicitly destructure and remove `asChild` if it came in `rest`
-    const { asChild, ...domSafeRestProps } = rest as any;
-
     const { isMobile, state } = useSidebar();
-    
     const Comp = propHref ? 'a' : 'button';
 
     const elementProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
-      ...domSafeRestProps, // Use props that are safe for the DOM element (asChild removed)
+      ...otherProps, 
       ref: forwardedRef,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       'data-sidebar': "menu-button",
@@ -587,12 +581,14 @@ const SidebarMenuButton = React.forwardRef<
       'data-active': isActive,
     };
 
+    delete elementProps.asChild;
+
     if (Comp === 'a') {
-      // If it's an anchor, ensure href is set from propHref
       elementProps.href = propHref;
-    } else { // Comp === 'button'
-      // If it's a button, ensure type is set
+      delete elementProps.type; 
+    } else { 
       elementProps.type = propType || 'button';
+      delete elementProps.href;
     }
     
     const coreInteractiveElement = React.createElement(Comp, elementProps, children);
