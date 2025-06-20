@@ -1,8 +1,10 @@
+
 // src/components/shared/DateRangePicker.tsx
 "use client";
 
 import * as React from "react";
 import { format } from "date-fns";
+import { enUS } from "date-fns/locale"; // Import enUS locale directly
 import { Calendar as CalendarIcon } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 
@@ -20,7 +22,7 @@ interface DateRangePickerProps extends React.HTMLAttributes<HTMLDivElement> {
   initialDateTo?: Date;
   onUpdate?: (values: { range: DateRange; rangeCompare?: DateRange }) => void;
   align?: "start" | "center" | "end";
-  locale?: string;
+  // locale?: string; // Removed locale prop as we default to en-US for build stability
   showCompare?: boolean;
   triggerClassName?: string;
 }
@@ -30,7 +32,7 @@ export function DateRangePicker({
   initialDateTo,
   onUpdate,
   align = "end",
-  locale = "en-US", // Default locale
+  // locale = "en-US", // Default locale (removed from props)
   showCompare = false, // Simplified: compare functionality not fully implemented here
   className,
   triggerClassName,
@@ -66,11 +68,11 @@ export function DateRangePicker({
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y", { locale: require(`date-fns/locale/${locale}`) })} -{" "}
-                  {format(date.to, "LLL dd, y", { locale: require(`date-fns/locale/${locale}`) })}
+                  {format(date.from, "LLL dd, y", { locale: enUS })} -{" "}
+                  {format(date.to, "LLL dd, y", { locale: enUS })}
                 </>
               ) : (
-                format(date.from, "LLL dd, y", { locale: require(`date-fns/locale/${locale}`) })
+                format(date.from, "LLL dd, y", { locale: enUS })
               )
             ) : (
               <span>Pick a date range</span>
@@ -85,6 +87,7 @@ export function DateRangePicker({
             selected={date}
             onSelect={setDate}
             numberOfMonths={2}
+            locale={enUS} // Pass the imported locale to the Calendar component
           />
           {/* Placeholder for compare functionality if showCompare is true */}
           {/* {showCompare && ( ... UI for selecting compare date range ... )} */}
@@ -96,3 +99,4 @@ export function DateRangePicker({
 
 // This type might be useful in other parts of the app.
 export type { DateRange };
+
