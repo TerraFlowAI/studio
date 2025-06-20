@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea"; // Added this import
 import { ChevronLeft, Save, Play, Settings2, PlusCircle, Zap, Mail, CalendarCheck, Database, Filter, GitFork, Clock, MessageSquare, Users, BarChart3, Briefcase, PenSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
