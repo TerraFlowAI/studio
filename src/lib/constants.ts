@@ -1,4 +1,5 @@
 
+
 export const LEAD_STATUSES = [
   { id: 'new', label: 'New', color: 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-700/30 dark:text-blue-200 dark:border-blue-600' },
   { id: 'contacted', label: 'Contacted', color: 'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-700/30 dark:text-amber-200 dark:border-amber-600' },
@@ -24,9 +25,42 @@ export type LeadSourceId = typeof LEAD_SOURCES[number]['id'];
 
 export const AI_SMART_VIEWS = [
   { id: 'all', label: 'All Leads' },
-  { id: 'hot', label: 'Hot Leads' }, // Emoji added in component
-  { id: 'new', label: 'New Leads' }, // Emoji added in component
+  { id: 'hot', label: 'Hot Leads' }, 
+  { id: 'new', label: 'New Leads' }, 
   { id: 'needs_attention', label: 'Needs Attention' },
 ] as const;
 
 export type AiSmartViewId = typeof AI_SMART_VIEWS[number]['id'];
+
+
+// Constants for Properties Page
+export const PROPERTY_STATUSES = [
+  { id: 'active', label: 'Active' },
+  { id: 'draft', label: 'Draft' },
+  { id: 'pending', label: 'Pending' },
+  { id: 'sold', label: 'Sold' },
+  { id: 'archived', label: 'Archived' },
+] as const;
+
+export type PropertyStatusId = typeof PROPERTY_STATUSES[number]['id'];
+
+export const PROPERTY_TYPES = [
+  { id: 'apartment', label: 'Apartment' },
+  { id: 'villa', label: 'Villa' },
+  { id: 'house', label: 'House' },
+  { id: 'land', label: 'Land' },
+  { id: 'commercial', label: 'Commercial' },
+  { id: 'other', label: 'Other' }
+] as const;
+
+export type PropertyTypeId = typeof PROPERTY_TYPES[number]['id'];
+
+// For styling status badges/dots consistently
+export const PROPERTY_STATUSES_CONFIG = {
+  active: { dotColor: 'hsl(var(--chart-1))', badgeColor: 'bg-green-500/20 text-green-700 border-green-500/30' }, // Teal as green
+  draft: { dotColor: 'hsl(var(--muted-foreground))', badgeColor: 'bg-slate-500/20 text-slate-700 border-slate-500/30' }, // Gray
+  pending: { dotColor: 'hsl(var(--chart-3))', badgeColor: 'bg-yellow-500/20 text-yellow-700 border-yellow-500/30' }, // Yellow/Orange
+  sold: { dotColor: 'hsl(var(--primary))', badgeColor: 'bg-blue-500/20 text-blue-700 border-blue-500/30' }, // Primary Blue
+  archived: { dotColor: 'hsl(var(--destructive))', badgeColor: 'bg-red-500/20 text-red-700 border-red-500/30' }, // Red
+  default: { dotColor: 'hsl(var(--border))', badgeColor: 'bg-gray-200 text-gray-800 border-gray-400' }
+} as const;
