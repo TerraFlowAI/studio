@@ -1,7 +1,7 @@
 
 "use client"
 
-import *ాలు React from "react"
+import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
@@ -328,23 +328,23 @@ const SidebarRail = React.forwardRef<
 })
 SidebarRail.displayName = "SidebarRail"
 
-const SidebarInset = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"main">
->(({ className, ...props }, ref) => {
-  return (
-    <main
-      ref={ref}
-      className={cn(
-        "relative flex min-h-svh flex-1 flex-col bg-background",
-        "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarInset.displayName = "SidebarInset"
+// const SidebarInset = React.forwardRef< // Commented out as it was removed from app layout
+//   HTMLDivElement,
+//   React.ComponentProps<"main">
+// >(({ className, ...props }, ref) => {
+//   return (
+//     <main
+//       ref={ref}
+//       className={cn(
+//         "relative flex min-h-svh flex-1 flex-col bg-background",
+//         "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
+//         className
+//       )}
+//       {...props}
+//     />
+//   )
+// })
+// SidebarInset.displayName = "SidebarInset"
 
 const SidebarInput = React.forwardRef<
   React.ElementRef<typeof Input>,
@@ -567,42 +567,40 @@ const SidebarMenuButton = React.forwardRef<
       children,
       href: propHref,
       type: propType,
-      asChild: receivedAsChild, // explicitly capture asChild here
-      ...otherProps // all other props, Link might pass its own onClick, etc.
+      asChild: propAsChild, // Capture asChild from props
+      ...otherProps // All other props (e.g., onClick from Link)
     } = props;
 
     const { isMobile, state } = useSidebar();
-    const Comp = propHref ? 'a' : 'button';
+    const Comp = propHref ? 'a' : 'button'; // Determine component type based on href
 
-    // These are the props that will actually go to the DOM element.
-    // We start with otherProps, then layer on specific ones.
-    // 'asChild' is *not* included in otherProps because it was destructured above.
-    // Any other props passed from Link (like onClick handlers) will be in otherProps.
-    const domProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
-      ...otherProps,
+    // Prepare elementProps, ensure asChild from otherProps is not included
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { asChild, ...domSafeRestProps } = otherProps; 
+
+    const elementProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
+      ...domSafeRestProps,
       ref: ref,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       'data-sidebar': "menu-button",
       'data-size': size,
       'data-active': isActive,
     };
-
-    if (Comp === 'a') {
-      domProps.href = propHref;
-      delete domProps.type; // Ensure button 'type' prop isn't passed to 'a'
-    } else {
-      domProps.type = propType || 'button';
-      delete domProps.href; // Ensure 'href' isn't passed to 'button'
-    }
     
-    // The `receivedAsChild` prop (which would be true if Link passes it) is consumed here
-    // and not passed to React.createElement. The `otherProps` spread above already excluded it.
-    // `delete domProps.asChild;` is redundant if `receivedAsChild` is correctly destructured and `otherProps` doesn't contain it.
-    // For absolute safety, ensuring `asChild` is not in `domProps`:
-    delete domProps.asChild;
+    if (Comp === 'a') {
+      elementProps.href = propHref;
+      delete elementProps.type; // Remove button-specific 'type'
+    } else {
+      elementProps.type = propType || 'button';
+      delete elementProps.href; // Remove anchor-specific 'href'
+    }
+
+    // Explicitly delete asChild from elementProps if it exists
+    // This is the crucial step to prevent the prop from reaching the DOM element
+    delete elementProps.asChild;
 
 
-    const coreInteractiveElement = React.createElement(Comp, domProps, children);
+    const coreInteractiveElement = React.createElement(Comp, elementProps, children);
 
     if (!tooltip) {
       return coreInteractiveElement;
@@ -612,7 +610,7 @@ const SidebarMenuButton = React.forwardRef<
 
     return (
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger asChild={propAsChild}>
           {coreInteractiveElement}
         </TooltipTrigger>
         <TooltipContent
