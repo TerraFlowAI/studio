@@ -19,9 +19,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { generatePropertyDescription, GeneratePropertyDescriptionInput, GeneratePropertyDescriptionOutput } from "@/ai/flows/generate-property-description";
-import { generateImageFromText, GenerateImageFromTextInput, GenerateImageFromTextOutput } from "@/ai/flows/generate-image-from-text"; // New import
+import { generateImageFromText, GenerateImageFromTextInput, GenerateImageFromTextOutput } from "@/ai/flows/generate-image-from-text";
 import { useState } from "react";
-import { Loader2, Wand2, Sparkles, RefreshCcw, Edit3, Check, Copy, Save, DatabaseZap, Image as ImageIcon, Share2, Facebook, Twitter, Linkedin, Instagram } from "lucide-react"; // Added ImageIcon, Share2, and social icons
+import { Loader2, Wand2, Sparkles, RefreshCcw, Edit3, Check, Copy, Save, DatabaseZap, Image as ImageIcon, Share2, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
@@ -29,7 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Image from "next/image"; // For displaying the generated image
+import NextImage from "next/image"; // Renamed to avoid conflict
 
 
 const propertyFormSchema = z.object({
@@ -146,7 +146,8 @@ export function PropertyDescriptionGenerator() {
   
   const handleSocialShare = (platform: 'facebook' | 'twitter' | 'linkedin' | 'instagram') => {
     const textToShare = generatedContent?.headline || "Check out this property!";
-    const propertyPageUrl = "https://terraflow.ai/mock-property-url"; // Placeholder URL
+    // In a real app, this URL would be the actual public property page
+    const propertyPageUrl = "https://terraflow.ai/mock-property-url"; 
 
     let shareUrl = "";
     switch(platform) {
@@ -160,8 +161,7 @@ export function PropertyDescriptionGenerator() {
             shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(propertyPageUrl)}`;
             break;
         case 'instagram':
-            // Instagram sharing is more complex, usually involves API or app redirects, direct web share is limited.
-            alert("Instagram sharing typically requires using their app. You can download the image and post it manually!");
+            alert("Instagram sharing usually requires their app. Consider providing a way to download the image and copy the text.");
             return;
     }
     window.open(shareUrl, '_blank', 'noopener,noreferrer');
@@ -356,12 +356,13 @@ export function PropertyDescriptionGenerator() {
                 )}
                 {generatedImageDataUri && !isGeneratingImage && (
                   <div className="mt-2 space-y-3">
-                    <Image 
+                    <NextImage 
                         src={generatedImageDataUri} 
                         alt="AI Generated Property Image" 
                         width={500} 
                         height={300} 
                         className="rounded-md border object-contain mx-auto shadow-md" 
+                        data-ai-hint="property building"
                     />
                     <Button onClick={handleGenerateImage} variant="outline" disabled={!generatedContent || isLoading} className="w-full">
                         <RefreshCcw className="mr-2 h-4 w-4" /> Regenerate Image
