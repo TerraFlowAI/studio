@@ -10,7 +10,6 @@ import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation
 import ComponentShowcase from '@/components/ComponentShowcase';
 import { AIDemoVisual } from '@/components/landing/AIDemoVisual';
 import BeforeAfterAI from '@/components/landing/BeforeAfterAI';
-import Globe3D from '@/components/ui/hero';
 
 
 const STATIC_HEADLINE_PART = "AI-Powered Real Estate is Here. ";
@@ -562,7 +561,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      <Globe3D />
+      
       <AIDemoVisual />
       <BeforeAfterAI />
       <ComponentShowcase />
