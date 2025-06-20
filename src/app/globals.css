@@ -203,6 +203,14 @@
   .waveform-dot:nth-child(3) {
     animation-delay: 0.4s;
   }
+  .neumorphic-button::after {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300 bg-gradient-to-br from-[#9b87f5]/20 to-transparent rounded-full;
+  }
+    
+  .neumorphic-button:hover::after {
+    @apply opacity-100;
+  }
 }
 
 @keyframes waveform-pulse {
@@ -212,3 +220,4 @@
 
 
     
+

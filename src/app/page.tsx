@@ -2,7 +2,7 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { ArrowDown, Sparkles, Zap, TrendingUp, Brain, BarChart3, Users, Target, Activity, Loader2, Home, Settings, PieChart, MapPin, Camera, FileText, Calendar, Bell, User, Menu, Search, Filter, ShieldCheck } from 'lucide-react';
+import { ArrowDown, Sparkles, Zap, TrendingUp, Brain, BarChart3, Users, Target, Activity, Loader2, Home, Settings, PieChart, MapPin, Camera, FileText, Calendar, Bell, User, Menu, Search, Filter, ShieldCheck, ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
@@ -10,6 +10,7 @@ import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation
 import ComponentShowcase from '@/components/ComponentShowcase';
 import { AIDemoVisual } from '@/components/landing/AIDemoVisual';
 import BeforeAfterAI from '@/components/landing/BeforeAfterAI';
+import Globe3D from '@/components/ui/hero';
 
 
 const STATIC_HEADLINE_PART = "AI-Powered Real Estate is Here. ";
@@ -561,6 +562,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      <Globe3D />
       <AIDemoVisual />
       <BeforeAfterAI />
       <ComponentShowcase />
