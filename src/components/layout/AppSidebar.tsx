@@ -88,13 +88,12 @@ export function AppSidebar() {
         <SidebarMenu>
           {navItemsToRender.map((item) => (
             <SidebarMenuItem key={item.href} className="mb-1">
-              <Link href={item.href} passHref legacyBehavior>
+              <Link href={item.href}>
                 <SidebarMenuButton
                   isActive={pathname.startsWith(item.href)} 
                   tooltip={item.label}
                   onClick={() => {
                     if (isMobile) setOpenMobile(false);
-                    // For actual navigation with Link passHref, we don't call router.push here
                   }}
                   className={cn(
                     "justify-start w-full h-11 px-3 rounded-lg text-sm",
@@ -102,8 +101,6 @@ export function AppSidebar() {
                       ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
                       : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   )}
-                  // Pass href to SidebarMenuButton only if it's not being used with Link asChild or passHref
-                  // In this case, Link handles the href
                 >
                   <item.icon className={cn("h-5 w-5 mr-3 shrink-0",
                     (pathname.startsWith(item.href))
@@ -120,7 +117,7 @@ export function AppSidebar() {
       <SidebarFooter className="p-4 border-t border-sidebar-border space-y-2">
          {utilityNavItems.map((item) => (
             <SidebarMenuItem key={item.href} className="mb-1">
-              <Link href={item.href} passHref legacyBehavior>
+              <Link href={item.href}>
                 <SidebarMenuButton
                   isActive={pathname.startsWith(item.href)}
                   tooltip={item.label}
