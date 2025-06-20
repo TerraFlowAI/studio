@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { PlusCircle, Zap, PlayCircle, Edit3, Trash2, Eye, Briefcase, Layers, PackageSearch, GanttChartSquare, AlertTriangle, CheckCircle, Search, ListFilter, ChevronDown, MoreVertical, CalendarDays, Database, MessageSquare, Users as LeadUsersIcon, Home as PropertyIcon, Mail, Share2 } from "lucide-react"; // Added Share2 here
+import { PlusCircle, Zap, PlayCircle, Edit3, Trash2, Eye, Briefcase, Layers, PackageSearch, GanttChartSquare, AlertTriangle, CheckCircle, Search, ListFilter, ChevronDown, MoreVertical, CalendarDays, Database, MessageSquare, Users as LeadUsersIcon, Home as PropertyIcon, Mail, Share2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -110,11 +110,11 @@ const AppIcon: React.FC<{ appName: string }> = ({ appName }) => {
   return <div className={cn(baseStyle, bgColor)} title={title}>{iconElement}</div>;
 };
 
-const WorkflowCard: React.FC<{ workflow: Workflow; onStatusToggle: (id: string) => void; onAction: (action: string, id: string) => void; }> = 
+const WorkflowCard: React.FC<{ workflow: Workflow; onStatusToggle: (id: string) => void; onAction: (action: string, id: string) => void; }> =
   ({ workflow, onStatusToggle, onAction }) => {
   const statusColor = workflow.status === "Active" ? "bg-green-500" : "bg-slate-400";
   return (
-    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col bg-card border border-border overflow-hidden">
+    <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex bg-card border border-border overflow-hidden">
       <div className={cn("w-1.5 h-full shrink-0", statusColor)}></div>
       <div className="flex flex-col flex-grow p-4">
         <CardHeader className="p-0 pb-3">
@@ -188,7 +188,7 @@ export default function SmartflowStudioPage() {
         });
     }
   };
-  
+
   const handleWorkflowAction = (action: string, id: string) => {
     const wf = workflows.find(w => w.id === id);
     toast({ title: `${action} Clicked`, description: `Action for workflow: ${wf?.name || id}`});
@@ -235,8 +235,8 @@ export default function SmartflowStudioPage() {
           <div className="mb-6 p-4 bg-card border border-border rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="relative flex-grow sm:max-w-xs">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search workflows by name..." 
+              <Input
+                placeholder="Search workflows by name..."
                 className="pl-8 h-9"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -251,8 +251,8 @@ export default function SmartflowStudioPage() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {["All", "Active", "Inactive"].map(status => (
-                    <DropdownMenuCheckboxItem 
-                      key={status} 
+                    <DropdownMenuCheckboxItem
+                      key={status}
                       checked={statusFilter === status}
                       onCheckedChange={() => setStatusFilter(status as "All" | "Active" | "Inactive")}
                     >
@@ -269,8 +269,8 @@ export default function SmartflowStudioPage() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {["Last Modified", "Name (A-Z)", "Most Runs"].map(sort => (
-                    <DropdownMenuCheckboxItem 
-                      key={sort} 
+                    <DropdownMenuCheckboxItem
+                      key={sort}
                       checked={sortOrder === sort}
                       onCheckedChange={() => setSortOrder(sort as "Last Modified" | "Name (A-Z)" | "Most Runs")}
                     >
@@ -281,13 +281,13 @@ export default function SmartflowStudioPage() {
               </DropdownMenu>
             </div>
           </div>
-            
+
           {filteredAndSortedWorkflows.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {filteredAndSortedWorkflows.map(flow => (
-                <WorkflowCard 
-                    key={flow.id} 
-                    workflow={flow} 
+                <WorkflowCard
+                    key={flow.id}
+                    workflow={flow}
                     onStatusToggle={toggleWorkflowStatus}
                     onAction={handleWorkflowAction}
                 />
