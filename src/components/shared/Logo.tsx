@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
@@ -9,7 +10,7 @@ interface LogoProps {
 }
 
 const textSizeClasses = {
-  sm: 'text-lg', // Adjusted for better fit with icon
+  sm: 'text-lg',
   md: 'text-xl',
   lg: 'text-2xl',
 };
@@ -27,12 +28,12 @@ export function Logo({ size = 'md', showIcon = true, hideText = false, className
     <div className={cn("flex items-center gap-2 text-primary group", className)}>
       {showIcon && (
         <Image
-          src="https://placehold.co/100x100.png" 
+          src={`https://placehold.co/${iconDims.width}x${iconDims.height}.png`}
           alt="TerraFlowAI Logo"
           width={iconDims.width}
           height={iconDims.height}
           className="group-hover:opacity-90 transition-opacity object-contain"
-          data-ai-hint="TerraFlow logo T green"
+          data-ai-hint="green T"
         />
       )}
       {!hideText && (
