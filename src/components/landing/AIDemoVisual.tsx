@@ -4,6 +4,7 @@
 import { motion } from "framer-motion";
 import { FileText, BrainCircuit, BarChart3 } from "lucide-react";
 import type { LucideProps } from "lucide-react";
+import type React from 'react';
 
 interface AIDemoVisualProps {
   // Props can be added later if variations per feature are needed
@@ -51,7 +52,7 @@ const ConnectingLine = ({ delay }: { delay: number }) => (
     initial={{ scaleX: 0, opacity: 0 }}
     animate={{ scaleX: 1, opacity: 1 }}
     transition={{ duration: 0.5, delay }}
-    style={{ transformOrigin: "left" }}
+    style={{ transformOrigin: "left", background: 'linear-gradient(90deg, var(--gradient-teal-start), var(--gradient-purple-blue-end), var(--gradient-teal-start))', backgroundSize: '200% 100%' }}
   ></motion.div>
 );
 
