@@ -62,15 +62,17 @@ const getAIScoreTextClasses = (score: number): string => {
 export function LeadsTable({ leads, selectedLeads, onSelectLead, onSelectAllLeads, isAllSelectedInCurrentPage }: LeadsTableProps) {
   const router = useRouter();
 
-  const handleRowClick = (leadId: string) => {
-    // For now, alert. Later, navigate to /app/leads/{lead_id}
-    alert(`View details for lead ID: ${leadId}. Navigation to detail page will be implemented later.`);
-    // router.push(`/leads/${leadId}`); 
+  const handleNavigateToDetail = (leadId: string) => {
+    router.push(`/leads/${leadId}`); 
   };
 
-  const handleAction = (e: React.MouseEvent, actionDescription: string) => {
-    e.stopPropagation(); // Important to prevent row click when action is clicked
-    alert(actionDescription);
+  const handleAction = (e: React.MouseEvent, actionDescription: string, leadId?: string) => {
+    e.stopPropagation(); 
+    if (actionDescription.startsWith("View Details") && leadId) {
+      handleNavigateToDetail(leadId);
+    } else {
+      alert(actionDescription);
+    }
   };
 
   return (
@@ -106,7 +108,7 @@ export function LeadsTable({ leads, selectedLeads, onSelectLead, onSelectAllLead
                 <TableRow 
                   key={lead.id} 
                   className="hover:bg-muted/50 cursor-pointer border-b border-border last:border-b-0"
-                  onClick={() => handleRowClick(lead.id)}
+                  onClick={() => handleNavigateToDetail(lead.id)}
                 >
                   <TableCell className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                     <Checkbox
@@ -126,7 +128,7 @@ export function LeadsTable({ leads, selectedLeads, onSelectLead, onSelectAllLead
                           <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
                             <Progress
                               value={lead.aiScore}
-                              className="h-full w-full" // Ensure progress bar fills its container
+                              className="h-full w-full" 
                               indicatorClassName={cn(getAIScoreColorClasses(lead.aiScore))}
                             />
                           </div>
@@ -165,7 +167,7 @@ export function LeadsTable({ leads, selectedLeads, onSelectLead, onSelectAllLead
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem onClick={(e) => handleAction(e, `View Details for ${lead.name}`)}>
+                        <DropdownMenuItem onClick={(e) => handleAction(e, `View Details for ${lead.name}`, lead.id)}>
                           <Eye className="mr-2 h-4 w-4" /> View Details
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
