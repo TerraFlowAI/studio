@@ -524,7 +524,7 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem"
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-primary data-[active=true]:font-medium data-[active=true]:text-sidebar-primary-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -548,9 +548,6 @@ const sidebarMenuButtonVariants = cva(
 type SidebarMenuButtonProps = (React.ComponentPropsWithoutRef<"button"> | React.ComponentPropsWithoutRef<"a">) & {
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-  // Note: `asChild` is implicitly handled by the union type and spread props.
-  // Explicitly defining `asChild` here can sometimes cause type conflicts or confusion
-  // with how `Link` passes its own `asChild`.
 } & VariantProps<typeof sidebarMenuButtonVariants>;
 
 
@@ -567,19 +564,19 @@ const SidebarMenuButton = React.forwardRef<
       tooltip,
       children,
       href,
-      type, // `type` is relevant for button, not for anchor
-      ...otherProps // `asChild` from Link will be in `otherProps` if Link is parent
+      type,
+      ...otherProps 
     } = props;
 
     const { isMobile, state } = useSidebar();
 
-    // Base props for the core element (<a> or <button>)
-    // We explicitly filter out `asChild` here if it exists in `otherProps`
-    // to prevent it from reaching the final DOM element if it's not a Slot.
-    const { asChild, ...safeOtherProps } = otherProps as any;
+    // Explicitly remove asChild from otherProps if it exists, as it's from the parent Link
+    const { asChild: parentAsChild, ...restOfOtherProps } = otherProps as any;
 
-    const coreElementProps: Record<string, any> = {
-      ...safeOtherProps,
+    const Comp = href ? 'a' : 'button';
+
+    const elementProps: Record<string, any> = {
+      ...restOfOtherProps, // Use restOfOtherProps which does NOT have parentAsChild
       ref: ref,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       'data-sidebar': "menu-button",
@@ -587,20 +584,13 @@ const SidebarMenuButton = React.forwardRef<
       'data-active': isActive,
     };
 
-    const renderCoreElement = () => {
-      if (href) {
-        // If href is present, it's an anchor.
-        // `href` from props is used.
-        // `type` prop is not applicable to `<a>`.
-        return <a href={href} {...coreElementProps}>{children}</a>;
-      } else {
-        // Otherwise, it's a button.
-        // `type` prop is set, defaulting to "button".
-        return <button type={type || 'button'} {...coreElementProps}>{children}</button>;
-      }
-    };
-
-    const coreInteractiveElement = renderCoreElement();
+    if (href) {
+      elementProps.href = href;
+    } else {
+      elementProps.type = type || 'button';
+    }
+    
+    const coreInteractiveElement = <Comp {...elementProps}>{children}</Comp>;
 
     if (!tooltip) {
       return coreInteractiveElement;
@@ -611,12 +601,6 @@ const SidebarMenuButton = React.forwardRef<
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          {/*
-            TooltipTrigger's asChild allows coreInteractiveElement (<a> or <button>)
-            to receive TooltipTrigger's accessibility props and event handlers.
-            Radix's Slot (used by asChild) should correctly spread props to DOM elements
-            without passing down the `asChild` prop itself to the DOM element.
-          */}
           {coreInteractiveElement}
         </TooltipTrigger>
         <TooltipContent
