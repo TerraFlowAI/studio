@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -538,47 +537,51 @@ const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
   SidebarMenuButtonProps
 >(
-  (props, ref) => {
+  (rawProps, ref) => {
     const {
-      className,
+      className: btnClassName,
       variant,
       size,
       isActive = false,
       tooltip,
-      children, // These are the icon and span for the button/link content
-      // href, type, and asChild might be passed in `otherProps` if coming from Link
-      ...otherProps
-    } = props;
+      children,
+      // Destructure asChild, href, and type from the rawProps.
+      // All other props (like onClick from Link) will be in ...otherDomProps.
+      asChild: incomingAsChild,
+      href: incomingHref,
+      type: incomingType,
+      ...otherDomProps
+    } = rawProps as SidebarMenuButtonProps & { asChild?: boolean, href?: string, type?: string }; // Cast to include asChild, href, type for destructuring
 
     const { isMobile, state } = useSidebar();
 
-    // Determine the component type: 'a' if an href is present, otherwise 'button'.
-    const isLink = !!(props.href || (otherProps as any).href);
+    const isLink = !!incomingHref;
     const Comp = isLink ? 'a' : 'button';
 
-    // Prepare the props for the actual DOM element (a or button)
-    const elementProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
-      ...otherProps, // Spread all other props first (includes props from Link like onClick, and its asChild)
+    // Start with props that are safe for the DOM element (asChild, href, type already destructured out).
+    const finalDomProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
+      ...otherDomProps,
       ref: ref,
-      className: cn(sidebarMenuButtonVariants({ variant, size, className })),
+      className: cn(sidebarMenuButtonVariants({ variant, size, className: btnClassName })),
       'data-sidebar': "menu-button",
       'data-size': size,
       'data-active': isActive,
     };
 
     if (isLink) {
-      elementProps.href = props.href || (otherProps as any).href;
-      delete elementProps.type; // Links don't have a 'type' attribute in the same way buttons do
+      finalDomProps.href = incomingHref;
+      // 'type' should not be on 'a' tags, delete if it exists in otherDomProps
+      if (finalDomProps.type) delete finalDomProps.type;
     } else {
-      elementProps.type = (props as React.ButtonHTMLAttributes<HTMLButtonElement>).type || (otherProps as any).type || 'button'; // Default to 'button' type for buttons
-      delete elementProps.href; // Buttons don't have 'href'
+      finalDomProps.type = incomingType || 'button';
+      // 'href' should not be on 'button' tags, delete if it exists in otherDomProps
+      if (finalDomProps.href) delete finalDomProps.href;
     }
     
-    // Critically, remove `asChild` from elementProps so it's not passed to the DOM element.
-    // This `asChild` could have come from `otherProps` (e.g., from a parent Link).
-    delete elementProps.asChild;
+    // 'incomingAsChild' has captured the asChild prop. It is not included in finalDomProps.
+    // No need to 'delete finalDomProps.asChild' because it was destructured out.
 
-    const actualInteractiveElement = React.createElement(Comp, elementProps, children);
+    const actualInteractiveElement = React.createElement(Comp, finalDomProps, children);
 
     if (!tooltip) {
       return actualInteractiveElement;
