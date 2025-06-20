@@ -1,5 +1,7 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils"; // Import cn utility
 
 interface KpiCardProps {
   title: string;
@@ -11,6 +13,9 @@ interface KpiCardProps {
 }
 
 export function KpiCard({ title, value, icon: Icon, trend, trendDirection, description }: KpiCardProps) {
+  
+  const trendColorClass = trendDirection === "up" ? "text-green-600" : "text-red-600";
+
   return (
     <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -20,7 +25,7 @@ export function KpiCard({ title, value, icon: Icon, trend, trendDirection, descr
       <CardContent>
         <div className="text-3xl font-bold text-foreground">{value}</div>
         {trend && (
-          <p className={`text-xs mt-1 ${trendDirection === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+          <p className={cn("text-xs mt-1", trendColorClass)}>
             {trend}
           </p>
         )}
@@ -29,3 +34,5 @@ export function KpiCard({ title, value, icon: Icon, trend, trendDirection, descr
     </Card>
   );
 }
+
+    
