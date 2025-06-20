@@ -72,7 +72,9 @@ export default function ScribeStudioPage() {
                     )}
                     onClick={() => setSelectedGenerator(item.id)}
                   >
-                    <item.icon className={cn("h-5 w-5 mr-3 shrink-0", selectedGenerator === item.id ? "text-primary-foreground" : "text-primary/80")} />
+                    <item.icon className={cn("h-5 w-5 mr-3 shrink-0", 
+                        selectedGenerator === item.id ? "text-primary-foreground" : "text-primary/80"
+                    )} />
                     <span className="flex-grow">{item.label}</span>
                     {item.isPro && (
                       <span className="ml-auto text-xs font-semibold bg-yellow-400/20 text-yellow-600 dark:text-yellow-300 px-1.5 py-0.5 rounded-sm">

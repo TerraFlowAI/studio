@@ -21,8 +21,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { useToast } from "@/hooks/use-toast";
 import { generatePropertyDescription, GeneratePropertyDescriptionInput, GeneratePropertyDescriptionOutput } from "@/ai/flows/generate-property-description";
 import { useState } from "react";
-import { Loader2, Wand2, Sparkles, RefreshCcw, Edit3, Check, Copy, Save } from "lucide-react";
-import Link from "next/link";
+import { Loader2, Wand2, Sparkles, RefreshCcw, Edit3, Check, Copy, Save, DatabaseZap } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area"; // Added ScrollArea
+
 
 const propertyFormSchema = z.object({
   propertyType: z.string().min(1, "Property type is required."),
@@ -35,10 +36,17 @@ const propertyFormSchema = z.object({
   style: z.string().min(1, "Writing style is required."),
 });
 
-// Re-using constants similar to the standalone TerraScribePage for consistency
 const propertyTypes = ["House", "Apartment", "Condo", "Townhouse", "Villa", "Land", "Penthouse", "Studio"];
-const writingStyles = ["Professional", "Casual", "Luxury", "Friendly", "Technical", "Enthusiastic", "Concise"];
-const targetAudiences = ["Young Professionals", "Families with Children", "Retirees/Downsizers", "Investors", "First-time Home Buyers", "Luxury Buyers", "Students"];
+const writingStyles = ["Professional", "Casual", "Luxury", "Friendly", "Technical", "Enthusiastic", "Concise", "Persuasive", "Storytelling", "Minimalist"];
+const targetAudiences = ["Young Professionals", "Families with Children", "Retirees/Downsizers", "Investors", "First-time Home Buyers", "Luxury Buyers", "Students", "Tech Employees", "Artists/Creatives"];
+
+const refinementActions = [
+  { label: "More Professional", style: "Professional" },
+  { label: "More Luxurious", style: "Luxury" },
+  { label: "More Casual", style: "Casual" },
+  { label: "More Enthusiastic", style: "Enthusiastic" },
+  { label: "More Concise", style: "Concise" },
+];
 
 export function PropertyDescriptionGenerator() {
   const { toast } = useToast();
@@ -61,7 +69,8 @@ export function PropertyDescriptionGenerator() {
 
   async function onSubmit(values: z.infer<typeof propertyFormSchema>) {
     setIsLoading(true);
-    setGeneratedContent(null);
+    // Keep previous generated content for a smoother UX during refinement unless it's a brand new generation
+    // setGeneratedContent(null); 
     try {
       const input: GeneratePropertyDescriptionInput = values;
       const result = await generatePropertyDescription(input);
@@ -82,6 +91,12 @@ export function PropertyDescriptionGenerator() {
     }
   }
 
+  const handleRefine = (newStyle: string) => {
+    form.setValue("style", newStyle);
+    // Programmatically trigger form submission with the new style
+    form.handleSubmit(onSubmit)(); 
+  };
+
   const handleCopy = (textToCopy: string, type: string) => {
     navigator.clipboard.writeText(textToCopy);
     toast({ title: `${type} Copied!`, description: "Content copied to clipboard." });
@@ -93,11 +108,14 @@ export function PropertyDescriptionGenerator() {
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="font-headline text-xl flex items-center"><Edit3 className="mr-2 h-5 w-5 text-primary" /> 1. Input Key Details</CardTitle>
-          <CardDescription>
-            <Link href="#" className="text-sm text-primary hover:underline" onClick={() => alert("Search property modal placeholder")}>
-              Or, select an existing property...
-            </Link>
-          </CardDescription>
+           <Button 
+              variant="link" 
+              className="p-0 h-auto text-sm text-primary hover:underline justify-start -mt-1" 
+              onClick={() => alert("Feature: Load property data from existing listing (Coming Soon!)")}
+              title="Coming Soon: Load data from an existing property"
+            >
+              <DatabaseZap className="mr-1.5 h-4 w-4" /> Or, load from existing property...
+            </Button>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -166,7 +184,7 @@ export function PropertyDescriptionGenerator() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Writing Style</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Select style" /></SelectTrigger></FormControl>
                         <SelectContent><ScrollArea className="h-48">{writingStyles.map(style => <SelectItem key={style} value={style}>{style}</SelectItem>)}</ScrollArea></SelectContent>
                       </Select>
@@ -176,8 +194,8 @@ export function PropertyDescriptionGenerator() {
                 />
               </div>
               <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground !mt-6" disabled={isLoading}>
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                {isLoading ? "Generating..." : "Generate Description"}
+                {isLoading && generatedContent ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                {isLoading && generatedContent ? "Refining..." : isLoading ? "Generating..." : "Generate Description"}
               </Button>
             </form>
           </Form>
@@ -190,13 +208,13 @@ export function PropertyDescriptionGenerator() {
           <CardTitle className="font-headline text-xl flex items-center"><Wand2 className="mr-2 h-5 w-5 text-primary" /> 2. Refine & Use</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {isLoading && (
+          {isLoading && !generatedContent && ( // Only show this loader on initial generation
             <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
               <Loader2 className="h-10 w-10 animate-spin text-primary mb-3" />
               <p>Crafting your perfect listing...</p>
             </div>
           )}
-          {!isLoading && !generatedContent && (
+          {!generatedContent && !isLoading && (
             <div className="flex flex-col items-center justify-center h-64 text-muted-foreground border-2 border-dashed rounded-lg p-4">
               <Sparkles className="h-12 w-12 text-primary/30 mb-3" />
               <p className="text-center">Your AI-generated headline and description will appear here once you provide the details and click generate.</p>
@@ -208,7 +226,7 @@ export function PropertyDescriptionGenerator() {
                 <FormLabel className="text-base">AI-Generated Headline</FormLabel>
                 <div className="flex items-center gap-2 mt-1">
                   <Textarea value={generatedContent.headline} readOnly rows={2} className="bg-muted/30 text-lg font-semibold"/>
-                  <Button variant="ghost" size="icon" onClick={() => alert("Regenerate Headline Clicked")} title="Regenerate Headline"><RefreshCcw className="h-4 w-4 text-primary"/></Button>
+                  <Button variant="ghost" size="icon" onClick={() => form.handleSubmit(onSubmit)()} title="Regenerate Headline" disabled={isLoading}><RefreshCcw className="h-4 w-4 text-primary"/></Button>
                   <Button variant="ghost" size="icon" onClick={() => handleCopy(generatedContent.headline, "Headline")} title="Copy Headline"><Copy className="h-4 w-4 text-primary"/></Button>
                 </div>
               </div>
@@ -217,10 +235,18 @@ export function PropertyDescriptionGenerator() {
                 <Textarea value={generatedContent.description} readOnly rows={10} className="bg-muted/30 mt-1 h-64"/>
               </div>
               <div className="space-y-2 pt-2">
-                <p className="text-sm font-medium text-muted-foreground">Refinements:</p>
+                <p className="text-sm font-medium text-muted-foreground">Quick Refinements (changes writing style & regenerates):</p>
                 <div className="flex flex-wrap gap-2">
-                  {["Make it more Professional", "Make it more Luxurious", "Shorten", "Add Bullet Points"].map(action => (
-                    <Button key={action} variant="outline" size="sm" onClick={() => alert(`${action} clicked`)}>{action}</Button>
+                  {refinementActions.map(action => (
+                    <Button 
+                      key={action.label} 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => handleRefine(action.style)}
+                      disabled={isLoading || form.getValues("style") === action.style}
+                    >
+                      {action.label}
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -232,7 +258,7 @@ export function PropertyDescriptionGenerator() {
             <Button variant="outline" className="w-full sm:w-auto" onClick={() => handleCopy(`Headline: ${generatedContent.headline}\n\nDescription: ${generatedContent.description}`, "Full Content")}>
               <Copy className="mr-2 h-4 w-4"/> Copy All
             </Button>
-            <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => alert("Save to Property Clicked")}>
+            <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => alert("Save to Property Clicked (Placeholder)")}>
               <Save className="mr-2 h-4 w-4"/> Save to Property
             </Button>
           </CardFooter>
