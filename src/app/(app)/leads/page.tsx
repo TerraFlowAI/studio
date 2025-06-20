@@ -10,9 +10,9 @@ import { BulkActionsToolbar } from "@/components/leads/BulkActionsToolbar";
 import { AddLeadSheet } from "@/components/leads/AddLeadSheet";
 import { PlusCircle, Upload, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { LEAD_SOURCES, LEAD_STATUSES } from "@/lib/constants";
-import type { LeadStatusId, LeadSourceId } from "@/lib/constants";
-import { Card } from "@/components/ui/card"; // Added import for Card
+import { LEAD_STATUSES, LEAD_SOURCES } from "@/lib/constants"; // AI_SMART_VIEWS is used in LeadFiltersToolbar
+import type { LeadStatusId, LeadSourceId, AiSmartViewId } from "@/lib/constants";
+import { Card, CardContent } from "@/components/ui/card";
 
 const initialMockLeads: Lead[] = [
   {
@@ -110,18 +110,17 @@ export default function LeadsPage() {
     status: [],
     source: [],
     dateRange: { from: undefined, to: undefined },
-    smartView: 'all',
+    smartView: 'all', // Default to 'All Leads'
   });
   const [selectedLeads, setSelectedLeads] = React.useState<Set<string>>(new Set());
   const [isAddLeadSheetOpen, setIsAddLeadSheetOpen] = React.useState(false);
 
-  // Pagination state (basic)
   const [currentPage, setCurrentPage] = React.useState(1);
   const leadsPerPage = 10;
 
   const handleFiltersChange = (newFilters: Filters) => {
     setFilters(newFilters);
-    setCurrentPage(1); // Reset to first page on filter change
+    setCurrentPage(1); 
   };
 
   const handleSelectLead = (leadId: string, isSelected: boolean) => {
@@ -151,34 +150,34 @@ export default function LeadsPage() {
   const handleAddLead = (newLeadData: Omit<Lead, 'id' | 'aiScore' | 'aiScoreFactors' | 'dateAdded'>) => {
     const newLead: Lead = {
       ...newLeadData,
-      id: (leads.length + 1).toString(),
-      aiScore: Math.floor(Math.random() * 60) + 40, // Random score for demo
+      id: (leads.length + 1 + Math.random()).toString(), // Ensure unique ID
+      aiScore: Math.floor(Math.random() * 60) + 40, 
       aiScoreFactors: "Manually added (+5), Source: " + newLeadData.source,
-      dateAdded: new Date().toISOString().split('T')[0], // Today's date
+      dateAdded: new Date().toISOString().split('T')[0],
     };
-    setLeads(prev => [newLead, ...prev]); // Add to top for visibility
+    setLeads(prev => [newLead, ...prev]);
   };
 
 
   const filteredLeads = React.useMemo(() => {
     let tempLeads = [...leads];
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
     // Apply Smart View filters first
     if (filters.smartView === 'hot') {
       tempLeads = tempLeads.filter(lead => lead.aiScore > 80);
     } else if (filters.smartView === 'new') {
-      tempLeads = tempLeads.filter(lead => lead.status === 'New');
+      tempLeads = tempLeads.filter(lead => lead.status.toLowerCase() === 'new');
     } else if (filters.smartView === 'needs_attention') {
-      // Placeholder logic for "Needs Attention" - e.g., contacted more than 7 days ago and not qualified/unqualified
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       tempLeads = tempLeads.filter(lead => {
-        const leadDate = new Date(lead.dateAdded); // Assuming 'Contacted' status would update a 'lastContactedDate'
-        return lead.status === 'Contacted' && leadDate < sevenDaysAgo && !['Qualified', 'Unqualified'].includes(lead.status);
+        const leadDate = new Date(lead.dateAdded);
+        const isOldContacted = lead.status.toLowerCase() === 'contacted' && leadDate < sevenDaysAgo;
+        const isLowEngagement = lead.aiScore < 50 && !['qualified', 'unqualified', 'new'].includes(lead.status.toLowerCase()); // Example: low score and not new/closed
+        return isOldContacted || isLowEngagement;
       });
     }
     
-    // Apply search term
     if (filters.searchTerm) {
       const lowerSearchTerm = filters.searchTerm.toLowerCase();
       tempLeads = tempLeads.filter(lead =>
@@ -189,17 +188,14 @@ export default function LeadsPage() {
       );
     }
 
-    // Apply status filters
     if (filters.status.length > 0) {
-      tempLeads = tempLeads.filter(lead => filters.status.includes(lead.status as LeadStatusId));
+      tempLeads = tempLeads.filter(lead => filters.status.includes(lead.status.toLowerCase().replace(/\s+/g, '_') as LeadStatusId));
     }
 
-    // Apply source filters
     if (filters.source.length > 0) {
-      tempLeads = tempLeads.filter(lead => filters.source.includes(lead.source.replace(/\s+/g, '_').toLowerCase() as LeadSourceId));
+      tempLeads = tempLeads.filter(lead => filters.source.includes(lead.source.toLowerCase().replace(/\s+/g, '_') as LeadSourceId));
     }
     
-    // Apply date range filters
     if (filters.dateRange?.from) {
       tempLeads = tempLeads.filter(lead => new Date(lead.dateAdded) >= new Date(filters.dateRange.from as Date));
     }
@@ -210,18 +206,17 @@ export default function LeadsPage() {
     return tempLeads;
   }, [leads, filters]);
 
-  // Pagination logic
   const indexOfLastLead = currentPage * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
   const totalPages = Math.ceil(filteredLeads.length / leadsPerPage);
 
   return (
-    <div className="container mx-auto bg-[#F8F9FA] min-h-screen p-0 md:p-0 lg:p-0"> {/* Ensure full width and light gray background */}
-      <div className="p-4 md:p-6 lg:p-8"> {/* Add padding back for content within the page */}
+    <div className="bg-background min-h-screen w-full"> {/* Ensure page takes full width and uses theme background */}
+      <div className="p-0"> {/* Removed outer padding, page content will define its own */}
         <PageHeader title="Leads">
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => alert("Import Leads clicked!")}>
+            <Button variant="outline" onClick={() => alert("Import Leads: This feature is coming soon!")}>
               <Upload className="mr-2 h-4 w-4" /> Import Leads
             </Button>
             <Button variant="outline" onClick={() => router.push('/smartflow?filter=lead_automations')}>
@@ -242,14 +237,16 @@ export default function LeadsPage() {
           />
         )}
 
-        <Card className="mt-6 shadow-sm border border-[#E5E7EB]">
-          <LeadsTable
-            leads={currentLeads}
-            selectedLeads={selectedLeads}
-            onSelectLead={handleSelectLead}
-            onSelectAllLeads={(isSelected) => handleSelectAllLeads(isSelected, currentLeads)}
-            isAllSelectedInCurrentPage={currentLeads.length > 0 && currentLeads.every(lead => selectedLeads.has(lead.id))}
-          />
+        <Card className="mt-6 shadow-sm border bg-card"> {/* Card uses theme card background (white by default) and theme border */}
+          <CardContent className="p-0"> {/* Remove card content padding if table handles it */}
+            <LeadsTable
+              leads={currentLeads}
+              selectedLeads={selectedLeads}
+              onSelectLead={handleSelectLead}
+              onSelectAllLeads={(isSelected) => handleSelectAllLeads(isSelected, currentLeads)}
+              isAllSelectedInCurrentPage={currentLeads.length > 0 && currentLeads.every(lead => selectedLeads.has(lead.id))}
+            />
+          </CardContent>
         </Card>
 
         {totalPages > 1 && (
