@@ -93,7 +93,7 @@ export default function LeadDetailPage() {
         </div>
 
         {/* Right Column (Profile & Intel Cards) */}
-        <div className="lg:col-span-1 space-y-4">
+        <div className="lg:col-span-1 space-y-3">
           <AiInsightsCard
             leadScore={lead.aiScore}
             scoreSummary={`This is a **Hot Lead** based on high engagement and budget match.`}
