@@ -565,18 +565,15 @@ const SidebarMenuButton = React.forwardRef<
       tooltip,
       children,
       href, 
-      asChild: ownAsChild, 
+      asChild: propAsChild, 
       type,
       ...otherProps 
     } = props;
 
     const { isMobile, state } = useSidebar();
     
-    // Explicitly destructure and remove `asChild` if it came from `otherProps` (e.g., from Link asChild)
-    const { asChild: parentAsChild, ...remainingOtherProps } = otherProps;
-
     const elementProps: Record<string, any> = {
-      ...remainingOtherProps, // Use the remaining props
+      ...otherProps, 
       ref: ref,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       'data-sidebar': "menu-button",
@@ -590,7 +587,7 @@ const SidebarMenuButton = React.forwardRef<
       Comp = 'a';
       elementProps.href = href;
       if (elementProps.type) delete elementProps.type; 
-    } else if (ownAsChild) { 
+    } else if (propAsChild) { 
       Comp = Slot;
       if (elementProps.type) delete elementProps.type;
     } else { 
@@ -612,7 +609,9 @@ const SidebarMenuButton = React.forwardRef<
 
     return (
       <Tooltip>
-        <TooltipTrigger asChild>{buttonElement}</TooltipTrigger>
+        <TooltipTrigger>
+          {buttonElement}
+        </TooltipTrigger>
         <TooltipContent
           side="right"
           align="center"
@@ -792,4 +791,3 @@ export {
   SidebarTrigger,
   useSidebar,
 }
-
