@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -90,4 +91,72 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline; /* Poppins for headlines */
   }
+}
+
+@layer utilities {
+  .text-shimmer {
+    @apply bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 bg-no-repeat;
+    background-size: 150% auto; /* Smaller size for a tighter shimmer */
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+    text-fill-color: transparent;
+    @apply animate-text-shimmer;
+  }
+
+  .shimmering-border {
+    position: relative;
+    overflow: hidden; /* Important for containing the pseudo-element */
+  }
+  .shimmering-border::before {
+    content: '';
+    position: absolute;
+    top: -150%; 
+    left: -150%;
+    width: 400%; 
+    height: 400%;
+    background: conic-gradient(transparent, theme('colors.teal.500/40'), theme('colors.blue.500/30'), theme('colors.purple.500/40'), transparent 40%);
+    @apply animate-shimmer; 
+    z-index: 1; /* Behind direct children content */
+  }
+   .shimmering-border > * { /* Ensure direct children are above the shimmer */
+    position: relative;
+    z-index: 2;
+  }
+
+  .moving-dashboard-border {
+    position: relative; /* Needed for pseudo-element positioning */
+    border: 2px solid transparent; /* Placeholder for border */
+  }
+  .moving-dashboard-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit; /* Match parent's border-radius */
+    padding: 2px; /* Border width */
+    background: linear-gradient(90deg, theme('colors.teal.500'), theme('colors.blue.500'), theme('colors.purple.500'), theme('colors.teal.500'));
+    background-size: 200% 100%;
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    @apply animate-moving-dashboard-border;
+    pointer-events: none; /* So it doesn't interfere with interactions */
+  }
+
+  .animation-delay-200 { animation-delay: 0.2s; }
+  .animation-delay-600 { animation-delay: 0.6s; }
+  .animation-delay-700 { animation-delay: 0.7s; }
+  .animation-delay-800 { animation-delay: 0.8s; }
+  .animation-delay-1000 { animation-delay: 1s; }
+  .animation-delay-1200 { animation-delay: 1.2s; }
+  .animation-delay-1500 { animation-delay: 1.5s; }
+  .animation-delay-2000 { animation-delay: 2s; }
+  .animation-delay-2500 { animation-delay: 2.5s; }
 }
