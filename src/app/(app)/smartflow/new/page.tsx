@@ -8,13 +8,21 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea"; // Added this import
+import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, Save, Play, Settings2, PlusCircle, Zap, Mail, CalendarCheck, Database, Filter, GitFork, Clock, MessageSquare, Users, BarChart3, Briefcase, PenSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast"; // Import useToast
 
 // Placeholder components for the builder UI
-const WorkflowBuilderHeader: React.FC<{ workflowName: string; onWorkflowNameChange: (name: string) => void; isWorkflowActive: boolean; onWorkflowToggle: (active: boolean) => void; }> = 
-  ({ workflowName, onWorkflowNameChange, isWorkflowActive, onWorkflowToggle }) => (
+const WorkflowBuilderHeader: React.FC<{ 
+  workflowName: string; 
+  onWorkflowNameChange: (name: string) => void; 
+  isWorkflowActive: boolean; 
+  onWorkflowToggle: (active: boolean) => void;
+  onTestWorkflow: () => void;
+  onSaveWorkflow: () => void;
+}> = 
+  ({ workflowName, onWorkflowNameChange, isWorkflowActive, onWorkflowToggle, onTestWorkflow, onSaveWorkflow }) => (
   <div className="flex items-center justify-between p-3 border-b bg-card sticky top-0 z-10 h-16">
     <div className="flex items-center gap-2">
       <Button variant="ghost" size="icon" asChild>
@@ -31,9 +39,9 @@ const WorkflowBuilderHeader: React.FC<{ workflowName: string; onWorkflowNameChan
       />
     </div>
     <div className="flex items-center gap-2">
-      <Button variant="outline" size="sm"><Play className="mr-2 h-4 w-4" /> Test</Button>
-      <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground"><Save className="mr-2 h-4 w-4" /> Save</Button>
-      <Switch checked={isWorkflowActive} onCheckedChange={onWorkflowToggle} aria-label="Activate Workflow" />
+      <Button variant="outline" size="sm" onClick={onTestWorkflow}><Play className="mr-2 h-4 w-4" /> Test</Button>
+      <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={onSaveWorkflow}><Save className="mr-2 h-4 w-4" /> Save</Button>
+      <Switch checked={isWorkflowActive} onCheckedChange={onWorkflowToggle} aria-label="Activate Workflow" id="workflow-active-toggle"/>
     </div>
   </div>
 );
@@ -58,7 +66,10 @@ const NodePalette: React.FC = () => {
   ];
 
   const NodeItem: React.FC<{name: string, icon: React.ElementType, app: string}> = ({ name, icon: Icon, app }) => (
-    <div className="p-2.5 border border-border rounded-md hover:bg-accent hover:shadow-md cursor-grab transition-all bg-card">
+    <div 
+      className="p-2.5 border border-border rounded-md hover:bg-accent hover:shadow-md cursor-grab transition-all bg-card"
+      onClick={() => alert(`Node selected (placeholder): ${name}`)} // Placeholder action
+    >
       <div className="flex items-center gap-2">
         <Icon className="h-5 w-5 text-primary" />
         <span className="text-sm font-medium text-foreground">{name}</span>
@@ -108,7 +119,7 @@ const WorkflowCanvasPlaceholder: React.FC = () => (
     <div className="relative z-10 flex flex-col items-center justify-center h-full text-muted-foreground">
       <div className="space-y-8 flex flex-col items-center">
         {/* Trigger Node */}
-        <div className="flex items-center p-4 bg-card border border-primary rounded-lg shadow-lg w-64">
+        <div className="flex items-center p-4 bg-card border border-primary rounded-lg shadow-lg w-64 cursor-pointer hover:shadow-xl" onClick={() => alert("Configure Trigger Node (placeholder)")}>
           <Zap className="h-6 w-6 text-primary mr-3" />
           <div>
             <p className="font-semibold text-foreground">New Lead Created</p>
@@ -119,7 +130,7 @@ const WorkflowCanvasPlaceholder: React.FC = () => (
         <div className="h-10 w-px bg-border"></div> {/* Connector line */}
         
         {/* Action Node */}
-        <div className="flex items-center p-4 bg-card border border-border rounded-lg shadow-md w-64">
+        <div className="flex items-center p-4 bg-card border border-border rounded-lg shadow-md w-64 cursor-pointer hover:shadow-xl" onClick={() => alert("Configure Action Node (placeholder)")}>
           <Mail className="h-6 w-6 text-blue-500 mr-3" />
           <div>
             <p className="font-semibold text-foreground">Send Welcome Email</p>
@@ -130,7 +141,7 @@ const WorkflowCanvasPlaceholder: React.FC = () => (
          <div className="h-10 w-px bg-border"></div> {/* Connector line */}
 
         {/* Condition/Filter Node (example) */}
-        <div className="flex items-center p-4 bg-card border border-border rounded-lg shadow-md w-64">
+        <div className="flex items-center p-4 bg-card border border-border rounded-lg shadow-md w-64 cursor-pointer hover:shadow-xl" onClick={() => alert("Configure Filter Node (placeholder)")}>
           <Filter className="h-6 w-6 text-orange-500 mr-3" />
           <div>
             <p className="font-semibold text-foreground">Filter: Hot Lead?</p>
@@ -138,13 +149,13 @@ const WorkflowCanvasPlaceholder: React.FC = () => (
           </div>
         </div>
       </div>
-       <p className="mt-12 text-center text-sm">Drag nodes from the left panel to build your workflow. <br />Click a node to configure it.</p>
+       <p className="mt-12 text-center text-sm">Drag nodes from the left panel to build your workflow. <br />Click a node to configure it. (Drag & Drop Coming Soon)</p>
     </div>
   </div>
 );
 
 
-const NodeConfigurationPanelPlaceholder: React.FC<{ selectedNodeName?: string }> = ({ selectedNodeName }) => (
+const NodeConfigurationPanelPlaceholder: React.FC<{ selectedNodeName?: string; onSaveNodeSettings: () => void; }> = ({ selectedNodeName, onSaveNodeSettings }) => (
   <Card className="w-72 lg:w-80 h-full flex flex-col shadow-md border-l">
     <CardHeader className="pb-2 pt-3 px-3 border-b">
       <CardTitle className="text-base font-semibold text-primary">
@@ -165,12 +176,12 @@ const NodeConfigurationPanelPlaceholder: React.FC<{ selectedNodeName?: string }>
             {/* Example: if selectedNodeName === 'Send Email' */}
             {selectedNodeName === 'Send Email' && (
               <div className="space-y-3">
-                <div><label className="text-xs font-medium">To:</label><Input defaultValue="{{lead.email}}" /></div>
-                <div><label className="text-xs font-medium">Subject:</label><Input defaultValue="Welcome to TerraFlow!" /></div>
-                <div><label className="text-xs font-medium">Body:</label><Textarea rows={5} defaultValue="Hi {{lead.name}},\n\nWelcome aboard..." /></div>
+                <div><label htmlFor="email-to" className="text-xs font-medium">To:</label><Input id="email-to" defaultValue="{{lead.email}}" /></div>
+                <div><label htmlFor="email-subject" className="text-xs font-medium">Subject:</label><Input id="email-subject" defaultValue="Welcome to TerraFlow!" /></div>
+                <div><label htmlFor="email-body" className="text-xs font-medium">Body:</label><Textarea id="email-body" rows={5} defaultValue="Hi {{lead.name}},\n\nWelcome aboard..." /></div>
               </div>
             )}
-            <Button variant="outline" className="w-full">Save Node Settings</Button>
+            <Button variant="outline" className="w-full" onClick={onSaveNodeSettings}>Save Node Settings</Button>
           </div>
         )}
       </CardContent>
@@ -182,9 +193,37 @@ const NodeConfigurationPanelPlaceholder: React.FC<{ selectedNodeName?: string }>
 export default function NewWorkflowPage() {
   const [workflowName, setWorkflowName] = React.useState("My New Automation");
   const [isWorkflowActive, setIsWorkflowActive] = React.useState(false);
-  const [selectedNodeForConfig, setSelectedNodeForConfig] = React.useState<string | undefined>(undefined); // Example state
+  const [selectedNodeForConfig, setSelectedNodeForConfig] = React.useState<string | undefined>(undefined); 
+  const { toast } = useToast();
 
-  // In a real app, clicking a node on canvas would set selectedNodeForConfig
+
+  const handleTestWorkflow = () => {
+    toast({ title: "Test Workflow", description: "Testing workflow... (Placeholder functionality)" });
+  };
+
+  const handleSaveWorkflow = () => {
+    toast({ title: "Workflow Saved", description: `Workflow "${workflowName}" has been saved. (Placeholder functionality)` });
+  };
+  
+  const handleWorkflowToggle = (active: boolean) => {
+    setIsWorkflowActive(active);
+    toast({ title: `Workflow ${active ? 'Activated' : 'Deactivated'}`, description: `"${workflowName}" is now ${active ? 'active' : 'inactive'}.` });
+  };
+  
+  const handleSaveNodeSettings = () => {
+    toast({ title: "Node Settings Saved", description: `Configuration for "${selectedNodeForConfig}" saved. (Placeholder)`});
+  };
+
+  // Simulate selecting a node by clicking on a placeholder node (for demo of panel)
+  // In a real app, this would be set by interacting with the canvas library
+  React.useEffect(() => {
+      // Example: Simulate selecting "Send Email" node after a short delay
+      const timer = setTimeout(() => {
+          setSelectedNodeForConfig("Send Email");
+      }, 1000);
+      return () => clearTimeout(timer);
+  }, []);
+
 
   return (
     <div className="flex flex-col h-screen bg-muted overflow-hidden">
@@ -192,14 +231,20 @@ export default function NewWorkflowPage() {
         workflowName={workflowName} 
         onWorkflowNameChange={setWorkflowName}
         isWorkflowActive={isWorkflowActive}
-        onWorkflowToggle={setIsWorkflowActive}
+        onWorkflowToggle={handleWorkflowToggle}
+        onTestWorkflow={handleTestWorkflow}
+        onSaveWorkflow={handleSaveWorkflow}
       />
       <div className="flex flex-1 overflow-hidden">
         <NodePalette />
-        <WorkflowCanvasPlaceholder />
-        <NodeConfigurationPanelPlaceholder selectedNodeName={selectedNodeForConfig || "Send Email"} /> 
-        {/* Passing a default to show some config example */}
+        <WorkflowCanvasPlaceholder /> {/* In a real app, this would have onClick handlers to set selectedNodeForConfig */}
+        <NodeConfigurationPanelPlaceholder 
+            selectedNodeName={selectedNodeForConfig}
+            onSaveNodeSettings={handleSaveNodeSettings}
+        /> 
       </div>
     </div>
   );
 }
+
+    
