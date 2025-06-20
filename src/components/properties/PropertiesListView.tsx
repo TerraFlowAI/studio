@@ -10,7 +10,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreVertical, Eye, Edit3, CheckCircle, Archive, Tv, Users, SquarePen } from "lucide-react";
 import Image from "next/image";
 import type { Property } from "@/types/property";
-import Link from "next/link";
+import Link from "next/link"; // Keep Link for explicit title link
+import { useRouter } from "next/navigation"; // Import useRouter
 import { cn } from "@/lib/utils";
 import { PROPERTY_STATUSES_CONFIG } from "@/lib/constants";
 
@@ -30,13 +31,22 @@ export function PropertiesListView({
   isAllSelectedInCurrentPage 
 }: PropertiesListViewProps) {
   
+  const router = useRouter(); // Initialize router
+
+  const handleRowClick = (propertyId: string) => {
+    router.push(`/properties/${propertyId}`);
+  };
+  
   const handleAction = (e: React.MouseEvent, actionDescription: string, propertyId?: string) => {
     e.stopPropagation(); 
     if (actionDescription.startsWith("View Details") && propertyId) {
-      // Placeholder for navigation, ideally use router.push
-      console.log(`Navigating to details for ${propertyId}`);
-      // router.push(`/properties/${propertyId}`);
-    } else {
+      router.push(`/properties/${propertyId}`);
+    } else if (actionDescription.startsWith("Edit Listing") && propertyId) {
+      // Assuming an edit page like /properties/[propertyId]/edit or a modal
+      alert(`Edit Listing Clicked for ${propertyId} - Placeholder`);
+      // router.push(`/properties/${propertyId}/edit`); 
+    }
+    else {
       alert(actionDescription);
     }
   };
@@ -77,7 +87,8 @@ export function PropertiesListView({
             return (
               <TableRow 
                 key={prop.id} 
-                className="hover:bg-muted/50 border-b border-border last:border-b-0"
+                className="hover:bg-muted/50 border-b border-border last:border-b-0 cursor-pointer"
+                onClick={() => handleRowClick(prop.id)} // Make row clickable
               >
                 <TableCell className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                   <Checkbox
@@ -97,14 +108,17 @@ export function PropertiesListView({
                       data-ai-hint={prop.aiHint}
                     />
                     <div>
-                      <Link href={`/properties/${prop.id}`} className="font-semibold text-foreground hover:underline">{prop.title}</Link>
+                      {/* Link still useful here for explicit navigation indication */}
+                      <Link href={`/properties/${prop.id}`} className="font-semibold text-foreground hover:underline" onClick={(e) => e.stopPropagation()}>
+                        {prop.title}
+                      </Link>
                       <div className="text-xs text-muted-foreground">{prop.locality}</div>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell className="px-4 py-3">
                   <Badge
-                    className={cn("px-2 py-0.5 text-xs font-medium rounded-full border capitalize text-white", statusConfig.badgeColor)} // Ensure text is visible
+                    className={cn("px-2 py-0.5 text-xs font-medium rounded-full border capitalize text-white", statusConfig.badgeColor)}
                     style={{ backgroundColor: statusConfig.dotColor }}
                   >
                     {prop.status}
@@ -132,7 +146,7 @@ export function PropertiesListView({
                       <DropdownMenuItem onClick={(e) => handleAction(e, `View Details for ${prop.title}`, prop.id)}>
                         <Eye className="mr-2 h-4 w-4" /> View Details
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={(e) => handleAction(e, `Edit Listing: ${prop.title}`)}>
+                      <DropdownMenuItem onClick={(e) => handleAction(e, `Edit Listing: ${prop.title}`, prop.id)}>
                         <SquarePen className="mr-2 h-4 w-4" /> Edit Listing
                       </DropdownMenuItem>
                        <DropdownMenuItem onClick={(e) => handleAction(e, `Mark as Sold: ${prop.title}`)}>
@@ -153,3 +167,4 @@ export function PropertiesListView({
   );
 }
 
+    

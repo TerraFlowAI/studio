@@ -6,11 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { BedDouble, Bath, Ruler, Eye, Users, MoreVertical, Tv } from "lucide-react"; // Assuming Tv for VR icon
+import { BedDouble, Bath, Ruler, Eye, Users, MoreVertical, Tv, Edit3, CheckCircle } from "lucide-react"; // Added Edit3, CheckCircle
 import type { Property } from "@/types/property";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { PROPERTY_STATUSES_CONFIG } from "@/lib/constants";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 
 interface PropertyCardProps {
@@ -18,13 +19,19 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
+  const router = useRouter(); // Initialize router
   const statusConfig = PROPERTY_STATUSES_CONFIG[property.status.toLowerCase() as keyof typeof PROPERTY_STATUSES_CONFIG] || 
                        PROPERTY_STATUSES_CONFIG['default'];
 
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent default if it's wrapped in a link sometimes
+    router.push(`/properties/${property.id}`);
+  };
 
   return (
     <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col h-full bg-card">
-      <Link href={`/properties/${property.id}`} className="block"> {/* Placeholder link */}
+      {/* Make the entire image area clickable to navigate */}
+      <div onClick={handleViewDetails} className="cursor-pointer">
         <div className="relative">
           <Image
             src={property.imageUrl}
@@ -37,11 +44,10 @@ export function PropertyCard({ property }: PropertyCardProps) {
           <Badge 
             className={cn(
               "absolute top-2 left-2 px-2 py-1 text-xs font-semibold rounded-full border capitalize",
-              statusConfig.badgeColor, "text-white" // Ensure text is visible on colored badges
+              statusConfig.badgeColor, "text-white" 
             )}
-            style={{ backgroundColor: statusConfig.dotColor }} // Using dotColor for badge background as per spec
+            style={{ backgroundColor: statusConfig.dotColor }} 
           >
-            {/* Green dot + Status Text (Conceptual, achieved via bg color) */}
             {property.status}
           </Badge>
           {property.hasVrTour && (
@@ -50,47 +56,57 @@ export function PropertyCard({ property }: PropertyCardProps) {
             </div>
           )}
         </div>
-      </Link>
+      </div>
       <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-start">
-          <Link href={`/properties/${property.id}`} className="block">
+          {/* Make title clickable */}
+          <div onClick={handleViewDetails} className="cursor-pointer flex-grow">
             <CardTitle className="text-lg font-semibold font-headline text-primary leading-tight hover:underline">
               {property.title}
             </CardTitle>
-          </Link>
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground">
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground flex-shrink-0">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => alert(`View Details: ${property.title}`)}>View Details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => alert(`Edit Listing: ${property.title}`)}>Edit Listing</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => alert(`Mark as Sold: ${property.title}`)}>Mark as Sold</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleViewDetails}>
+                 <Eye className="mr-2 h-4 w-4" /> View Details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => alert(`Edit Listing: ${property.title}`)}>
+                <Edit3 className="mr-2 h-4 w-4" /> Edit Listing
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => alert(`Mark as Sold: ${property.title}`)}>
+                <CheckCircle className="mr-2 h-4 w-4" /> Mark as Sold
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-         <Link href={`/properties/${property.id}`} className="block">
+         {/* Make locality clickable */}
+        <div onClick={handleViewDetails} className="cursor-pointer">
             <CardDescription className="text-xs text-muted-foreground mt-0.5">{property.locality}</CardDescription>
-        </Link>
+        </div>
       </CardHeader>
-      <CardContent className="p-4 pt-1 flex-grow">
-        <Link href={`/properties/${property.id}`} className="block">
+      {/* Make content area clickable */}
+      <CardContent className="p-4 pt-1 flex-grow cursor-pointer" onClick={handleViewDetails}>
           <p className="text-xl font-bold text-foreground mb-2">{property.price}</p>
           <div className="flex items-center text-xs text-muted-foreground space-x-3">
             {property.beds > 0 && <span className="flex items-center gap-1"><BedDouble className="w-3.5 h-3.5 text-primary/80"/> {property.beds} Beds</span>}
             {property.baths > 0 && <span className="flex items-center gap-1"><Bath className="w-3.5 h-3.5 text-primary/80"/> {property.baths} Bath</span>}
             {property.sqft > 0 && <span className="flex items-center gap-1"><Ruler className="w-3.5 h-3.5 text-primary/80"/> {property.sqft} sqft</span>}
           </div>
-        </Link>
       </CardContent>
-      <CardFooter className="p-4 pt-2 border-t border-border">
-        <Link href={`/properties/${property.id}`} className="flex items-center text-xs text-muted-foreground space-x-4 w-full">
+      {/* Make footer clickable */}
+      <CardFooter className="p-4 pt-2 border-t border-border cursor-pointer" onClick={handleViewDetails}>
+        <div className="flex items-center text-xs text-muted-foreground space-x-4 w-full">
           <span className="flex items-center gap-1" title="Views"><Eye className="w-3.5 h-3.5"/> {property.views.toLocaleString()}</span>
           <span className="flex items-center gap-1" title="Leads Generated"><Users className="w-3.5 h-3.5"/> {property.leadsGenerated}</span>
-        </Link>
+        </div>
       </CardFooter>
     </Card>
   );
 }
+
+    
