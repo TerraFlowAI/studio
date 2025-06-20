@@ -78,11 +78,6 @@ export function AppSidebar() {
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   )}
-                  iconClassName={cn( 
-                     (pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/overview')))
-                       ? "text-primary-foreground"
-                       : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
-                  )}
                 >
                   <item.icon className={cn("h-5 w-5 mr-3 shrink-0", 
                     (pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/overview')))
