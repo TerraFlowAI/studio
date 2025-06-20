@@ -4,7 +4,7 @@
 import { motion } from "framer-motion";
 import { FileText, BrainCircuit, BarChart3 } from "lucide-react";
 import type { LucideProps } from "lucide-react";
-import type React from 'react';
+import React from 'react'; // Ensure React is imported for JSX
 
 interface AIDemoVisualProps {
   // Props can be added later if variations per feature are needed
@@ -52,14 +52,16 @@ const ConnectingLine = ({ delay }: { delay: number }) => (
     initial={{ scaleX: 0, opacity: 0 }}
     animate={{ scaleX: 1, opacity: 1 }}
     transition={{ duration: 0.5, delay }}
-    style={{ transformOrigin: "left", background: 'linear-gradient(90deg, var(--gradient-teal-start), var(--gradient-purple-blue-end), var(--gradient-teal-start))', backgroundSize: '200% 100%' }}
+    style={{ transformOrigin: "left" }}
   ></motion.div>
 );
 
 export const AIDemoVisual: React.FC<AIDemoVisualProps> = () => {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center relative p-4 md:p-0">
-      {/* Data Flow Visualization */}
+    <div className="w-full h-full flex flex-col items-center justify-center relative p-4 md:p-0 my-16">
+      <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-shimmer">
+          TerraFlow AI: Data to Decisions
+      </h2>
       <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-0 mb-8 md:mb-12">
         <Node
           icon={FileText}

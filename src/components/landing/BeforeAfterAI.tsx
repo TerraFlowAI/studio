@@ -1,108 +1,142 @@
-// src/components/landing/BeforeAfterAI.tsx
+
 "use client";
 
-import React from 'react';
-import { MessageSquare, Phone, Mail, DollarSign, CheckCircle, Repeat, Truck, Zap, ArrowRight } from 'lucide-react';
-import { motion } from "framer-motion"; // Added for potential animations if needed
+import React,
+{ useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Wand2, ChevronRight, Sparkles, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 const BeforeAfterAI = () => {
-  const beforeActivities = [
-    { icon: <Phone size={20} className="text-red-500 dark:text-red-400" />, title: 'Jane Appleseed', text: '2 missed voice call', time: '3m ago' },
-    { icon: <Mail size={20} className="text-gray-500 dark:text-gray-400" />, title: 'Ralph Edwards', text: 'Did you see my email? I want to update the menu for my booking.', time: 'now' },
-    { icon: <MessageSquare size={20} className="text-gray-500 dark:text-gray-400" />, title: 'ivym', text: 'Are you available to cater Pan-Asian for 30?', time: '3m ago' },
-    { icon: <DollarSign size={20} className="text-gray-500 dark:text-gray-400" />, title: 'ivym', text: 'How do I pay? I want to make advance settlement before the booking', time: '3m ago' },
-    { icon: <Phone size={20} className="text-red-500 dark:text-red-400" />, title: 'Erin Stead', text: '10 Missed call', time: '3m ago' },
+  const [isLoading, setIsLoading] = useState(false);
+  const [beforeText, setBeforeText] = useState(
+    "3bhk flat. good location. near metro. new kitchen. balcony. parking available. needs some work. good for family."
+  );
+  const [afterText, setAfterText] = useState("");
+
+  const exampleOutputs = [
+    {
+      headline: "✨ Stunning 3-Bedroom Oasis with Metro Access & Modern Kitchen!",
+      description: "Discover your dream family home in this exceptionally located 3-bedroom apartment! Boasting a brand-new, chef-inspired kitchen, a private balcony perfect for morning coffee, and dedicated parking, this residence offers unparalleled convenience. Just steps from the metro, your commute will be a breeze. While ready for your personal touch, this gem is an incredible opportunity for families seeking space, style, and a prime address. Don't miss out!"
+    },
+    {
+      headline: "🔑 Prime Location 3BHK: Renovated Kitchen, Balcony & Parking!",
+      description: "Unlock the door to comfortable city living in this spacious 3-bedroom flat, ideally situated near public transport. Featuring a recently updated kitchen, a charming balcony, and the convenience of included parking, this property is a fantastic find. Though it offers scope for personalization, its core features and unbeatable location make it perfect for families. Act fast – properties like this are in high demand!"
+    }
   ];
 
-  const afterActivities = [
-    { icon: <CheckCircle size={20} className="text-green-600 dark:text-green-400" />, title: 'New request', text: 'New request to reschedule the booking to a new date.', time: 'now' },
-    { icon: <DollarSign size={20} className="text-green-600 dark:text-green-400" />, title: 'Payment received', text: 'Payment $2,200 from Mason Mount', time: '3m ago' },
-    { icon: <Repeat size={20} className="text-purple-600 dark:text-purple-400" />, title: 'Menu change request', text: 'Menu change request for the upcoming booking', time: 'now' },
-    { icon: <Truck size={20} className="text-green-600 dark:text-green-400" />, title: 'New order', text: 'Are you available to cater Pan-Asian for 30?', time: '3m ago' },
-    { icon: <DollarSign size={20} className="text-green-600 dark:text-green-400" />, title: 'Payment received', text: 'Payment $1,200 from Jason Mount', time: '3m ago' },
-    { icon: <MessageSquare size={20} className="text-green-600 dark:text-green-400" />, title: 'Service inquiry', text: 'Sara Ernst inquired about your cooking services', time: '3m ago' },
-  ];
+  const handleGenerate = async () => {
+    if (!beforeText.trim()) {
+      // Optionally, show a toast or error message if beforeText is empty
+      setAfterText("Please enter some property features to generate a description.");
+      return;
+    }
+    setIsLoading(true);
+    setAfterText(""); // Clear previous after text
+
+    // Simulate AI call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Pick a random example
+    const randomIndex = Math.floor(Math.random() * exampleOutputs.length);
+    const selectedOutput = exampleOutputs[randomIndex];
+
+    setAfterText(`Headline: ${selectedOutput.headline}\n\nDescription: ${selectedOutput.description}`);
+    setIsLoading(false);
+  };
 
   return (
-    <section className="py-16 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="relative animate-moving-dashboard-border p-8 my-16 rounded-xl overflow-hidden bg-card/80 backdrop-blur-sm shadow-lg">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 animate-text-shimmer-strong">
-            TerraLead Suite: Before & After AI
+    <section className="py-16 md:py-24 bg-slate-50 dark:bg-slate-800/30" data-section-view="before-after-ai">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            From Basic Facts to <span className="animate-text-shimmer-strong">Compelling Listings</span>
           </h2>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+            See how TerraScribe™ AI transforms your raw property notes into captivating marketing copy in seconds.
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Before Column - Painful Manual Process */}
-            <div className="flex flex-col items-center text-center">
-              <h3 className="text-2xl font-semibold mb-8 text-foreground/90">Painful Manual Process</h3>
-              <div className="w-full space-y-4">
-                {beforeActivities.map((activity, index) => (
-                  <div key={index} className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg flex items-start space-x-3 border border-gray-300 dark:border-gray-700">
-                    <div className="mt-0.5 text-gray-700 dark:text-gray-300 flex-shrink-0">{activity.icon}</div>
-                    <div className="flex-1 text-left">
-                       {activity.title && <p className="font-semibold text-foreground text-sm leading-tight">{activity.title}</p>}
-                      <p className="text-foreground/80 text-sm leading-tight">{activity.text}</p>
-                    </div>
-                    <span className="text-gray-600 dark:text-gray-400 text-xs flex-shrink-0 self-start">{activity.time}</span>
-                  </div>
-                ))}
-              </div>
-               <p className="text-lg text-foreground/70 mt-8 leading-relaxed">
-                Traditional lead management can be time-consuming and less efficient. Manual data entry, limited insights, and slower response times.
-              </p>
-               <ul className="text-left text-foreground/70 list-disc list-inside mt-4 space-y-2">
-                <li>Manual lead qualification</li>
-                <li>Limited market analysis</li>
-                <li>Basic reporting</li>
-                <li>Slower follow-up</li>
-              </ul>
-            </div>
+        <div className="grid md:grid-cols-2 gap-8 items-start">
+          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <CardHeader>
+              <CardTitle className="font-headline text-xl text-muted-foreground/80">Your Raw Notes (Before AI)</CardTitle>
+              <CardDescription>Enter basic property features and details.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                placeholder="e.g., 2 bed, 2 bath, sea view, near park..."
+                value={beforeText}
+                onChange={(e) => setBeforeText(e.target.value)}
+                rows={8}
+                className="mb-4 text-sm bg-background"
+              />
+              <Button onClick={handleGenerate} disabled={isLoading || !beforeText.trim()} className="w-full text-base py-6 group bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                  <Wand2 className="mr-2 h-5 w-5 group-hover:animate-pulse" />
+                )}
+                {isLoading ? 'TerraScribing...' : 'Generate with AI'}
+              </Button>
+            </CardContent>
+          </Card>
 
-            {/* After Column - TerraLead AI Automated */}
-            <div className="flex flex-col items-center text-center">
-              <h3 className="text-2xl font-semibold mb-8 text-primary dark:text-green-400">TerraLead AI Automated</h3>
-               <div className="w-full space-y-4">
-                {afterActivities.map((activity, index) => (
-                  <motion.div 
-                    key={index} 
-                    className="bg-green-100 dark:bg-green-800 p-4 rounded-lg flex items-start space-x-3 border border-green-300 dark:border-green-700"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 + 0.3, duration: 0.5 }}
-                  >
-                     {/* Subtle pulse animation for icons */}
-                    <div className="mt-0.5 text-green-800 dark:text-green-300 animate-pulse-custom flex-shrink-0">{activity.icon}</div>
-                    <div className="flex-1 text-left">
-                       {activity.title && <p className="font-semibold text-foreground text-sm leading-tight">{activity.title}</p>}
-                      <p className="text-foreground/80 text-sm leading-tight">{activity.text}</p>
-                    </div>
-                    <span className="text-gray-600 dark:text-gray-400 text-xs flex-shrink-0 self-start">{activity.time}</span>
-                  </motion.div>
-                ))}
-                 {/* Simplified AI Process Visualization */}
-                 <motion.div 
-                    className="w-full bg-purple-200/50 dark:bg-purple-800/50 p-4 rounded-lg flex items-center justify-around text-foreground/70 mt-8 border border-purple-400 dark:border-purple-600"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: afterActivities.length * 0.1 + 0.5, duration: 0.5 }}
-                  >
-                    <Zap size={24} className="text-purple-600 dark:text-purple-400 animate-bounce"/>
-                    <ArrowRight size={20} className="text-purple-600 dark:text-purple-400"/>
-                    <span className="text-sm font-semibold">Processing</span>
-                     <ArrowRight size={20} className="text-purple-600 dark:text-purple-400"/>
-                    <Zap size={24} className="text-purple-600 dark:text-purple-400 animate-bounce animation-delay-500"/>
-                 </motion.div>
-              </div>
-               <p className="text-lg text-foreground/70 mt-8 leading-relaxed">
-                TerraLead AI Suite automates processes, provides deep insights, and accelerates deal closure. Leverage AI for smart lead scoring, market trend analysis, and personalized communication.
-              </p>
-               <ul className="text-left text-foreground/70 list-disc list-inside mt-4 space-y-2">
-                <li>AI-powered lead scoring</li>
-                <li>Automated market trend analysis</li>
-                <li>Predictive analytics</li>
-                <li>Personalized automated follow-up</li>
-              </ul>
+          <div className="relative">
+            <div className={cn(
+              "absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 p-2 bg-background rounded-full shadow-lg border border-border transition-opacity duration-500",
+              isLoading ? "opacity-0" : "opacity-100"
+            )}>
+              <ChevronRight className="h-6 w-6 text-primary" />
             </div>
+            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 border-primary/30 min-h-[300px]">
+              <CardHeader>
+                <CardTitle className="font-headline text-xl flex items-center gap-2">
+                  <Sparkles className="h-6 w-6 text-primary animate-pulse" />
+                  AI-Generated Content (After AI)
+                </CardTitle>
+                <CardDescription>Engaging headline and description ready to use.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AnimatePresence mode="wait">
+                  {isLoading ? (
+                    <motion.div
+                      key="loader"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex flex-col items-center justify-center h-40 text-muted-foreground"
+                    >
+                      <Loader2 className="h-10 w-10 animate-spin text-primary mb-3" />
+                      <p>Crafting compelling content...</p>
+                    </motion.div>
+                  ) : afterText ? (
+                    <motion.div
+                      key="content"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="whitespace-pre-wrap p-4 bg-primary/5 rounded-md border border-primary/20 text-sm text-foreground"
+                    >
+                      {afterText}
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="placeholder"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex flex-col items-center justify-center h-40 text-center text-muted-foreground border-2 border-dashed border-border/70 rounded-lg p-4"
+                    >
+                       <Wand2 className="h-10 w-10 text-primary/40 mb-3" />
+                       <p>Your AI-generated property description and headline will appear here.</p>
+                       <p className="text-xs mt-1">Try inputting some features on the left and click "Generate"!</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -110,4 +144,4 @@ const BeforeAfterAI = () => {
   );
 };
 
-export default BeforeAfterAI; // Ensure default export
+export default BeforeAfterAI;
