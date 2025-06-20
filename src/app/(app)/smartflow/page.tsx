@@ -104,8 +104,7 @@ export default function SmartflowStudioPage() {
     <div className="container mx-auto">
       <PageHeader title="SmartFlow™ Automation Studio">
         <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-          {/* This link would eventually go to the workflow builder canvas */}
-          <Link href="#"><PlusCircle className="mr-2 h-4 w-4" /> Create New Workflow</Link>
+          <Link href="/smartflow/new"><PlusCircle className="mr-2 h-4 w-4" /> Create New Workflow</Link>
         </Button>
       </PageHeader>
 
@@ -153,8 +152,6 @@ export default function SmartflowStudioPage() {
               </Card>
             ))}
           </div>
-          {/* Placeholder for Workflow Builder Canvas if a workflow is selected or new one is created */}
-          {/* This would ideally be a separate route or modal for a full experience */}
         </TabsContent>
 
         <TabsContent value="project-dashboard">
@@ -164,7 +161,6 @@ export default function SmartflowStudioPage() {
               <CardDescription>Track progress, resource allocation, and compliance for developer projects.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Key Metrics Placeholder */}
               <div className="grid md:grid-cols-3 gap-4">
                 <Card className="bg-muted/30">
                   <CardHeader><CardTitle className="text-sm text-muted-foreground">Overall Progress</CardTitle></CardHeader>
@@ -180,14 +176,12 @@ export default function SmartflowStudioPage() {
                 </Card>
               </div>
 
-              {/* Gantt Chart Placeholder */}
               <div className="h-[300px] border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center text-muted-foreground bg-background">
                 <GanttChartSquare className="h-16 w-16 text-primary/30 mb-4" />
                 <p className="text-lg font-semibold">Interactive Gantt Chart</p>
                 <p className="text-sm">(Coming Soon)</p>
               </div>
 
-              {/* Compliance Status Table */}
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">Compliance Monitoring</h3>
                 <div className="overflow-x-auto">
