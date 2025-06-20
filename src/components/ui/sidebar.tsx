@@ -1,7 +1,7 @@
 
 "use client"
 
-import * as React from "react"
+import *ాలు React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
@@ -549,6 +549,7 @@ const sidebarMenuButtonVariants = cva(
 type SidebarMenuButtonProps = (React.ComponentPropsWithoutRef<"button"> | React.ComponentPropsWithoutRef<"a">) & {
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
+  asChild?: boolean; // Added to explicitly type the prop if SidebarMenuButton itself could take it
 } & VariantProps<typeof sidebarMenuButtonVariants>;
 
 
@@ -556,7 +557,7 @@ const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
   SidebarMenuButtonProps
 >(
-  (componentProps, forwardedRef) => {
+  (props, ref) => {
     const {
       className,
       variant,
@@ -564,34 +565,44 @@ const SidebarMenuButton = React.forwardRef<
       isActive = false,
       tooltip,
       children,
-      href: propHref, 
-      type: propType, 
-      ...otherProps 
-    } = componentProps;
+      href: propHref,
+      type: propType,
+      asChild: receivedAsChild, // explicitly capture asChild here
+      ...otherProps // all other props, Link might pass its own onClick, etc.
+    } = props;
 
     const { isMobile, state } = useSidebar();
     const Comp = propHref ? 'a' : 'button';
 
-    const elementProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
-      ...otherProps, 
-      ref: forwardedRef,
+    // These are the props that will actually go to the DOM element.
+    // We start with otherProps, then layer on specific ones.
+    // 'asChild' is *not* included in otherProps because it was destructured above.
+    // Any other props passed from Link (like onClick handlers) will be in otherProps.
+    const domProps: React.HTMLAttributes<HTMLElement> & Record<string, any> = {
+      ...otherProps,
+      ref: ref,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       'data-sidebar': "menu-button",
       'data-size': size,
       'data-active': isActive,
     };
 
-    delete elementProps.asChild;
-
     if (Comp === 'a') {
-      elementProps.href = propHref;
-      delete elementProps.type; 
-    } else { 
-      elementProps.type = propType || 'button';
-      delete elementProps.href;
+      domProps.href = propHref;
+      delete domProps.type; // Ensure button 'type' prop isn't passed to 'a'
+    } else {
+      domProps.type = propType || 'button';
+      delete domProps.href; // Ensure 'href' isn't passed to 'button'
     }
     
-    const coreInteractiveElement = React.createElement(Comp, elementProps, children);
+    // The `receivedAsChild` prop (which would be true if Link passes it) is consumed here
+    // and not passed to React.createElement. The `otherProps` spread above already excluded it.
+    // `delete domProps.asChild;` is redundant if `receivedAsChild` is correctly destructured and `otherProps` doesn't contain it.
+    // For absolute safety, ensuring `asChild` is not in `domProps`:
+    delete domProps.asChild;
+
+
+    const coreInteractiveElement = React.createElement(Comp, domProps, children);
 
     if (!tooltip) {
       return coreInteractiveElement;
@@ -601,7 +612,7 @@ const SidebarMenuButton = React.forwardRef<
 
     return (
       <Tooltip>
-        <TooltipTrigger asChild> 
+        <TooltipTrigger asChild>
           {coreInteractiveElement}
         </TooltipTrigger>
         <TooltipContent
@@ -767,7 +778,7 @@ export {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarInput,
-  SidebarInset,
+  // SidebarInset, // Commented out as it was removed from app layout
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuBadge,
