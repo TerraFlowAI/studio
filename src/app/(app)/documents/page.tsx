@@ -1,7 +1,7 @@
 
 "use client";
 
-import *import { PageHeader } from "@/components/shared/PageHeader";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -60,6 +60,8 @@ import {
 import React, { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 
 type VerificationStatus = "Verified" | "Issues Found" | "In Progress" | "Not Verified";
 
@@ -107,22 +109,22 @@ const getVerificationBadge = (status: VerificationStatus) => {
   switch (status) {
     case "Verified":
       return {
-        badge: <Badge className="bg-green-100 text-green-700 border-green-300 hover:bg-green-200"><ShieldCheck className="h-3.5 w-3.5 mr-1" /> Verified</Badge>,
+        badge: <Badge className="bg-green-100 text-green-700 border-green-300 hover:bg-green-200 dark:bg-green-700/20 dark:text-green-300 dark:border-green-600"><ShieldCheck className="h-3.5 w-3.5 mr-1" /> Verified</Badge>,
         tooltip: "TerraSecure™ AI has verified this document's authenticity and compliance. No issues found."
       };
     case "Issues Found":
       return {
-        badge: <Badge className="bg-amber-100 text-amber-700 border-amber-300 hover:bg-amber-200"><ShieldAlert className="h-3.5 w-3.5 mr-1" /> Issues Found</Badge>,
+        badge: <Badge className="bg-amber-100 text-amber-700 border-amber-300 hover:bg-amber-200 dark:bg-amber-700/20 dark:text-amber-300 dark:border-amber-600"><ShieldAlert className="h-3.5 w-3.5 mr-1" /> Issues Found</Badge>,
         tooltip: "TerraSecure™ AI has flagged potential risks. Click to view report."
       };
     case "In Progress":
       return {
-        badge: <Badge className="bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200"><Clock className="h-3.5 w-3.5 mr-1 animate-spin" /> In Progress</Badge>,
+        badge: <Badge className="bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200 dark:bg-blue-700/20 dark:text-blue-300 dark:border-blue-600"><Clock className="h-3.5 w-3.5 mr-1 animate-spin" /> In Progress</Badge>,
         tooltip: "Verification by TerraSecure™ AI is currently in progress."
       };
     default: // Not Verified
       return {
-        badge: <Badge variant="outline" className="border-slate-300 text-slate-600 hover:bg-slate-100"><ShieldQuestion className="h-3.5 w-3.5 mr-1" /> Not Verified</Badge>,
+        badge: <Badge variant="outline" className="border-slate-300 text-slate-600 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700"><ShieldQuestion className="h-3.5 w-3.5 mr-1" /> Not Verified</Badge>,
         tooltip: "This document has not been submitted for TerraSecure™ AI verification."
       };
   }
@@ -143,7 +145,7 @@ const getFileIcon = (item: FileItem) => {
 
 const VerificationChecklistItem: React.FC<{ label: string; status: "pending" | "loading" | "success" | "warning" }> = ({ label, status }) => {
   const Icon = status === "loading" ? Loader2 : status === "success" ? CheckCircle2 : status === "warning" ? XCircle : Clock;
-  const color = status === "success" ? "text-green-500" : status === "warning" ? "text-amber-500" : "text-muted-foreground";
+  const color = status === "success" ? "text-green-500 dark:text-green-400" : status === "warning" ? "text-amber-500 dark:text-amber-400" : "text-muted-foreground";
 
   return (
     <div className={cn("flex items-center text-sm py-1.5", color)}>
@@ -217,7 +219,13 @@ export default function DocumentsPage() {
   }, [selectedFolderId]);
 
   const displayedItems = useMemo(() => {
-    return mockFiles.filter(item => item.parentId === selectedFolderId);
+    // Show folders first, then files, both sorted alphabetically
+    const currentFolderItems = mockFolders.filter(item => item.parentId === selectedFolderId)
+      .map(f => ({ ...f, type: 'folder', verificationStatus: 'Not Verified', owner: 'Me', lastModified: new Date().toISOString().split('T')[0] } as FileItem)) // Treat folders as FileItem for display
+      .sort((a, b) => a.name.localeCompare(b.name));
+    const currentFileItems = mockFiles.filter(item => item.parentId === selectedFolderId)
+      .sort((a, b) => a.name.localeCompare(b.name));
+    return [...currentFolderItems, ...currentFileItems];
   }, [selectedFolderId]);
 
   const FolderTreeItem: React.FC<{ folder: FolderItem; level: number }> = ({ folder, level }) => {
@@ -226,7 +234,7 @@ export default function DocumentsPage() {
       <div style={{ paddingLeft: `${level * 1}rem` }}>
         <Button
           variant={selectedFolderId === folder.id ? "secondary" : "ghost"}
-          className="w-full justify-start h-8 px-2 text-sm text-muted-foreground hover:text-primary"
+          className="w-full justify-start h-8 px-2 text-sm text-muted-foreground hover:text-primary dark:hover:text-primary"
           onClick={() => setSelectedFolderId(folder.id)}
         >
           <Folder className="h-4 w-4 mr-2 shrink-0" />
@@ -259,13 +267,13 @@ export default function DocumentsPage() {
         </div>
       </PageHeader>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col md:flex-row gap-6">
         {/* Left Column: Folder Navigation Tree */}
-        <Card className="w-1/4 shadow-sm hidden md:block">
+        <Card className="w-full md:w-1/4 shadow-sm">
           <CardHeader className="p-3 border-b">
             <CardTitle className="text-sm font-semibold text-primary">Folders</CardTitle>
           </CardHeader>
-          <ScrollArea className="h-[calc(100vh-220px)]"> {/* Adjust height as needed */}
+          <ScrollArea className="h-[60vh] md:h-[calc(100vh-220px)]"> {/* Adjust height as needed */}
             <CardContent className="p-2">
               {mockFolders.filter(f => !f.parentId).map(rootFolder => (
                  <FolderTreeItem key={rootFolder.id} folder={rootFolder} level={0} />
@@ -279,19 +287,19 @@ export default function DocumentsPage() {
           <Card className="shadow-sm">
             <CardHeader className="p-4 border-b">
               {/* Breadcrumbs */}
-              <div className="flex items-center text-sm text-muted-foreground">
+              <div className="flex items-center text-sm text-muted-foreground overflow-x-auto whitespace-nowrap pb-1">
                 {currentPath.map((p, index) => (
                   <React.Fragment key={p.id}>
-                    <Button variant="link" className="p-0 h-auto text-muted-foreground hover:text-primary" onClick={() => setSelectedFolderId(p.id)}>
+                    <Button variant="link" className="p-0 h-auto text-muted-foreground hover:text-primary dark:hover:text-primary" onClick={() => setSelectedFolderId(p.id)}>
                       {p.name}
                     </Button>
-                    {index < currentPath.length - 1 && <ChevronRight className="h-4 w-4 mx-1" />}
+                    {index < currentPath.length - 1 && <ChevronRight className="h-4 w-4 mx-1 shrink-0" />}
                   </React.Fragment>
                 ))}
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <ScrollArea className="h-[calc(100vh-250px)]"> {/* Adjust height */}
+              <ScrollArea className="h-[60vh] md:h-[calc(100vh-250px)]"> {/* Adjust height */}
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -314,7 +322,7 @@ export default function DocumentsPage() {
                     {displayedItems.map((item) => {
                       const { badge, tooltip } = getVerificationBadge(item.verificationStatus);
                       return (
-                        <TableRow key={item.id} className="hover:bg-muted/50 cursor-pointer" onClick={() => item.type === 'folder' && setSelectedFolderId(item.id)}>
+                        <TableRow key={item.id} className="hover:bg-muted/50 cursor-pointer dark:hover:bg-muted/30" onClick={() => item.type === 'folder' && setSelectedFolderId(item.id)}>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               {getFileIcon(item)}
@@ -343,7 +351,7 @@ export default function DocumentsPage() {
                                 <DropdownMenuItem>Preview</DropdownMenuItem>
                                 <DropdownMenuItem>Share</DropdownMenuItem>
                                 <DropdownMenuItem>Download</DropdownMenuItem>
-                                {item.verificationStatus === "Not Verified" && (
+                                {item.type === 'file' && item.verificationStatus === "Not Verified" && (
                                   <>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={handleVerifyDocument}>
@@ -352,7 +360,7 @@ export default function DocumentsPage() {
                                   </>
                                 )}
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-destructive focus:text-destructive">Delete</DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive focus:text-destructive dark:focus:text-red-400">Delete</DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
@@ -396,9 +404,9 @@ export default function DocumentsPage() {
             )}
 
              {currentVerificationStep >= 4 && verificationProgress === 100 && (
-                <div className="mt-4 p-3 bg-green-50 border-green-200 rounded-md">
-                    <h4 className="font-semibold text-green-700">Verification Complete!</h4>
-                    <p className="text-sm text-green-600">Mock: 0 issues found. Document appears secure.</p>
+                <div className="mt-4 p-3 bg-green-50 border-green-200 rounded-md dark:bg-green-700/20 dark:border-green-600">
+                    <h4 className="font-semibold text-green-700 dark:text-green-300">Verification Complete!</h4>
+                    <p className="text-sm text-green-600 dark:text-green-400">Mock: 0 issues found. Document appears secure.</p>
                 </div>
             )}
 
@@ -418,5 +426,7 @@ export default function DocumentsPage() {
     </div>
   );
 }
+
+    
 
     
