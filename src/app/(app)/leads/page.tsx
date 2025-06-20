@@ -10,9 +10,10 @@ import { BulkActionsToolbar } from "@/components/leads/BulkActionsToolbar";
 import { AddLeadSheet } from "@/components/leads/AddLeadSheet";
 import { PlusCircle, Upload, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { LEAD_STATUSES, LEAD_SOURCES } from "@/lib/constants"; // AI_SMART_VIEWS is used in LeadFiltersToolbar
+import { LEAD_STATUSES, LEAD_SOURCES } from "@/lib/constants"; 
 import type { LeadStatusId, LeadSourceId, AiSmartViewId } from "@/lib/constants";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const initialMockLeads: Lead[] = [
   {
@@ -99,6 +100,295 @@ const initialMockLeads: Lead[] = [
     status: 'Contacted',
     propertyOfInterest: 'Office Space in BKC',
   },
+  // Added leads
+  {
+    id: '8',
+    name: 'Ishaan Kapoor',
+    email: 'ishaan.k@example.com',
+    phone: '+91 77665 54433',
+    aiScore: 72,
+    aiScoreFactors: "Interested in new developments (+15), budget aligns with premium properties (+12), short website visit (-5)",
+    source: 'Google Ads',
+    dateAdded: '2023-11-02',
+    status: 'Contacted',
+    propertyOfInterest: 'Luxury Villa, South Delhi',
+  },
+  {
+    id: '9',
+    name: 'Myra Reddy',
+    email: 'myra.r@example.com',
+    phone: '+91 66554 43322',
+    aiScore: 85,
+    aiScoreFactors: "Specific request for penthouse (+20), referred by existing client (+18), high engagement (+10)",
+    source: 'Referral',
+    dateAdded: '2023-11-03',
+    status: 'New',
+    propertyOfInterest: 'Penthouse, Hiranandani Gardens',
+  },
+  {
+    id: '10',
+    name: 'Kabir Khan',
+    email: 'kabir.khan@example.com',
+    phone: '+91 98765 11223',
+    aiScore: 60,
+    aiScoreFactors: "Looking for investment property (+10), Active on market news (+10), Budget flexible (+5)",
+    source: 'Manual Entry',
+    dateAdded: '2023-11-04',
+    status: 'Qualified',
+    propertyOfInterest: 'Commercial plot, Navi Mumbai',
+  },
+  {
+    id: '11',
+    name: 'Diya Sharma',
+    email: 'diya.s@example.com',
+    phone: '+91 87654 22334',
+    aiScore: 40,
+    aiScoreFactors: "First-time buyer questions (+5), Inconsistent communication (-10), Viewed budget properties (+5)",
+    source: 'Social Media',
+    dateAdded: '2023-11-05',
+    status: 'New',
+    propertyOfInterest: '1BHK, Thane',
+  },
+  {
+    id: '12',
+    name: 'Vivaan Malhotra',
+    email: 'vivaan.m@example.com',
+    phone: '+91 76543 33445',
+    aiScore: 79,
+    aiScoreFactors: "High engagement on luxury listings (+20), Requested virtual tour (+10), Specific amenity requirements (+8)",
+    source: 'Website Chatbot',
+    dateAdded: '2023-11-06',
+    status: 'Viewing Scheduled',
+    propertyOfInterest: 'Sea-facing apartment, Worli',
+  },
+  {
+    id: '13',
+    name: 'Zara Ali',
+    email: 'zara.ali@example.com',
+    phone: '+91 65432 44556',
+    aiScore: 55,
+    aiScoreFactors: "Looking for rental (+5), Quick decision timeline (+10), Multiple property inquiries (+5)",
+    source: 'Property Listing',
+    dateAdded: '2023-11-07',
+    status: 'Contacted',
+    propertyOfInterest: '2BHK Rental, Andheri West',
+  },
+  {
+    id: '14',
+    name: 'Aryan Joshi',
+    email: 'aryan.j@example.com',
+    phone: '+91 99887 55667',
+    aiScore: 30,
+    aiScoreFactors: "Not responsive to calls (-15), General inquiry, no specifics (-5), Viewed one old listing (-2)",
+    source: 'Google Ads',
+    dateAdded: '2023-11-08',
+    status: 'Unqualified',
+    propertyOfInterest: 'Properties in Pune',
+  },
+  {
+    id: '15',
+    name: 'Naina Gupta',
+    email: 'naina.g@example.com',
+    phone: '+91 88776 66778',
+    aiScore: 95,
+    aiScoreFactors: "Previous high-value client (+25), Clear investment goals (+20), Actively discussing terms (+15)",
+    source: 'Referral',
+    dateAdded: '2023-11-09',
+    status: 'Offer Made',
+    propertyOfInterest: 'Portfolio of 3 flats, Bangalore',
+  },
+  {
+    id: '16',
+    name: 'Dev Mehra',
+    email: 'dev.mehra@example.com',
+    phone: '+91 77665 77889',
+    aiScore: 68,
+    aiScoreFactors: "Interested in off-plan projects (+15), Attended webinar (+10), Asked financial questions (+8)",
+    source: 'Manual Entry',
+    dateAdded: '2023-11-10',
+    status: 'Qualified',
+    propertyOfInterest: 'New township project, Gurgaon',
+  },
+  {
+    id: '17',
+    name: 'Saanvi Iyer',
+    email: 'saanvi.i@example.com',
+    phone: '+91 66554 88990',
+    aiScore: 82,
+    aiScoreFactors: "Relocating for work (+20), Urgent requirement (+15), Viewed listings matching criteria (+10)",
+    source: 'Website Chatbot',
+    dateAdded: '2023-11-11',
+    status: 'New',
+    propertyOfInterest: '3BHK near Financial District, Hyderabad',
+  },
+  {
+    id: '18',
+    name: 'Advik Singh',
+    email: 'advik.s@example.com',
+    phone: '+91 91234 99001',
+    aiScore: 48,
+    aiScoreFactors: "Looking for plot/land (+10), Researching for 6+ months (+5), Vague budget (-5)",
+    source: 'Property Listing',
+    dateAdded: '2023-11-12',
+    status: 'Contacted',
+    propertyOfInterest: 'Agricultural land, outskirts of Chennai',
+  },
+  {
+    id: '19',
+    name: 'Kiara Bhatia',
+    email: 'kiara.b@example.com',
+    phone: '+91 87654 00112',
+    aiScore: 75,
+    aiScoreFactors: "Upsizing family home (+18), Good credit history noted (+12), Active in specific school district (+10)",
+    source: 'Referral',
+    dateAdded: '2023-11-13',
+    status: 'Viewing Scheduled',
+    propertyOfInterest: '4BHK Villa, Whitefield',
+  },
+  {
+    id: '20',
+    name: 'Reyansh Pillai',
+    email: 'reyansh.p@example.com',
+    phone: '+91 76543 11223',
+    aiScore: 58,
+    aiScoreFactors: "Multiple open house visits (+10), Interested in fixer-uppers (+8), Email open rate high (+5)",
+    source: 'Social Media',
+    dateAdded: '2023-11-14',
+    status: 'Qualified',
+    propertyOfInterest: 'Old bungalow, Goa',
+  },
+  {
+    id: '21',
+    name: 'Anika Varma',
+    email: 'anika.v@example.com',
+    phone: '+91 65432 22334',
+    aiScore: 90,
+    aiScoreFactors: "Returning customer (+20), High net worth individual (+20), Seeking premium services (+10)",
+    source: 'Manual Entry',
+    dateAdded: '2023-11-15',
+    status: 'New',
+    propertyOfInterest: 'Luxury penthouse, Mumbai',
+  },
+  {
+    id: '22',
+    name: 'Yash Choudhary',
+    email: 'yash.c@example.com',
+    phone: '+91 99887 33445',
+    aiScore: 38,
+    aiScoreFactors: "Looking for short-term rental (-5), Infrequent site visits (-8), Unclear requirements (-10)",
+    source: 'Website Chatbot',
+    dateAdded: '2023-11-16',
+    status: 'Unqualified',
+    propertyOfInterest: 'Any 2BHK rental',
+  },
+  {
+    id: '23',
+    name: 'Aisha Begum',
+    email: 'aisha.b@example.com',
+    phone: '+91 88776 44556',
+    aiScore: 62,
+    aiScoreFactors: "Investor looking for ROI (+10), Prefers commercial units (+10), Asked about rental yields (+7)",
+    source: 'Google Ads',
+    dateAdded: '2023-11-17',
+    status: 'Contacted',
+    propertyOfInterest: 'Shop in commercial complex',
+  },
+  {
+    id: '24',
+    name: 'Dhruv Batra',
+    email: 'dhruv.b@example.com',
+    phone: '+91 77665 55667',
+    aiScore: 81,
+    aiScoreFactors: "Tech professional (+10), Budget for smart home features (+15), Viewed properties with home automation (+10)",
+    source: 'Property Listing',
+    dateAdded: '2023-11-18',
+    status: 'Viewing Scheduled',
+    propertyOfInterest: 'Smart home, Electronic City',
+  },
+  {
+    id: '25',
+    name: 'Paridhi Jain',
+    email: 'paridhi.j@example.com',
+    phone: '+91 66554 66778',
+    aiScore: 70,
+    aiScoreFactors: "Recently married (+10), Looking for first home (+10), Stable income (+8)",
+    source: 'Referral',
+    dateAdded: '2023-11-19',
+    status: 'Qualified',
+    propertyOfInterest: '2BHK, well-connected area',
+  },
+  {
+    id: '26',
+    name: 'Vihaan Sethi',
+    email: 'vihaan.s@example.com',
+    phone: '+91 98765 77889',
+    aiScore: 52,
+    aiScoreFactors: "Wants farmhouse property (+10), Large land requirement (+8), Location flexible but remote (-5)",
+    source: 'Social Media',
+    dateAdded: '2023-11-20',
+    status: 'New',
+    propertyOfInterest: 'Farmhouse near Lonavala',
+  },
+  {
+    id: '27',
+    name: 'Eva Menon',
+    email: 'eva.menon@example.com',
+    phone: '+91 87654 88990',
+    aiScore: 88,
+    aiScoreFactors: "Corporate client looking for employee housing (+25), Bulk deal potential (+15), Specific layout preferences (+10)",
+    source: 'Manual Entry',
+    dateAdded: '2023-11-21',
+    status: 'Offer Made',
+    propertyOfInterest: 'Multiple 2BHK units in same complex',
+  },
+  {
+    id: '28',
+    name: 'Rudra Pratap Singh',
+    email: 'rudra.ps@example.com',
+    phone: '+91 76543 99001',
+    aiScore: 42,
+    aiScoreFactors: "Student looking for PG (-5), Low budget (-10), Temporary requirement (-8)",
+    source: 'Website Chatbot',
+    dateAdded: '2023-11-22',
+    status: 'Unqualified',
+    propertyOfInterest: 'Shared accommodation near university',
+  },
+  {
+    id: '29',
+    name: 'Anvi Goel',
+    email: 'anvi.g@example.com',
+    phone: '+91 65432 00112',
+    aiScore: 77,
+    aiScoreFactors: "Downsizing from larger home (+15), Seeking low-maintenance property (+10), Prefers gated community (+8)",
+    source: 'Property Listing',
+    dateAdded: '2023-11-23',
+    status: 'Contacted',
+    propertyOfInterest: 'Luxury condo, Gachibowli',
+  },
+  {
+    id: '30',
+    name: 'Zoya Akhtar',
+    email: 'zoya.a@example.com',
+    phone: '+91 99887 11223',
+    aiScore: 69,
+    aiScoreFactors: "Artist looking for studio space (+10), Needs good natural light (+10), Flexible on location if budget met (+5)",
+    source: 'Google Ads',
+    dateAdded: '2023-11-24',
+    status: 'Qualified',
+    propertyOfInterest: 'Commercial space with high ceilings',
+  },
+  {
+    id: '31',
+    name: 'Samar Anand',
+    email: 'samar.anand@example.com',
+    phone: '+91 88776 22334',
+    aiScore: 93,
+    aiScoreFactors: "NRI investor (+20), Interested in property management services (+15), Clear ROI expectations (+12), Referred by bank (+10)",
+    source: 'Referral',
+    dateAdded: '2023-11-25',
+    status: 'Viewing Scheduled', // Changed for variety
+    propertyOfInterest: 'Pre-leased commercial property, Pune',
+  }
 ];
 
 
@@ -110,7 +400,7 @@ export default function LeadsPage() {
     status: [],
     source: [],
     dateRange: { from: undefined, to: undefined },
-    smartView: 'all', // Default to 'All Leads'
+    smartView: 'all', 
   });
   const [selectedLeads, setSelectedLeads] = React.useState<Set<string>>(new Set());
   const [isAddLeadSheetOpen, setIsAddLeadSheetOpen] = React.useState(false);
@@ -150,7 +440,7 @@ export default function LeadsPage() {
   const handleAddLead = (newLeadData: Omit<Lead, 'id' | 'aiScore' | 'aiScoreFactors' | 'dateAdded'>) => {
     const newLead: Lead = {
       ...newLeadData,
-      id: (leads.length + 1 + Math.random()).toString(), // Ensure unique ID
+      id: (leads.length + 1 + Math.random()).toString(), 
       aiScore: Math.floor(Math.random() * 60) + 40, 
       aiScoreFactors: "Manually added (+5), Source: " + newLeadData.source,
       dateAdded: new Date().toISOString().split('T')[0],
@@ -164,7 +454,6 @@ export default function LeadsPage() {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    // Apply Smart View filters first
     if (filters.smartView === 'hot') {
       tempLeads = tempLeads.filter(lead => lead.aiScore > 80);
     } else if (filters.smartView === 'new') {
@@ -173,7 +462,7 @@ export default function LeadsPage() {
       tempLeads = tempLeads.filter(lead => {
         const leadDate = new Date(lead.dateAdded);
         const isOldContacted = lead.status.toLowerCase() === 'contacted' && leadDate < sevenDaysAgo;
-        const isLowEngagement = lead.aiScore < 50 && !['qualified', 'unqualified', 'new'].includes(lead.status.toLowerCase()); // Example: low score and not new/closed
+        const isLowEngagement = lead.aiScore < 50 && !['qualified', 'unqualified', 'new'].includes(lead.status.toLowerCase());
         return isOldContacted || isLowEngagement;
       });
     }
@@ -212,8 +501,8 @@ export default function LeadsPage() {
   const totalPages = Math.ceil(filteredLeads.length / leadsPerPage);
 
   return (
-    <div className="bg-background min-h-screen w-full"> {/* Ensure page takes full width and uses theme background */}
-      <div className="p-0"> {/* Removed outer padding, page content will define its own */}
+    <div className="bg-background min-h-screen w-full">
+      <div className="p-0"> 
         <PageHeader title="Leads">
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={() => alert("Import Leads: This feature is coming soon!")}>
@@ -237,8 +526,8 @@ export default function LeadsPage() {
           />
         )}
 
-        <Card className="mt-6 shadow-sm border bg-card"> {/* Card uses theme card background (white by default) and theme border */}
-          <CardContent className="p-0"> {/* Remove card content padding if table handles it */}
+        <Card className="mt-6 shadow-sm border bg-card">
+          <CardContent className="p-0">
             <LeadsTable
               leads={currentLeads}
               selectedLeads={selectedLeads}
@@ -254,6 +543,22 @@ export default function LeadsPage() {
             <span className="text-sm text-muted-foreground">
               Page {currentPage} of {totalPages}
             </span>
+            <div className="flex items-center space-x-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                <Button
+                  key={pageNumber}
+                  variant={currentPage === pageNumber ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setCurrentPage(pageNumber)}
+                  className={cn(
+                    "h-8 w-8 p-0", 
+                    currentPage === pageNumber && "bg-primary text-primary-foreground hover:bg-primary/90"
+                  )}
+                >
+                  {pageNumber}
+                </Button>
+              ))}
+            </div>
             <Button
               variant="outline"
               size="sm"
