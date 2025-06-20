@@ -10,18 +10,24 @@ import { ContactFormPricing } from "@/components/pricing/ContactFormPricing";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Shield, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const pricingPlansData: PricingPlan[] = [
   {
     name: "Agent Pro",
     price: "₹2,999",
     priceFrequency: "/month",
-    description: "Supercharge your individual productivity with core AI tools.",
+    description: "Supercharge your individual productivity with core AI tools for the Indian market.",
     features: [
       "TerraScribe™ Basic (100 gen/mo)",
       "TerraLead™ Scoring",
       "SmartFlow™ Basic (5 flows)",
-      "Standard Market Reports",
+      "Standard Market Reports (India Focus)",
       "Document Verification (10/mo)",
       "Email Support",
     ],
@@ -32,12 +38,12 @@ const pricingPlansData: PricingPlan[] = [
     name: "Team Growth",
     price: "₹7,999",
     priceFrequency: "/month",
-    description: "Empower your team with collaborative AI and advanced automation.",
+    description: "Empower your team with collaborative AI and advanced automation, tailored for India.",
     features: [
       "TerraScribe™ Pro (500 gen/mo)",
       "TerraLead™ Advanced + Chatbot",
       "SmartFlow™ Pro (20 flows)",
-      "Predictive Market Intel™",
+      "Predictive Market Intel™ (India Focus)",
       "Document Verification (50/mo)",
       "Team Collaboration Tools",
       "Priority Email & Chat Support",
@@ -49,8 +55,8 @@ const pricingPlansData: PricingPlan[] = [
   {
     name: "Enterprise Suite",
     price: "Custom",
-    priceFrequency: "Tailored for you",
-    description: "Bespoke AI solutions for large organizations and unique requirements.",
+    priceFrequency: "Tailored for your organization",
+    description: "Bespoke AI solutions for large organizations and unique requirements in India.",
     features: [
       "Unlimited TerraScribe™",
       "Full TerraLead™ Suite",
@@ -62,7 +68,7 @@ const pricingPlansData: PricingPlan[] = [
       "24/7 Premium Support",
     ],
     ctaText: "Contact Sales",
-    ctaLink: "#contact-sales", // Link to contact form section
+    ctaLink: "#contact-sales", 
     isEnterprise: true,
   },
 ];
@@ -70,15 +76,15 @@ const pricingPlansData: PricingPlan[] = [
 const testimonialsData: Testimonial[] = [
   {
     id: "1",
-    quote: "TerraFlowAI has revolutionized how I manage leads. My conversion rates have skyrocketed, and I'm closing deals faster than ever!",
+    quote: "TerraFlowAI has revolutionized how I manage leads in the Indian market. My conversion rates have skyrocketed!",
     authorName: "Riya Sharma",
-    authorTitle: "Top Agent, PropTech Realty",
+    authorTitle: "Top Agent, PropTech Realty India",
     authorAvatarUrl: "https://placehold.co/60x60.png?text=RS",
     aiHint: "woman professional"
   },
   {
     id: "2",
-    quote: "The AI-generated property descriptions are a lifesaver. They save me hours each week and are incredibly effective in attracting buyers.",
+    quote: "The AI-generated property descriptions are a lifesaver for our Indian listings. They save hours and attract buyers effectively.",
     authorName: "Amit Patel",
     authorTitle: "Founder, Dream Homes Developers",
     authorAvatarUrl: "https://placehold.co/60x60.png?text=AP",
@@ -86,9 +92,9 @@ const testimonialsData: Testimonial[] = [
   },
   {
     id: "3",
-    quote: "Our entire brokerage is more efficient thanks to SmartFlow™ automations. It's a genuine game-changer for our operations and client satisfaction.",
+    quote: "Our entire brokerage is more efficient thanks to SmartFlow™ automations. It's a genuine game-changer for our operations here.",
     authorName: "Priya Singh",
-    authorTitle: "CEO, Urban Nest Estates",
+    authorTitle: "CEO, Urban Nest Estates India",
     authorAvatarUrl: "https://placehold.co/60x60.png?text=PS",
     aiHint: "woman ceo"
   },
@@ -96,8 +102,8 @@ const testimonialsData: Testimonial[] = [
 
 const faqsData = [
   {
-    question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards (Visa, Mastercard, American Express), UPI, and direct bank transfers for annual subscriptions."
+    question: "What payment methods do you accept in India?",
+    answer: "We accept all major credit cards (Visa, Mastercard, American Express), UPI, Net Banking, and direct bank transfers for annual subscriptions."
   },
   {
     question: "Can I change my plan later?",
@@ -109,7 +115,7 @@ const faqsData = [
   },
   {
     question: "How does the 'per user' billing work for Team Growth?",
-    answer: "The Team Growth plan is priced based on bundles of users (e.g., up to 3 users). You can add more user bundles as your team expands."
+    answer: "The Team Growth plan is priced based on bundles of users (e.g., up to 5 users). You can add more user bundles as your team expands."
   },
   {
     question: "What kind of support is included?",
@@ -130,7 +136,7 @@ export default function PricingPage() {
       >
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-headline text-primary mb-4">
-            Find Your Perfect AI Edge
+            Find Your Perfect AI Edge in India
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
             Transparent pricing for every scale. Unlock powerful AI tools designed to elevate your real estate business in India, from individual agents to large enterprises.
@@ -165,14 +171,14 @@ export default function PricingPage() {
       {/* Features Overview Section */}
       <section className="py-16 md:py-20 bg-muted/30">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground mb-4">Core AI Capabilities</h2>
+          <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground mb-4">Core AI Capabilities for India</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
-            Every TerraFlowAI plan is packed with powerful features to streamline your workflow and boost results.
+            Every TerraFlowAI plan is packed with powerful features to streamline your workflow and boost results in the Indian real estate sector.
           </p>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { icon: Zap, title: "Smart Automation", description: "Automate lead follow-ups, marketing tasks, and data entry with SmartFlow™." },
-              { icon: Shield, title: "Secure Documents", description: "Verify legal documents and manage contracts with TerraSecure™." },
+              { icon: Shield, title: "Secure Documents", description: "Verify legal documents and manage contracts with TerraSecure™ (India Compliant)." },
               { icon: CheckCircle, title: "AI Content Creation", description: "Generate compelling listings and marketing copy with TerraScribe™." },
             ].map(feature => (
               <Card key={feature.title} className="text-left shadow-lg hover:shadow-xl transition-shadow">
@@ -191,12 +197,11 @@ export default function PricingPage() {
         </div>
       </section>
 
-
       {/* Testimonials Section */}
       <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold font-headline text-center text-primary mb-12">
-            Loved by Real Estate Innovators in India
+            Trusted by Real Estate Innovators in India
           </h2>
           <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
             {testimonialsData.map((testimonial, index) => (
@@ -211,6 +216,36 @@ export default function PricingPage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 md:py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Find answers to common questions about our plans and services.
+            </p>
+          </div>
+          <Card className="max-w-3xl mx-auto shadow-lg">
+            <CardContent className="p-0">
+            <Accordion type="single" collapsible className="w-full">
+              {faqsData.map((faq, index) => (
+                <AccordionItem value={`item-${index + 1}`} key={index} className="border-b last:border-b-0">
+                  <AccordionTrigger className="p-6 text-left font-semibold text-md hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6 pt-0">
+                    <p className="text-muted-foreground">{faq.answer}</p>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
