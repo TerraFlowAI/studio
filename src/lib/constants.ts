@@ -57,10 +57,10 @@ export type PropertyTypeId = typeof PROPERTY_TYPES[number]['id'];
 
 // For styling status badges/dots consistently
 export const PROPERTY_STATUSES_CONFIG = {
-  active: { dotColor: 'hsl(var(--chart-1))', badgeColor: 'bg-green-500/20 text-green-700 border-green-500/30' }, // Teal as green
-  draft: { dotColor: 'hsl(var(--muted-foreground))', badgeColor: 'bg-slate-500/20 text-slate-700 border-slate-500/30' }, // Gray
-  pending: { dotColor: 'hsl(var(--chart-3))', badgeColor: 'bg-yellow-500/20 text-yellow-700 border-yellow-500/30' }, // Yellow/Orange
-  sold: { dotColor: 'hsl(var(--primary))', badgeColor: 'bg-blue-500/20 text-blue-700 border-blue-500/30' }, // Primary Blue
-  archived: { dotColor: 'hsl(var(--destructive))', badgeColor: 'bg-red-500/20 text-red-700 border-red-500/30' }, // Red
-  default: { dotColor: 'hsl(var(--border))', badgeColor: 'bg-gray-200 text-gray-800 border-gray-400' }
+  active: { dotColor: 'hsl(var(--chart-1))', badgeColor: 'bg-green-500' }, // Solid Green for better visibility
+  draft: { dotColor: 'hsl(var(--muted-foreground))', badgeColor: 'bg-slate-500' }, // Solid Slate
+  pending: { dotColor: 'hsl(var(--chart-3))', badgeColor: 'bg-yellow-500' }, // Solid Yellow
+  sold: { dotColor: 'hsl(var(--primary))', badgeColor: 'bg-blue-500' }, // Solid Blue (Primary)
+  archived: { dotColor: 'hsl(var(--destructive))', badgeColor: 'bg-red-500' }, // Solid Red
+  default: { dotColor: 'hsl(var(--border))', badgeColor: 'bg-gray-400' } // Solid Gray
 } as const;
