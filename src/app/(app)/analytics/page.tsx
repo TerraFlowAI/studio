@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DateRangePicker } from "@/components/shared/DateRangePicker"; // Assuming a generic DateRangePicker component
+import { DateRangePicker, type DateRange } from "@/components/shared/DateRangePicker"; // Updated import
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
-import { TrendingUp, DollarSign, Users, BarChartHorizontal, Download, Filter, Map, Layers, Target, Calculator, FileText } from "lucide-react";
-import { KpiCard } from "@/components/dashboard/KpiCard"; // Reusing KpiCard from dashboard
+import { TrendingUp, DollarSign, Users, BarChartHorizontal, Download, Filter, Map, Layers, Target, Calculator, FileText, Activity, CheckSquare } from "lucide-react";
+import { KpiCard } from "@/components/dashboard/KpiCard"; 
 
 // Mock Data for Sales Performance Tab
 const salesKpiData = [
@@ -57,18 +57,26 @@ const leadFunnelData = [
   { stage: 'Closed', value: 75, fill: "hsl(var(--chart-5))" },
 ];
 
+const leadFunnelChartConfig = {
+  value: { label: "Leads", color: "hsl(var(--primary))" }, // Default color, will be overridden by item fill
+} satisfies ChartConfig;
+
 const leadSourceData = [
-    { name: 'Website Chatbot', leads: 450, conversion: 12, fill: "hsl(var(--chart-1))" },
-    { name: 'Google Ads', leads: 300, conversion: 8, fill: "hsl(var(--chart-2))" },
-    { name: 'Referrals', leads: 250, conversion: 20, fill: "hsl(var(--chart-3))" },
-    { name: 'Social Media', leads: 150, conversion: 5, fill: "hsl(var(--chart-4))" },
-    { name: 'Other', leads: 100, conversion: 3, fill: "hsl(var(--chart-5))" },
+    { name: 'Website Chatbot', leads: 450, conversion: 12, fillLeads: "hsl(var(--chart-1))", fillConversion: "hsla(var(--chart-1), 0.5)" },
+    { name: 'Google Ads', leads: 300, conversion: 8, fillLeads: "hsl(var(--chart-2))", fillConversion: "hsla(var(--chart-2), 0.5)" },
+    { name: 'Referrals', leads: 250, conversion: 20, fillLeads: "hsl(var(--chart-3))", fillConversion: "hsla(var(--chart-3), 0.5)" },
+    { name: 'Social Media', leads: 150, conversion: 5, fillLeads: "hsl(var(--chart-4))", fillConversion: "hsla(var(--chart-4), 0.5)" },
+    { name: 'Other', leads: 100, conversion: 3, fillLeads: "hsl(var(--chart-5))", fillConversion: "hsla(var(--chart-5), 0.5)" },
 ];
 
+const leadSourceChartConfig = {
+  leads: { label: "Leads", color: "hsl(var(--primary))" },
+  conversion: { label: "Conversion Rate (%)", color: "hsl(var(--accent))" },
+} satisfies ChartConfig;
 
 export default function AnalyticsPage() {
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
-    from: new Date(new Date().setDate(new Date().getDate() - 30)),
+    from: new Date(new Date().getFullYear(), new Date().getMonth() -1, new Date().getDate()), // Approx last 30 days
     to: new Date(),
   });
 
@@ -125,14 +133,14 @@ export default function AnalyticsPage() {
               <CardContent className="h-[350px] p-0">
                 <ChartContainer config={revenueChartConfig} className="w-full h-full">
                     <ResponsiveContainer>
-                        <LineChart data={revenueChartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                        <LineChart data={revenueChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
                             <XAxis dataKey="month" tickLine={false} axisLine={false} dy={10} />
                             <YAxis tickFormatter={(value) => `₹${value/100000}L`} tickLine={false} axisLine={false} dx={-5} />
                             <Tooltip content={<ChartTooltipContent indicator="dot" />} cursor={{stroke: 'hsl(var(--primary))', strokeWidth:1, strokeDasharray: "3 3"}} />
                             <Legend verticalAlign="top" align="right" iconSize={12} wrapperStyle={{paddingBottom: "10px"}} />
-                            <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                            <Line type="monotone" dataKey="profit" stroke="var(--color-profit)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                            <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Revenue" />
+                            <Line type="monotone" dataKey="profit" stroke="var(--color-profit)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Profit" />
                         </LineChart>
                     </ResponsiveContainer>
                 </ChartContainer>
@@ -194,47 +202,63 @@ export default function AnalyticsPage() {
           </div>
         </TabsContent>
 
-        {/* Lead Analytics Tab (Placeholder) */}
+        {/* Lead Analytics Tab */}
         <TabsContent value="lead-analytics" className="mt-0">
            <div className="space-y-6">
-             <Card>
-                <CardHeader><CardTitle className="font-headline">Lead Funnel</CardTitle></CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart layout="vertical" data={leadFunnelData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                      <XAxis type="number" />
-                      <YAxis dataKey="stage" type="category" width={100} />
-                      <Tooltip content={<ChartTooltipContent />} />
-                      <Legend />
-                      <Bar dataKey="value" name="Leads" radius={[0, 4, 4, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
+             <Card className="shadow-lg">
+                <CardHeader><CardTitle className="font-headline text-xl">Lead Funnel</CardTitle></CardHeader>
+                <CardContent className="h-[350px] p-0">
+                  <ChartContainer config={leadFunnelChartConfig} className="w-full h-full">
+                    <ResponsiveContainer>
+                      <BarChart layout="vertical" data={leadFunnelData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                        <XAxis type="number" tickLine={false} axisLine={false} />
+                        <YAxis dataKey="stage" type="category" width={100} tickLine={false} axisLine={false} />
+                        <Tooltip content={<ChartTooltipContent />} cursor={{fill: 'hsl(var(--accent)/0.1)'}}/>
+                        <Legend verticalAlign="top" align="right" iconSize={12} />
+                        <Bar dataKey="value" name="Leads" radius={[0, 4, 4, 0]}>
+                          {leadFunnelData.map((entry, index) => (
+                            <Bar key={`cell-${index}`} fill={entry.fill} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
                 </CardContent>
              </Card>
              <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                    <CardHeader><CardTitle className="font-headline">Lead Source Performance</CardTitle></CardHeader>
-                    <CardContent className="h-[300px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={leadSourceData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                           <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                           <XAxis dataKey="name" tick={{fontSize: 10}} />
-                           <YAxis yAxisId="left" orientation="left" stroke="hsl(var(--primary))" />
-                           <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--chart-2))" tickFormatter={(val) => `${val}%`}/>
-                           <Tooltip content={<ChartTooltipContent />} />
-                           <Legend verticalAlign="top" />
-                           <Bar yAxisId="left" dataKey="leads" name="Leads" fill="hsl(var(--primary))" radius={[4,4,0,0]}/>
-                           <Bar yAxisId="right" dataKey="conversion" name="Conversion Rate (%)" fill="hsl(var(--chart-2))" radius={[4,4,0,0]}/>
-                        </BarChart>
-                      </ResponsiveContainer>
+                <Card className="shadow-lg">
+                    <CardHeader><CardTitle className="font-headline text-lg">Lead Source Performance</CardTitle></CardHeader>
+                    <CardContent className="h-[350px] p-0">
+                      <ChartContainer config={leadSourceChartConfig} className="w-full h-full">
+                        <ResponsiveContainer>
+                          <BarChart data={leadSourceData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                             <XAxis dataKey="name" tick={{fontSize: 12}} tickLine={false} axisLine={false} dy={10} />
+                             <YAxis yAxisId="left" orientation="left" stroke="var(--color-leads)" tickLine={false} axisLine={false} />
+                             <YAxis yAxisId="right" orientation="right" stroke="var(--color-conversion)" tickFormatter={(val) => `${val}%`} tickLine={false} axisLine={false} />
+                             <Tooltip content={<ChartTooltipContent />} cursor={{fill: 'hsl(var(--accent)/0.1)'}}/>
+                             <Legend verticalAlign="top" align="right" iconSize={12} />
+                             <Bar yAxisId="left" dataKey="leads" name="Leads" radius={[4,4,0,0]}>
+                                {leadSourceData.map((entry, index) => (
+                                  <Bar key={`cell-leads-${index}`} fill={entry.fillLeads} />
+                                ))}
+                             </Bar>
+                             <Bar yAxisId="right" dataKey="conversion" name="Conversion Rate (%)" radius={[4,4,0,0]}>
+                               {leadSourceData.map((entry, index) => (
+                                  <Bar key={`cell-conv-${index}`} fill={entry.fillConversion} />
+                                ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </ChartContainer>
                     </CardContent>
                 </Card>
-                 <Card>
-                    <CardHeader><CardTitle className="font-headline">Response Time Analysis</CardTitle></CardHeader>
-                    <CardContent className="flex flex-col items-center justify-center h-[300px] text-center">
-                        <KpiCard title="Avg. First Response" value="2h 15m" icon={TrendingUp} trend="-10m vs last week" trendDirection="down" />
-                        <p className="text-sm text-muted-foreground mt-4">Faster response times significantly improve conversion.</p>
+                 <Card className="shadow-lg">
+                    <CardHeader><CardTitle className="font-headline text-lg">Response Time Analysis</CardTitle></CardHeader>
+                    <CardContent className="flex flex-col items-center justify-center h-[350px] text-center">
+                        <KpiCard title="Avg. First Response" value="2h 15m" icon={Activity} trend="-10m vs last week" trendDirection="down" />
+                        <p className="text-sm text-muted-foreground mt-4 px-4">Faster response times significantly improve conversion rates. Aim for under 1 hour.</p>
                     </CardContent>
                 </Card>
              </div>
@@ -279,39 +303,3 @@ export default function AnalyticsPage() {
     </div>
   );
 }
-
-// A simple DateRangePicker placeholder - in a real app, this would be a proper component
-// For now, this is just illustrative. In a real scenario, you'd import a ready component.
-interface DateRange {
-  from?: Date;
-  to?: Date;
-}
-interface DateRangePickerProps {
-    initialDateFrom?: Date;
-    initialDateTo?: Date;
-    onUpdate: (values: { range: DateRange, rangeCompare?: DateRange }) => void;
-    align?: "start" | "center" | "end";
-    triggerClassName?: string;
-}
-
-const DateRangePicker: React.FC<DateRangePickerProps> = ({ onUpdate, align, triggerClassName, initialDateFrom, initialDateTo }) => {
-    const [from, setFrom] = React.useState<Date | undefined>(initialDateFrom);
-    const [to, setTo] = React.useState<Date | undefined>(initialDateTo);
-
-    // Simplified: just a button to simulate picking a range
-    const handlePickRange = () => {
-        const newFrom = new Date(2024, 0, 1); // Jan 1, 2024
-        const newTo = new Date(2024, 0, 31); // Jan 31, 2024
-        setFrom(newFrom);
-        setTo(newTo);
-        onUpdate({ range: { from: newFrom, to: newTo }});
-    };
-
-    return (
-        <Button variant="outline" onClick={handlePickRange} className={triggerClassName}>
-            {from && to ? `${from.toLocaleDateString()} - ${to.toLocaleDateString()}` : "Select Date Range"}
-        </Button>
-    );
-};
-
-    
