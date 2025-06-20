@@ -7,6 +7,7 @@ import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard"
 import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCard";
 import { ListingCard } from "@/components/dashboard/ListingCard";
 import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
+import { Button } from "@/components/ui/button"; // Added this import
 
 import { BarChartHorizontal, TrendingUp, PieChartIcon, LineChartIcon, Files, Home, Users, BarChart3, FileText, AreaChart, Briefcase, Camera, Search } from "lucide-react";
 
@@ -26,9 +27,9 @@ const listings = [
 const salesChartData = {
   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
   datasets: [
-    { data: [30, 40, 25, 50, 45, 60], color: "hsl(var(--chart-1))" }, // Teal
-    { data: [20, 30, 35, 40, 55, 50], color: "hsl(var(--chart-2))" }, // Soft Blue
-    { data: [10, 15, 20, 25, 30, 40], color: "hsl(var(--chart-3))" }, // Orange/Yellow
+    { data: [30, 40, 25, 50, 45, 60], color: "hsl(var(--chart-1))", name: "Residental" }, // Teal
+    { data: [20, 30, 35, 40, 55, 50], color: "hsl(var(--chart-2))", name: "Commercial" }, // Soft Blue
+    { data: [10, 15, 20, 25, 30, 40], color: "hsl(var(--chart-3))", name: "Plot/Land" }, // Orange/Yellow
   ],
 };
 
