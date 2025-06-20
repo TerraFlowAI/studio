@@ -5,88 +5,98 @@
 
 @layer base {
   :root {
-    --background: 216 25% 95%; /* #F0F2F5 Light gray, nearly desaturated blue */
+    /* Light Theme (as per image) */
+    --background: 220 20% 97%; /* Very light gray, almost white */
     --foreground: 220 10% 25%; /* Darker gray for text */
-    --card: 0 0% 100%;
+    
+    --card: 0 0% 100%; /* White cards */
     --card-foreground: 220 10% 25%;
+    
     --popover: 0 0% 100%;
     --popover-foreground: 220 10% 25%;
-    --primary: 197 71% 52%; /* #29ABE2 Vibrant Blue */
-    --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 210 30% 88%; /* Lighter shade of primary for secondary elements */
-    --secondary-foreground: 197 71% 42%; /* Darker blue */
-    --muted: 210 30% 88%;
-    --muted-foreground: 220 10% 45%;
-    --accent: 51 100% 50%; /* #FFD700 Yellow */
-    --accent-foreground: 240 10% 10%; /* Dark text for accent buttons */
+    
+    --primary: 165 72% 51%; /* #2DD4BF - Teal/Turquoise accent */
+    --primary-foreground: 0 0% 100%; /* White for text on primary */
+    
+    --secondary: 210 30% 95%; /* Lighter gray for secondary elements */
+    --secondary-foreground: 165 72% 41%; /* Darker teal */
+    
+    --muted: 210 30% 92%; /* Slightly darker muted gray */
+    --muted-foreground: 220 10% 45%; /* Muted text color */
+    
+    --accent: 165 72% 51%; /* Using primary as accent for simplicity */
+    --accent-foreground: 0 0% 100%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 210 20% 80%;
-    --input: 0 0% 100%;
-    --ring: 197 71% 52%;
-    --chart-1: 197 71% 52%;
-    --chart-2: 51 100% 50%;
-    --chart-3: 197 50% 70%;
-    --chart-4: 51 80% 60%;
-    --chart-5: 210 30% 60%;
-    --radius: 0.5rem;
+    
+    --border: 220 15% 90%; /* Lighter border for subtle separation */
+    --input: 0 0% 100%; /* White input background */
+    --ring: 165 72% 51%; /* Ring color matches primary */
 
-    /* Sidebar specific colors */
+    --chart-1: 165 72% 51%; /* Teal */
+    --chart-2: 220 60% 65%; /* Soft Blue */
+    --chart-3: 30 90% 60%;  /* Orange/Yellow */
+    --chart-4: 0 70% 65%;   /* Soft Red */
+    --chart-5: 260 60% 70%; /* Soft Purple */
+    
+    --radius: 0.5rem; /* Rounded corners */
+
+    /* Sidebar specific colors (Light Theme) */
     --sidebar-background: 0 0% 100%; /* White sidebar */
-    --sidebar-foreground: 220 10% 25%;
-    --sidebar-primary: 197 71% 52%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 216 25% 92%;
-    --sidebar-accent-foreground: 197 71% 52%;
-    --sidebar-border: 210 20% 85%;
-    --sidebar-ring: 197 71% 52%;
+    --sidebar-foreground: 50 10% 30%; /* #374151 Dark gray for inactive icons/text */
+    --sidebar-primary: 165 72% 51%; /* Teal for active item background */
+    --sidebar-primary-foreground: 0 0% 100%; /* White for active item text/icon */
+    --sidebar-accent: 220 20% 95%; /* Light gray for hover on inactive #F3F4F6 */
+    --sidebar-accent-foreground: 50 10% 30%; /* Dark gray for hover text */
+    --sidebar-border: 220 15% 90%; /* Border for sidebar (if needed, image shows no border but shadow) */
+    --sidebar-ring: 165 72% 51%;
 
     /* Gradients for AIDemoVisual */
     --gradient-teal-start: hsl(174, 72%, 56%);
-    --gradient-teal-end: hsl(197, 71%, 52%);
+    --gradient-teal-end: hsl(165, 72%, 51%); /* Adjusted to primary */
     --gradient-purple-blue-start: hsl(250, 60%, 60%);
     --gradient-purple-blue-end: hsl(220, 70%, 65%);
   }
 
   .dark {
-    --background: 220 10% 10%; /* Dark background */
-    --foreground: 210 20% 95%; /* Light text */
+    /* Dark Theme (adjust if needed, but prompt focuses on light mode) */
+    --background: 220 10% 10%; 
+    --foreground: 210 20% 95%; 
     --card: 220 10% 15%;
     --card-foreground: 210 20% 95%;
     --popover: 220 10% 15%;
     --popover-foreground: 210 20% 95%;
-    --primary: 197 71% 52%; /* #29ABE2 Vibrant Blue */
+    --primary: 165 72% 51%; 
     --primary-foreground: 0 0% 100%;
     --secondary: 220 10% 25%;
     --secondary-foreground: 210 20% 95%;
     --muted: 220 10% 25%;
     --muted-foreground: 210 20% 70%;
-    --accent: 51 100% 50%; /* #FFD700 Yellow */
-    --accent-foreground: 240 10% 10%;
+    --accent: 165 72% 51%; 
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
     --border: 220 10% 20%;
     --input: 220 10% 25%;
-    --ring: 197 71% 52%;
-    --chart-1: 197 71% 52%;
-    --chart-2: 51 100% 50%;
-    --chart-3: 197 50% 70%;
-    --chart-4: 51 80% 60%;
-    --chart-5: 210 30% 60%;
+    --ring: 165 72% 51%;
+    --chart-1: 165 72% 51%;
+    --chart-2: 220 60% 65%;
+    --chart-3: 30 90% 60%;
+    --chart-4: 0 70% 65%;
+    --chart-5: 260 60% 70%;
 
-    /* Sidebar specific colors for dark theme */
     --sidebar-background: 220 10% 12%;
     --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 197 71% 52%;
+    --sidebar-primary: 165 72% 51%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 10% 20%;
-    --sidebar-accent-foreground: 197 71% 52%;
+    --sidebar-accent-foreground: 165 72% 51%;
     --sidebar-border: 220 10% 25%;
-    --sidebar-ring: 197 71% 52%;
+    --sidebar-ring: 165 72% 51%;
 
-    /* Gradients for AIDemoVisual - Dark Theme */
     --gradient-teal-start: hsl(174, 65%, 45%);
-    --gradient-teal-end: hsl(197, 65%, 42%);
+    --gradient-teal-end: hsl(165, 65%, 42%);
     --gradient-purple-blue-start: hsl(250, 50%, 50%);
     --gradient-purple-blue-end: hsl(220, 60%, 55%);
   }
@@ -107,8 +117,8 @@
 
 @layer utilities {
   .text-shimmer {
-    @apply bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 bg-no-repeat;
-    background-size: 150% auto; /* Smaller size for a tighter shimmer */
+    @apply bg-gradient-to-r from-primary via-sky-500 to-purple-500 bg-no-repeat;
+    background-size: 150% auto; 
     -webkit-background-clip: text;
     -moz-background-clip: text;
     background-clip: text;
@@ -117,10 +127,19 @@
     text-fill-color: transparent;
     @apply animate-text-shimmer;
   }
+   .animate-text-shimmer-strong { /* For BeforeAfterAI section */
+    @apply bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-no-repeat;
+    background-size: 150% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+    @apply animate-textShimmerStrong;
+  }
 
   .shimmering-border {
     position: relative;
-    overflow: hidden; /* Important for containing the pseudo-element */
+    overflow: hidden; 
   }
   .shimmering-border::before {
     content: '';
@@ -129,26 +148,26 @@
     left: -150%;
     width: 400%; 
     height: 400%;
-    background: conic-gradient(transparent, theme('colors.teal.500/40'), theme('colors.blue.500/30'), theme('colors.purple.500/40'), transparent 40%);
+    background: conic-gradient(transparent, theme('colors.primary/40'), theme('colors.blue.500/30'), theme('colors.purple.500/40'), transparent 40%);
     @apply animate-shimmer; 
-    z-index: 1; /* Behind direct children content */
+    z-index: 1; 
   }
-   .shimmering-border > * { /* Ensure direct children are above the shimmer */
+   .shimmering-border > * {
     position: relative;
     z-index: 2;
   }
 
   .moving-dashboard-border {
-    position: relative; /* Needed for pseudo-element positioning */
-    border: 2px solid transparent; /* Placeholder for border */
+    position: relative; 
+    border: 2px solid transparent; 
   }
   .moving-dashboard-border::before {
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: inherit; /* Match parent's border-radius */
-    padding: 2px; /* Border width */
-    background: linear-gradient(90deg, theme('colors.teal.500'), theme('colors.blue.500'), theme('colors.purple.500'), theme('colors.teal.500'));
+    border-radius: inherit; 
+    padding: 2px; 
+    background: linear-gradient(90deg, theme('colors.primary'), theme('colors.blue.500'), theme('colors.purple.500'), theme('colors.primary'));
     background-size: 200% 100%;
     -webkit-mask: 
       linear-gradient(#fff 0 0) content-box, 
@@ -159,7 +178,7 @@
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     @apply animate-moving-dashboard-border;
-    pointer-events: none; /* So it doesn't interfere with interactions */
+    pointer-events: none; 
   }
 
   .animation-delay-200 { animation-delay: 0.2s; }
@@ -172,5 +191,21 @@
   .animation-delay-1500 { animation-delay: 1.5s; }
   .animation-delay-2000 { animation-delay: 2s; }
   .animation-delay-2500 { animation-delay: 2.5s; }
+
+  /* Custom animation for AI Assistant waveform placeholder */
+  .waveform-dot {
+    @apply w-1.5 h-1.5 bg-current rounded-full;
+    animation: waveform-pulse 1.5s infinite ease-in-out;
+  }
+  .waveform-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .waveform-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
 }
 
+@keyframes waveform-pulse {
+  0%, 100% { transform: scaleY(0.5); opacity: 0.7; }
+  50% { transform: scaleY(1); opacity: 1; }
+}

@@ -2,27 +2,18 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   Users,
+  Briefcase,
+  BarChart3,
+  PenSquare,
   Zap,
   FileSignature,
-  Calculator,
-  Sparkles,
-  BarChart3,
-  Camera,
-  Briefcase,
-  ShieldCheck,
-  Settings,
-  LogOut,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Logo } from '../shared/Logo';
-import { Button } from '../ui/button';
-import { ScrollArea } from '../ui/scroll-area';
-import { Separator } from '../ui/separator';
 import {
   Sidebar,
   SidebarHeader,
@@ -32,111 +23,93 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   useSidebar,
-  SidebarGroup,
-  SidebarGroupLabel,
 } from '@/components/ui/sidebar';
-import { useRouter } from 'next/navigation'; 
+import Image from 'next/image';
 
 export interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
-  group?: string;
 }
 
 export const navItems: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, group: 'Overview' },
-  { href: '/clients', label: 'Clients', icon: Users, group: 'Management' },
-  { href: '/smartflow', label: 'SmartFlow Automation', icon: Zap, group: 'Management' },
-  { href: '/project-management', label: 'Project Management', icon: Briefcase, group: 'Management' },
-  { href: '/terrascribe', label: 'TerraScribe AI', icon: FileSignature, group: 'AI Tools' },
-  { href: '/terravaluate', label: 'TerraValuate Pro', icon: Calculator, group: 'AI Tools' },
-  { href: '/recommendations', label: 'Recommendations', icon: Sparkles, group: 'AI Tools' },
-  { href: '/market-analytics', label: 'Market Analytics', icon: BarChart3, group: 'Insights' },
-  { href: '/virtual-tours', label: 'Virtual Tours', icon: Camera, group: 'Insights' },
-  { href: '/fraud-detection', label: 'Fraud & Compliance', icon: ShieldCheck, group: 'Insights' },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }, // Assumed /dashboard is the overview
+  { href: '/leads', label: 'Leads', icon: Users }, // TerraLead™
+  { href: '/properties', label: 'Properties', icon: Briefcase }, // TerraVision™
+  { href: '/analytics', label: 'Analytics', icon: BarChart3 }, // MarketIntel™
+  { href: '/terrascribe', label: 'TerraScribe', icon: PenSquare },
+  { href: '/smartflow', label: 'SmartFlow', icon: Zap },
+  { href: '/documents', label: 'Documents', icon: FileSignature }, // TerraSecure™
 ];
-
-const groupedNavItems = navItems.reduce((acc, item) => {
-  const group = item.group || 'Other';
-  if (!acc[group]) {
-    acc[group] = [];
-  }
-  acc[group].push(item);
-  return acc;
-}, {} as Record<string, NavItem[]>);
-
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar(); 
-  const router = useRouter();
-
-  const handleLogout = () => {
-    setOpenMobile(false);
-    router.push('/login');
-  };
+  const router = useRouter(); // Not used for logout here, can be removed if not needed elsewhere
 
   return (
-    <Sidebar collapsible="icon" variant="sidebar" side="left" className="border-r">
-      <SidebarHeader className="p-4 border-b">
-        <Logo size="md" />
+    <Sidebar 
+        collapsible="icon" 
+        variant="sidebar" 
+        side="left" 
+        className="border-r-0 shadow-md bg-sidebar text-sidebar-foreground"
+        style={{width: '250px'}}
+    >
+      <SidebarHeader className="p-4 h-20 flex items-center border-b border-border">
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+            <span className="text-lg font-bold text-primary-foreground">T</span>
+          </div>
+          <span className="text-xl font-bold text-foreground">TerraFlow</span>
+        </Link>
       </SidebarHeader>
-      <SidebarContent className="flex-1 p-2">
-        <ScrollArea className="h-full">
-          <SidebarMenu>
-            {Object.entries(groupedNavItems).map(([groupName, items]) => (
-              <SidebarGroup key={groupName}>
-                <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  {groupName}
-                </SidebarGroupLabel>
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.href}>
-                    <Link href={item.href} asChild>
-                      <SidebarMenuButton
-                        isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard')}
-                        tooltip={item.label}
-                        onClick={() => setOpenMobile(false)}
-                        className="justify-start"
-                      >
-                        <item.icon className="h-5 w-5" />
-                        <span>{item.label}</span>
-                      </SidebarMenuButton>
-                    </Link>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarGroup>
-            ))}
-          </SidebarMenu>
-        </ScrollArea>
-      </SidebarContent>
-      <Separator className="my-2"/>
-      <SidebarFooter className="p-2">
+      <SidebarContent className="flex-1 p-3 mt-2">
         <SidebarMenu>
-          <SidebarMenuItem>
-            <Link href="/settings" asChild>
-              <SidebarMenuButton 
-                isActive={pathname === '/settings'} 
-                tooltip="Settings" 
-                onClick={() => setOpenMobile(false)} 
-                className="justify-start"
-              >
-                <Settings className="h-5 w-5" />
-                <span>Settings</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton 
-              onClick={handleLogout} 
-              tooltip="Logout" 
-              className="justify-start text-destructive hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
-            >
-              <LogOut className="h-5 w-5" />
-              <span>Logout</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {navItems.map((item) => (
+            <SidebarMenuItem key={item.href} className="mb-1">
+              <Link href={item.href} passHref legacyBehavior>
+                <SidebarMenuButton
+                  asChild={false} // Ensure it renders as a button or anchor internally managed by SidebarMenuButton
+                  isActive={pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/overview'))}
+                  tooltip={item.label}
+                  onClick={() => setOpenMobile(false)}
+                  className={cn(
+                    "justify-start w-full h-11 px-3 rounded-lg text-sm",
+                    (pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/overview')))
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  )}
+                  iconClassName={cn( // Custom prop for icon styling if needed, or style directly
+                     (pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/overview')))
+                       ? "text-primary-foreground"
+                       : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
+                  )}
+                >
+                  <item.icon className={cn("h-5 w-5 mr-3 shrink-0", 
+                    (pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/overview')))
+                       ? "text-primary-foreground"
+                       : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
+                  )} />
+                  <span>{item.label}</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          ))}
         </SidebarMenu>
+      </SidebarContent>
+      <SidebarFooter className="p-4 border-t border-border">
+        {/* Placeholder for User Profile Avatar */}
+        <div className="flex items-center gap-3">
+            <Image 
+                src="https://placehold.co/40x40.png" 
+                alt="User Avatar" 
+                width={36} 
+                height={36} 
+                className="rounded-full"
+                data-ai-hint="person avatar"
+            />
+             {/* Can add user name/email if design allows when not collapsed */}
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
