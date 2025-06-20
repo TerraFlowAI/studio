@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+// Removed direct Image import, will use Logo component
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import {
@@ -17,6 +17,7 @@ import {
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
 import { StarBorder } from '@/components/ui/star-border'; 
+import { Logo } from '@/components/shared/Logo'; // Import the Logo component
 
 export const LandingPageNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,14 +47,8 @@ export const LandingPageNavigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
-            <Image
-              src="https://placehold.co/140x40.png" // Placeholder for /logos/terraflow-logo-new.svg
-              alt="TerraFlow Logo"
-              width={140} 
-              height={40} 
-              className="object-contain"
-              data-ai-hint="logo brand"
-            />
+            {/* Use the Logo component here */}
+            <Logo size="md" />
           </Link>
 
           <div className="hidden lg:flex items-center space-x-1">
@@ -120,7 +115,7 @@ export const LandingPageNavigation = () => {
               <Button>Login</Button>
             </Link>
             <StarBorder
-              as="button" // as prop used by StarBorder
+              as="button" 
               className="font-semibold"
               data-cta-click="nav-demo-request"
             >
@@ -161,7 +156,7 @@ export const LandingPageNavigation = () => {
                 </Button>
               </Link>
               <StarBorder
-                as="button" // as prop used by StarBorder
+                as="button" 
                 className="w-full mt-2 font-semibold"
                 onClick={() => {
                   setIsOpen(false);

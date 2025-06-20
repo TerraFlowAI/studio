@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation'; // Added useRouter
+import { usePathname, useRouter } from 'next/navigation'; 
 import {
   LayoutDashboard,
   Users,
@@ -15,10 +15,6 @@ import {
   LogOut,
   HelpCircle,
   type LucideIcon,
-  HomeIcon, 
-  MailIcon, 
-  Share2Icon, 
-  FileTextIcon, 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -33,12 +29,13 @@ import {
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/shared/Logo'; // Import the new Logo component
 
 export interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
-  subItems?: NavItem[]; // For Scribe Studio
+  subItems?: NavItem[]; 
 }
 
 export const mainNavItems: NavItem[] = [
@@ -51,7 +48,7 @@ export const mainNavItems: NavItem[] = [
     label: 'Scribe Studio', 
     icon: PenSquare,
   },
-  { href: '/smartflow', label: 'SmartFlow', icon: Zap }, // Corrected href
+  { href: '/smartflow', label: 'SmartFlow', icon: Zap }, 
   { href: '/documents', label: 'Documents', icon: FileSignature },
 ];
 
@@ -63,7 +60,7 @@ export const utilityNavItems: NavItem[] = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const router = useRouter(); // Initialize router
+  const router = useRouter(); 
   const { setOpenMobile, isMobile, state } = useSidebar();
 
   const navItemsToRender = mainNavItems;
@@ -76,12 +73,10 @@ export function AppSidebar() {
         className="border-r-0 shadow-md bg-sidebar text-sidebar-foreground z-40"
         style={ isMobile ? {} : {width: state === 'expanded' ? '250px' : 'var(--sidebar-width-icon, 3rem)'}}
     >
-      <SidebarHeader className="p-4 h-20 flex items-center justify-between border-b border-sidebar-border">
+      <SidebarHeader className="p-4 h-20 flex items-center justify-center group-data-[collapsible=icon]:justify-center group-data-[state=expanded]:justify-start border-b border-sidebar-border">
         <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setOpenMobile(false)}>
-          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-            <span className="text-lg font-bold text-primary-foreground">T</span>
-          </div>
-          { (state === 'expanded' || isMobile) && <span className="text-xl font-bold text-foreground">TerraFlow</span> }
+          {/* Use the Logo component, conditionally hide text */}
+          <Logo size={state === 'expanded' || isMobile ? 'md' : 'sm'} hideText={state !== 'expanded' && !isMobile} />
         </Link>
       </SidebarHeader>
       <SidebarContent className="flex-1 p-3 mt-2 overflow-y-auto">
