@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,8 +19,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { generatePropertyDescription, GeneratePropertyDescriptionInput, GeneratePropertyDescriptionOutput } from "@/ai/flows/generate-property-description";
+import { generateImageFromText, GenerateImageFromTextInput, GenerateImageFromTextOutput } from "@/ai/flows/generate-image-from-text"; // New import
 import { useState } from "react";
-import { Loader2, Wand2, Sparkles, RefreshCcw, Edit3, Check, Copy, Save, DatabaseZap } from "lucide-react";
+import { Loader2, Wand2, Sparkles, RefreshCcw, Edit3, Check, Copy, Save, DatabaseZap, Image as ImageIcon, Share2, Facebook, Twitter, Linkedin, Instagram } from "lucide-react"; // Added ImageIcon, Share2, and social icons
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
@@ -29,6 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Image from "next/image"; // For displaying the generated image
 
 
 const propertyFormSchema = z.object({
@@ -60,6 +61,11 @@ export function PropertyDescriptionGenerator() {
   const [isRefining, setIsRefining] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<GeneratePropertyDescriptionOutput | null>(null);
 
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [generatedImageDataUri, setGeneratedImageDataUri] = useState<string | null>(null);
+  const [imageGenError, setImageGenError] = useState<string | null>(null);
+
+
   const form = useForm<z.infer<typeof propertyFormSchema>>({
     resolver: zodResolver(propertyFormSchema),
     defaultValues: {
@@ -75,11 +81,10 @@ export function PropertyDescriptionGenerator() {
   });
 
   async function onSubmit(values: z.infer<typeof propertyFormSchema>) {
-    if (!isRefining) setIsLoading(true); // Full loading state for initial generation
-    // For refinement, setIsLoading is already true if isRefining is true.
-    
-    // Keep previous content if refining, clear if brand new generation
-    // setGeneratedContent(isRefining ? generatedContent : null);
+    if (!isRefining) setIsLoading(true);
+    setGeneratedContent(null); // Clear previous text content on new generation
+    setGeneratedImageDataUri(null); // Clear previous image on new text generation
+    setImageGenError(null);
     
     try {
       const input: GeneratePropertyDescriptionInput = values;
@@ -104,8 +109,11 @@ export function PropertyDescriptionGenerator() {
 
   const handleRefine = (newStyle: string) => {
     setIsRefining(true);
-    setIsLoading(true); // Set loading true for refinement
+    setIsLoading(true); 
     form.setValue("style", newStyle);
+    // Clear previous image when refining text
+    setGeneratedImageDataUri(null); 
+    setImageGenError(null);
     form.handleSubmit(onSubmit)(); 
   };
 
@@ -113,6 +121,53 @@ export function PropertyDescriptionGenerator() {
     navigator.clipboard.writeText(textToCopy);
     toast({ title: `${type} Copied!`, description: "Content copied to clipboard." });
   };
+
+  const handleGenerateImage = async () => {
+    if (!generatedContent?.description) {
+      toast({ variant: "destructive", title: "No Description", description: "Please generate a description first." });
+      return;
+    }
+    setIsGeneratingImage(true);
+    setGeneratedImageDataUri(null);
+    setImageGenError(null);
+    try {
+      const input: GenerateImageFromTextInput = { description: generatedContent.description };
+      const result = await generateImageFromText(input);
+      setGeneratedImageDataUri(result.imageUrl);
+      toast({ title: "Image Generated!", description: "AI has generated an image based on the description." });
+    } catch (error) {
+      console.error("Error generating image:", error);
+      setImageGenError("Failed to generate image. Please try again.");
+      toast({ variant: "destructive", title: "Image Generation Failed", description: (error as Error).message || "Could not generate image." });
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
+  
+  const handleSocialShare = (platform: 'facebook' | 'twitter' | 'linkedin' | 'instagram') => {
+    const textToShare = generatedContent?.headline || "Check out this property!";
+    const propertyPageUrl = "https://terraflow.ai/mock-property-url"; // Placeholder URL
+
+    let shareUrl = "";
+    switch(platform) {
+        case 'facebook':
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(propertyPageUrl)}&quote=${encodeURIComponent(textToShare)}`;
+            break;
+        case 'twitter':
+            shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(propertyPageUrl)}&text=${encodeURIComponent(textToShare)}`;
+            break;
+        case 'linkedin':
+            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(propertyPageUrl)}`;
+            break;
+        case 'instagram':
+            // Instagram sharing is more complex, usually involves API or app redirects, direct web share is limited.
+            alert("Instagram sharing typically requires using their app. You can download the image and post it manually!");
+            return;
+    }
+    window.open(shareUrl, '_blank', 'noopener,noreferrer');
+    toast({ title: "Sharing...", description: `Opening ${platform} in a new tab.`});
+  };
+
 
   return (
     <div className="grid lg:grid-cols-2 gap-6">
@@ -124,11 +179,12 @@ export function PropertyDescriptionGenerator() {
             <Tooltip>
               <TooltipTrigger asChild>
                  <Button 
-                    variant="link" 
-                    className="p-0 h-auto text-sm text-primary hover:underline justify-start -mt-1" 
+                    variant="outline" 
+                    size="sm"
+                    className="mt-1 text-sm text-muted-foreground hover:text-primary hover:border-primary justify-start w-fit" 
                     onClick={() => alert("Feature: Load property data from existing listing (Coming Soon!)")}
                   >
-                    <DatabaseZap className="mr-1.5 h-4 w-4" /> Or, load from existing property...
+                    <DatabaseZap className="mr-1.5 h-4 w-4" /> Load from existing property...
                   </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -249,8 +305,8 @@ export function PropertyDescriptionGenerator() {
                 <div className="flex items-center gap-2 mt-1">
                   <Textarea value={generatedContent.headline} readOnly rows={2} className="bg-muted/30 text-lg font-semibold"/>
                   <TooltipProvider><Tooltip><TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" onClick={() => form.handleSubmit(onSubmit)()} title="Regenerate Headline" disabled={isLoading}><RefreshCcw className="h-4 w-4 text-primary"/></Button>
-                  </TooltipTrigger><TooltipContent><p>Regenerate</p></TooltipContent></Tooltip></TooltipProvider>
+                    <Button variant="ghost" size="icon" onClick={() => form.handleSubmit(onSubmit)()} title="Regenerate Headline" disabled={isLoading || isRefining}><RefreshCcw className="h-4 w-4 text-primary"/></Button>
+                  </TooltipTrigger><TooltipContent><p>Regenerate All</p></TooltipContent></Tooltip></TooltipProvider>
                   <TooltipProvider><Tooltip><TooltipTrigger asChild>
                     <Button variant="ghost" size="icon" onClick={() => handleCopy(generatedContent.headline, "Headline")} title="Copy Headline"><Copy className="h-4 w-4 text-primary"/></Button>
                   </TooltipTrigger><TooltipContent><p>Copy Headline</p></TooltipContent></Tooltip></TooltipProvider>
@@ -258,10 +314,10 @@ export function PropertyDescriptionGenerator() {
               </div>
               <div>
                 <FormLabel className="text-base">AI-Generated Description</FormLabel>
-                <Textarea value={generatedContent.description} readOnly rows={10} className="bg-muted/30 mt-1 h-64"/>
+                <Textarea value={generatedContent.description} readOnly rows={8} className="bg-muted/30 mt-1 h-auto min-h-[150px]"/>
               </div>
               <div className="space-y-2 pt-2">
-                <p className="text-sm font-medium text-muted-foreground">Quick Refinements (changes writing style & regenerates):</p>
+                <p className="text-sm font-medium text-muted-foreground">Quick Refinements (changes writing style & regenerates text):</p>
                 <div className="flex flex-wrap gap-2">
                   {refinementActions.map(action => (
                     <Button 
@@ -278,19 +334,69 @@ export function PropertyDescriptionGenerator() {
                   ))}
                 </div>
               </div>
+
+              {/* AI Image Generation Section */}
+              <div className="pt-4 border-t mt-4">
+                <h3 className="text-base font-semibold text-primary mb-2 flex items-center">
+                  <ImageIcon className="mr-2 h-5 w-5" /> AI Image Generation (Beta)
+                </h3>
+                {!generatedImageDataUri && !isGeneratingImage && !imageGenError && (
+                  <Button onClick={handleGenerateImage} disabled={!generatedContent || isLoading} className="w-full">
+                    <Sparkles className="mr-2 h-4 w-4" /> Generate Image from Description
+                  </Button>
+                )}
+                {isGeneratingImage && (
+                  <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+                    <p>Generating image... This can take a moment.</p>
+                  </div>
+                )}
+                {imageGenError && !isGeneratingImage && (
+                   <p className="text-sm text-destructive text-center py-4">{imageGenError}</p>
+                )}
+                {generatedImageDataUri && !isGeneratingImage && (
+                  <div className="mt-2 space-y-3">
+                    <Image 
+                        src={generatedImageDataUri} 
+                        alt="AI Generated Property Image" 
+                        width={500} 
+                        height={300} 
+                        className="rounded-md border object-contain mx-auto shadow-md" 
+                    />
+                    <Button onClick={handleGenerateImage} variant="outline" disabled={!generatedContent || isLoading} className="w-full">
+                        <RefreshCcw className="mr-2 h-4 w-4" /> Regenerate Image
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* Social Media Sharing Section */}
+              {(generatedContent || generatedImageDataUri) && (
+                <div className="pt-4 border-t mt-4">
+                   <h3 className="text-base font-semibold text-primary mb-2 flex items-center">
+                    <Share2 className="mr-2 h-5 w-5" /> Share Content
+                   </h3>
+                   <div className="flex flex-wrap gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleSocialShare('facebook')}><Facebook className="mr-1.5 h-4 w-4 text-[#1877F2]"/> Facebook</Button>
+                        <Button variant="outline" size="sm" onClick={() => handleSocialShare('twitter')}><Twitter className="mr-1.5 h-4 w-4 text-[#1DA1F2]"/> X (Twitter)</Button>
+                        <Button variant="outline" size="sm" onClick={() => handleSocialShare('linkedin')}><Linkedin className="mr-1.5 h-4 w-4 text-[#0A66C2]"/> LinkedIn</Button>
+                        <Button variant="outline" size="sm" onClick={() => handleSocialShare('instagram')}><Instagram className="mr-1.5 h-4 w-4 text-[#E4405F]"/> Instagram</Button>
+                   </div>
+                </div>
+              )}
             </>
           )}
         </CardContent>
         {generatedContent && (
           <CardFooter className="border-t pt-4 flex flex-col sm:flex-row gap-2">
             <Button variant="outline" className="w-full sm:w-auto" onClick={() => handleCopy(`Headline: ${generatedContent.headline}\n\nDescription: ${generatedContent.description}`, "Full Content")}>
-              <Copy className="mr-2 h-4 w-4"/> Copy All
+              <Copy className="mr-2 h-4 w-4"/> Copy All Text
             </Button>
             <TooltipProvider><Tooltip><TooltipTrigger asChild>
-              <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => alert("Save to Property Clicked (Placeholder)")}>
+              <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => alert("Save to Property Clicked (Placeholder - would save text & image if available)")}>
                 <Save className="mr-2 h-4 w-4"/> Save to Property
               </Button>
-            </TooltipTrigger><TooltipContent><p>Coming Soon: Save this content directly to a property listing.</p></TooltipContent></Tooltip></TooltipProvider>
+            </TooltipTrigger><TooltipContent><p>Coming Soon: Save this content and image directly to a property listing.</p></TooltipContent></Tooltip></TooltipProvider>
           </CardFooter>
         )}
       </Card>
