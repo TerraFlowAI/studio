@@ -86,20 +86,20 @@ const SidebarProvider = React.forwardRef<
           document.cookie = `${SIDEBAR_COOKIE_NAME}=${newOpenState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
         }
       },
-      [open, setOpenProp] 
+      [open, setOpenProp]
     );
-    
+
     React.useEffect(() => {
-      if (typeof window !== 'undefined' && openProp === undefined) { 
+      if (typeof window !== 'undefined' && openProp === undefined) {
         const cookieValue = document.cookie
           .split('; ')
           .find(row => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`))
           ?.split('=')[1];
-        
+
         if (cookieValue !== undefined) {
           const cookieOpenState = cookieValue === 'true';
-          if (open !== cookieOpenState) { 
-             setOpen(cookieOpenState); 
+          if (open !== cookieOpenState) {
+             setOpen(cookieOpenState);
           }
         }
       }
@@ -546,9 +546,11 @@ const sidebarMenuButtonVariants = cva(
 )
 
 type SidebarMenuButtonProps = (React.ComponentPropsWithoutRef<"button"> | React.ComponentPropsWithoutRef<"a">) & {
-  asChild?: boolean; 
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
+  // Note: `asChild` is implicitly handled by the union type and spread props.
+  // Explicitly defining `asChild` here can sometimes cause type conflicts or confusion
+  // with how `Link` passes its own `asChild`.
 } & VariantProps<typeof sidebarMenuButtonVariants>;
 
 
@@ -564,53 +566,58 @@ const SidebarMenuButton = React.forwardRef<
       isActive = false,
       tooltip,
       children,
-      href, 
-      asChild: propAsChild, 
-      type,
-      ...otherProps 
+      href,
+      type, // `type` is relevant for button, not for anchor
+      ...otherProps // `asChild` from Link will be in `otherProps` if Link is parent
     } = props;
 
     const { isMobile, state } = useSidebar();
-    
-    const elementProps: Record<string, any> = {
-      ...otherProps, 
+
+    // Base props for the core element (<a> or <button>)
+    // We explicitly filter out `asChild` here if it exists in `otherProps`
+    // to prevent it from reaching the final DOM element if it's not a Slot.
+    const { asChild, ...safeOtherProps } = otherProps as any;
+
+    const coreElementProps: Record<string, any> = {
+      ...safeOtherProps,
       ref: ref,
       className: cn(sidebarMenuButtonVariants({ variant, size, className })),
       'data-sidebar': "menu-button",
       'data-size': size,
       'data-active': isActive,
     };
-    
-    let Comp: React.ElementType;
 
-    if (href) { 
-      Comp = 'a';
-      elementProps.href = href;
-      if (elementProps.type) delete elementProps.type; 
-    } else if (propAsChild) { 
-      Comp = Slot;
-      if (elementProps.type) delete elementProps.type;
-    } else { 
-      Comp = 'button';
-      elementProps.type = type || 'button';
-    }
-    
-    const buttonElement = (
-      <Comp {...elementProps}>
-        {children}
-      </Comp>
-    );
+    const renderCoreElement = () => {
+      if (href) {
+        // If href is present, it's an anchor.
+        // `href` from props is used.
+        // `type` prop is not applicable to `<a>`.
+        return <a href={href} {...coreElementProps}>{children}</a>;
+      } else {
+        // Otherwise, it's a button.
+        // `type` prop is set, defaulting to "button".
+        return <button type={type || 'button'} {...coreElementProps}>{children}</button>;
+      }
+    };
+
+    const coreInteractiveElement = renderCoreElement();
 
     if (!tooltip) {
-      return buttonElement;
+      return coreInteractiveElement;
     }
-    
+
     const tooltipContentProps = typeof tooltip === 'string' ? { children: tooltip } : tooltip;
 
     return (
       <Tooltip>
-        <TooltipTrigger>
-          {buttonElement}
+        <TooltipTrigger asChild>
+          {/*
+            TooltipTrigger's asChild allows coreInteractiveElement (<a> or <button>)
+            to receive TooltipTrigger's accessibility props and event handlers.
+            Radix's Slot (used by asChild) should correctly spread props to DOM elements
+            without passing down the `asChild` prop itself to the DOM element.
+          */}
+          {coreInteractiveElement}
         </TooltipTrigger>
         <TooltipContent
           side="right"
