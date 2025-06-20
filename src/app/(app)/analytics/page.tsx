@@ -11,7 +11,7 @@ import { DateRangePicker, type DateRange } from "@/components/shared/DateRangePi
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrendingUp, DollarSign, Users, BarChartHorizontal, Download, Filter, Map, Layers, Target, Calculator, FileText, Activity, CheckSquare, Package, Landmark } from "lucide-react";
+import { TrendingUp, DollarSign, Users, BarChartHorizontal, Download, Filter, Map, Layers, Target, Calculator, FileText, Activity, CheckSquare, Package, Landmark, Clock } from "lucide-react";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 
 // Mock Data for Sales Performance Tab
@@ -336,3 +336,4 @@ export default function AnalyticsPage() {
     </div>
   );
 }
+
