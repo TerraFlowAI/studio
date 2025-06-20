@@ -28,7 +28,7 @@ const mockLeadData: Lead = {
 };
 
 const mockMatchedProperties = [
-  { id: "prop1", title: "Sea View Penthouse", price: "₹3.8 Cr", imageUrl: "https://placehold.co/300x200.png", aiHint: "modern apartment", hasVrTour: true },
+  { id: "prop1", title: "Sea View Penthouse", price: "₹3.8 Cr", imageUrl: "https://images.unsplash.com/photo-1685300077128-ca33b07cc561?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzZWElMjB2aWV3JTIwcGVudGhvdXNlfGVufDB8fHx8MTc1MDQyNzQ0OHww&ixlib=rb-4.1.0&q=80&w=1080", aiHint: "sea view", hasVrTour: true },
   { id: "prop2", title: "Spacious Bandra Flat", price: "₹3.5 Cr", imageUrl: "https://placehold.co/300x200.png", aiHint: "apartment interior", hasVrTour: false },
   { id: "prop3", title: "Juhu Beachfront Villa", price: "₹4.2 Cr", imageUrl: "https://placehold.co/300x200.png", aiHint: "luxury villa", hasVrTour: true },
 ];
