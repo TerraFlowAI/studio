@@ -1,7 +1,7 @@
 
 "use client";
 import { motion } from "framer-motion";
-import { ActionableBanner } from "@/components/dashboard/ActionableBanner";
+import { ActionableBanner, type BannerItem } from "@/components/dashboard/ActionableBanner";
 import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard";
 import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCard";
 import { ListingCard } from "@/components/dashboard/ListingCard";
@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
 
-import { Bot, TrendingUp, Brain, BarChart3, PenSquare, Camera, Shield, FileSignature, Files, Home, Users, FileText, AreaChart, Briefcase, Search, Calculator, ArrowRight } from "lucide-react";
+import { Bot, TrendingUp, Brain, BarChart3, PenSquare, Camera, Shield, FileSignature, Files, Home, Users, FileText, AreaChart, Briefcase, Search, Calculator, ArrowRight, AlertTriangle } from "lucide-react";
 
 const serviceKpiData = [
   { 
@@ -72,6 +72,33 @@ const listings = [
   { id: "1", title: "Luxury Apartment", location: "Lenteng Agung DKI Jakarta", price: "₹1.9 Cr", specs: "2 Beds, 2 Bath, 1,032 sqft", imageUrl: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxMdXh1cnklMjBhcGFydG1lbnR8ZW58MHx8fHwxNzUwNTA0OTEzfDA&ixlib=rb-4.1.0&q=80&w=1080", aiHint: "modern apartment exterior" },
   { id: "2", title: "Modern Villa", location: "South Delhi", price: "₹3.5 Cr", specs: "4 Beds, 3 Bath, 2,500 sqft", imageUrl: "https://images.unsplash.com/photo-1613977257363-707ba9348227?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB2aWxsYXxlbnwwfHx8fDE3NTA5OTE2MzF8MA&ixlib=rb-4.1.0&q=80&w=1080", aiHint: "luxury villa house" },
   { id: "3", title: "Penthouse Suite", location: "Bandra West, Mumbai", price: "₹7.2 Cr", specs: "3 Beds, 4 Bath, 3,100 sqft", imageUrl: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzb2ZhcGVudGhvdXNlfGVufDB8fHx8MTc1MDk4OTgwOXww&ixlib=rb-4.1.0&q=80&w=1080", aiHint: "penthouse apartment city" },
+];
+
+const bannerItems: BannerItem[] = [
+  {
+    id: 'alert1',
+    icon: Shield,
+    headline: "TerraSecure™ Alert: E-Khata for 'Prestige Falcon City' may have inconsistencies.",
+    subHeadline: "Immediate review is recommended to ensure compliance and mitigate risk.",
+    buttonText: "View Verification Report",
+    onClick: () => console.log("Review Verification Report Clicked")
+  },
+  {
+    id: 'alert2',
+    icon: PenSquare,
+    headline: "Compliance Alert: Your draft 'Agreement for Sale' for Lead 'Aarav Sharma' is missing a key RERA clause.",
+    subHeadline: "Update now to remain compliant.",
+    buttonText: "Open in TerraScribe™",
+    onClick: () => console.log("Open in TerraScribe Clicked")
+  },
+  {
+    id: 'alert3',
+    icon: AlertTriangle,
+    headline: "MarketIntel™ Insight: Price volatility detected in the Juhu area.",
+    subHeadline: "Consider advising clients to act quickly on existing offers.",
+    buttonText: "View Market Report",
+    onClick: () => console.log("View Market Report Clicked")
+  },
 ];
 
 const salesChartData = {
@@ -150,13 +177,7 @@ export default function OverviewDashboardPage() {
 
       {/* Actionable Banner */}
       <motion.div variants={cardVariants} custom={serviceKpiData.length}>
-        <ActionableBanner
-          icon={Shield}
-          headline="TerraSecure™ Alert: E-Khata for 'Prestige Falcon City' may have inconsistencies."
-          subHeadline="Immediate review is recommended to ensure compliance and mitigate risk."
-          buttonText="View Verification Report"
-          onClick={() => console.log("Review Verification Report Clicked")}
-        />
+        <ActionableBanner items={bannerItems} />
       </motion.div>
 
       {/* Main Analytics Section */}
