@@ -1,17 +1,26 @@
+
 // src/app/signup/page.tsx
 "use client";
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { auth } from '@/lib/firebase'; // We are importing from the file we created
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { Button } from '@/components/ui/button'; // Assuming you use shadcn/ui
+import { auth } from '@/lib/firebase';
+import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
 import { AuthVisual } from '@/components/auth/AuthVisual';
 import { Logo } from '@/components/shared/Logo';
 import { useToast } from '@/hooks/use-toast';
+
+const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <title>Google</title>
+        <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.854 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l-2.347 2.347c-.96-.96-2.267-1.653-3.56-1.653-2.84 0-5.187 2.347-5.187 5.2 0 2.84 2.347 5.2 5.187 5.2 3.2 0 4.533-2.04 4.827-3.28H12.48z" />
+    </svg>
+);
+
 
 export default function SignUpPage() {
   const [firstName, setFirstName] = useState('');
@@ -20,6 +29,7 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -35,17 +45,14 @@ export default function SignUpPage() {
     }
 
     try {
-      // Use Firebase to create a new user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Update the new user's profile with their full name
       await updateProfile(user, {
         displayName: `${firstName} ${lastName}`.trim()
       });
 
-      console.log("Successfully created user:", user.uid);
-      // Redirect the user to the dashboard after successful sign-up
+      toast({ title: "Account Created", description: "Welcome to TerraFlow!" });
       router.push('/dashboard');
 
     } catch (error: any) {
@@ -63,6 +70,26 @@ export default function SignUpPage() {
       setIsLoading(false);
     }
   };
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    const provider = new GoogleAuthProvider();
+    try {
+        await signInWithPopup(auth, provider);
+        toast({ title: "Sign-up Successful", description: "Welcome!" });
+        router.push('/dashboard');
+    } catch (error: any) {
+        console.error("Error with Google Sign-In:", error);
+        toast({
+            variant: "destructive",
+            title: "Google Sign-In Failed",
+            description: "Could not sign up with Google. Please try again.",
+        });
+    } finally {
+        setIsGoogleLoading(false);
+    }
+  };
+
 
   return (
     <div className="grid md:grid-cols-2 min-h-screen">
@@ -116,6 +143,22 @@ export default function SignUpPage() {
                 {isLoading ? <Loader2 className="animate-spin" /> : 'Create account'}
               </Button>
             </form>
+
+            <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                        Or continue with
+                    </span>
+                </div>
+            </div>
+
+            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isGoogleLoading}>
+                {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon className="mr-2 h-4 w-4" />}
+                Google
+            </Button>
 
             <p className="text-sm text-center text-muted-foreground mt-6">
               Already a Member? <Link href="/login" className="font-semibold text-primary hover:underline">Log In</Link>
