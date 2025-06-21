@@ -1,4 +1,3 @@
-
 // src/app/signup/page.tsx
 "use client";
 
@@ -80,10 +79,14 @@ export default function SignUpPage() {
         router.push('/dashboard');
     } catch (error: any) {
         console.error("Error with Google Sign-In:", error);
+        let friendlyError = "Could not sign up with Google. Please try again.";
+        if (error.code === 'auth/unauthorized-domain') {
+          friendlyError = "This app's domain is not authorized for sign-up. Please check your Firebase project configuration.";
+        }
         toast({
             variant: "destructive",
             title: "Google Sign-In Failed",
-            description: "Could not sign up with Google. Please try again.",
+            description: friendlyError,
         });
     } finally {
         setIsGoogleLoading(false);
