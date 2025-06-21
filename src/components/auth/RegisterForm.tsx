@@ -1,137 +1,97 @@
 "use client";
-
+import { useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { User, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import Image from 'next/image';
 
 const formSchema = z.object({
-  fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
-  email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-  confirmPassword: z.string(),
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
+  firstName: z.string().min(1, "First name is required."),
+  lastName: z.string().min(1, "Last name is required."),
+  email: z.string().email({ message: "Please enter a valid email." }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
 });
 
 export function RegisterForm() {
   const router = useRouter();
   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
+    defaultValues: { firstName: "", lastName: "", email: "", password: "" },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     console.log("Register values:", values);
-    
     toast({
-      title: "Registration Successful",
-      description: "Your account has been created. Please login.",
+      title: "Account Created!",
+      description: "Welcome to TerraFlowAI. You can now log in.",
     });
     router.push("/login");
   }
 
   return (
-    <Card className="w-full max-w-md shadow-xl">
-      <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-headline text-primary">Create Your Account</CardTitle>
-        <CardDescription>Join TerraFlowAI and transform your real estate business.</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div className="w-full">
+        <div className="text-left mb-8">
+            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-1">START YOUR 14-DAY FREE TRIAL</p>
+            <h1 className="text-4xl font-bold font-headline text-foreground">Create new account.</h1>
+            <p className="mt-2 text-muted-foreground">
+                Already a Member?{" "}
+                <Link href="/login" className="font-semibold text-primary hover:underline">
+                    Log In
+                </Link>
+            </p>
+        </div>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+                <FormField control={form.control} name="firstName" render={({ field }) => (
+                    <FormItem><FormControl><Input placeholder="First name" {...field} className="bg-muted border-none h-12" /></FormControl><FormMessage /></FormItem>
+                )} />
+                <FormField control={form.control} name="lastName" render={({ field }) => (
+                     <FormItem><FormControl><Input placeholder="Last name" {...field} className="bg-muted border-none h-12" /></FormControl><FormMessage /></FormItem>
+                )} />
+            </div>
+
+            <FormField control={form.control} name="email" render={({ field }) => (
+                <FormItem><FormControl><Input type="email" placeholder="Email" {...field} className="bg-muted border-none h-12" /></FormControl><FormMessage /></FormItem>
+            )} />
+            
+            <FormField control={form.control} name="password" render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center"><User className="mr-2 h-4 w-4 text-primary" />Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} className="text-base" />
-                  </FormControl>
-                  <FormMessage />
+                    <div className="relative">
+                        <FormControl>
+                            <Input type={showPassword ? "text" : "password"} placeholder="Password" {...field} className="bg-muted border-none h-12 pr-10" />
+                        </FormControl>
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-primary">
+                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </button>
+                    </div>
+                    <FormMessage />
                 </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center"><Mail className="mr-2 h-4 w-4 text-primary" />Email Address</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="you@example.com" {...field} className="text-base" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center"><Lock className="mr-2 h-4 w-4 text-primary" />Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} className="text-base" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center"><Lock className="mr-2 h-4 w-4 text-primary" />Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} className="text-base" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button 
-              type="submit" 
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting ? "Creating Account..." : "Create Account"}
-            </Button>
+            )} />
+            
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <Button type="button" variant="outline" className="w-full h-12 bg-muted hover:bg-muted/80 border-none">
+                    <Image src="https://www.google.com/favicon.ico" alt="Google" width={20} height={20} className="mr-2"/>
+                    Sign up with Google
+                </Button>
+                <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground text-base" disabled={form.formState.isSubmitting}>
+                    {form.formState.isSubmitting ? "Creating..." : "Create account"}
+                </Button>
+            </div>
           </form>
         </Form>
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Button variant="link" asChild className="text-primary p-0 h-auto">
-            <Link href="/login">Sign in here</Link>
-          </Button>
-        </p>
-      </CardContent>
-    </Card>
+    </div>
   );
 }
