@@ -11,18 +11,10 @@ import { AIDemoVisual } from '@/components/landing/AIDemoVisual';
 import BeforeAfterAI from '@/components/landing/BeforeAfterAI';
 
 
-const STATIC_HEADLINE_PART = "AI-Powered Real Estate is Here. ";
-const TYPING_PHRASES = ["Business on Auto-pilot with AI", "Start Closing More Deals", "Reclaim Your Time", "Automate- Analyze- Accelerate"];
-const TYPING_SPEED_MS = 100;
-const DELETING_SPEED_MS = 50;
-const DELAY_BETWEEN_PHRASES_MS = 2000;
-
-
 export default function LandingPage() { 
   const [isVisible, setIsVisible] = useState(false);
   const [currentFeature, setCurrentFeature] = useState(0);
   const [aiProcessing, setAiProcessing] = useState(false);
-  // Removed unused state variables like leadScore, marketTrend for cleaner code
   const [activeLeads, setActiveLeads] = useState(127);
   const [cursorPosition, setCursorPosition] = useState({ x: 20, y: 30 });
   const [clickedItem, setClickedItem] = useState<string | null>(null);
@@ -31,13 +23,6 @@ export default function LandingPage() {
   const [activeSidebarItem, setActiveSidebarItem] = useState('dashboard');
 
   const [barHeights, setBarHeights] = useState<string[]>([]);
-
-  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
-  const [subIndex, setSubIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [displayedAnimatedText, setDisplayedAnimatedText] = useState('');
-  const [isTypingAnimationPaused, setIsTypingAnimationPaused] = useState(false);
-
 
   const features = [
     { icon: Sparkles, text: "AI-Powered Lead Generation" },
@@ -73,8 +58,6 @@ export default function LandingPage() {
     const aiInterval = setInterval(() => {
       setAiProcessing(true);
       setTimeout(() => {
-        // setLeadScore(Math.floor(Math.random() * 100)); // Unused
-        // setMarketTrend(Math.floor(Math.random() * 40) - 20); // Unused
         setActiveLeads(prev => prev + Math.floor(Math.random() * 10) - 5);
         setPropertyValue(prev => parseFloat((prev + (Math.random() * 0.4 - 0.2)).toFixed(1)));
         setConversionRate(prev => Math.max(50, Math.min(90, prev + Math.floor(Math.random() * 10 - 5))));
@@ -127,86 +110,12 @@ export default function LandingPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); 
 
-  useEffect(() => {
-    if (!isVisible) {
-        setDisplayedAnimatedText('');
-        return;
-    }
-
-    let timeoutId: ReturnType<typeof setTimeout>;
-
-    if (isTypingAnimationPaused) {
-        timeoutId = setTimeout(() => {
-            setIsTypingAnimationPaused(false);
-            if (isDeleting && subIndex === 0) { 
-                setIsDeleting(false);
-                setCurrentPhraseIndex((prevIndex) => (prevIndex + 1) % TYPING_PHRASES.length);
-            } else if (!isDeleting && TYPING_PHRASES[currentPhraseIndex] && subIndex === TYPING_PHRASES[currentPhraseIndex].length) {
-                setIsDeleting(true); 
-            }
-        }, DELAY_BETWEEN_PHRASES_MS);
-    } else { 
-        const currentPhrase = TYPING_PHRASES[currentPhraseIndex];
-        if (!currentPhrase) { 
-            setIsDeleting(false);
-            setCurrentPhraseIndex(0); 
-            setIsTypingAnimationPaused(true);
-            setSubIndex(0);
-            setDisplayedAnimatedText('');
-            return () => clearTimeout(timeoutId);
-        }
-
-        if (isDeleting) {
-            if (subIndex > 0) {
-                timeoutId = setTimeout(() => {
-                    setDisplayedAnimatedText(currentPhrase.substring(0, subIndex - 1));
-                    setSubIndex(subIndex - 1);
-                }, DELETING_SPEED_MS);
-            } else { 
-                setIsTypingAnimationPaused(true); 
-            }
-        } else { 
-            if (subIndex < currentPhrase.length) {
-                timeoutId = setTimeout(() => {
-                    setDisplayedAnimatedText(currentPhrase.substring(0, subIndex + 1));
-                    setSubIndex(subIndex + 1);
-                }, TYPING_SPEED_MS);
-            } else { 
-                setIsTypingAnimationPaused(true); 
-            }
-        }
-    }
-    return () => clearTimeout(timeoutId);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subIndex, isDeleting, currentPhraseIndex, isVisible, isTypingAnimationPaused]);
-
-
   const currentKpiData = [
     { label: 'Total Revenue', value: '₹1.2Cr', change: '+24%', trend: 'up' },
     { label: 'Active Listings', value: '847', change: '+12%', trend: 'up' },
     { label: 'Conversion Rate', value: `${conversionRate}%`, change: '+8%', trend: 'up' },
     { label: 'Avg. Property Value', value: `₹${propertyValue.toFixed(1)}Cr`, change: '+15%', trend: 'up' }
   ];
-
-  const headlineJsx = (
-    <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-800 dark:text-slate-100 mb-2 leading-tight">
-      <span className="block">
-        {STATIC_HEADLINE_PART}
-      </span>
-      <span
-        className={`block text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-200 min-h-[5rem] md:min-h-[6rem] lg:min-h-[7rem]`}
-      >
-        {displayedAnimatedText}
-        {((isTypingAnimationPaused && TYPING_PHRASES[currentPhraseIndex] && subIndex === TYPING_PHRASES[currentPhraseIndex].length && !isDeleting) ||
-         (isVisible && !isTypingAnimationPaused && TYPING_PHRASES[currentPhraseIndex] && subIndex < TYPING_PHRASES[currentPhraseIndex].length && subIndex > 0) ||
-         (isDeleting && subIndex > 0) 
-         ) ? (
-          <span className={`inline-block w-1 h-10 md:h-12 lg:h-14 ml-1 align-bottom
-                           bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 animate-pulse`}></span>
-        ) : <span className="inline-block w-1 h-10 md:h-12 lg:h-14 ml-1 align-bottom"></span>}
-      </span>
-    </h1>
-  );
 
 
   return (
@@ -240,13 +149,22 @@ export default function LandingPage() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-6xl mx-auto">
-            <div className={`mt-8 inline-flex items-center gap-2 bg-transparent backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-teal-700 dark:text-teal-300 mb-8 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'} shimmering-border`}>
+            <div className={`mt-8 inline-flex items-center gap-2 bg-background/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm mb-8 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'} shimmering-border`}>
               <Sparkles className="w-4 h-4 animate-pulse text-teal-700 dark:text-teal-300 z-10" />
-              <span className="text-shimmer">Powered by TerraFlow AI-Suit</span>
+              <span className="text-shimmer font-medium">Powered by TerraFlow AI-Suit</span>
               <span className="relative flex w-3 h-3 ml-2 z-10"><span className="absolute inset-0 inline-flex w-full h-full bg-green-400 rounded-full opacity-75 animate-pulse"></span><span className="relative inline-flex w-3 h-3 bg-green-500 rounded-full"></span></span>
             </div>
 
-            {headlineJsx}
+            <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold text-slate-800 dark:text-slate-100 mb-2 leading-tight transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-200`}>
+              <span className="block">
+                AI-Powered Real Estate is Here.
+              </span>
+              <span
+                className={`block text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 min-h-[5rem] md:min-h-[6rem] lg:min-h-[7rem]`}
+              >
+                Business on Auto-pilot with AI
+              </span>
+            </h1>
 
             <p className={`text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 max-w-4xl mx-auto leading-relaxed transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-600`}>
               Elevate your real estate business with TerraFlow's AI automation. Engage leads 24/7, streamline marketing, and close more deals.
@@ -567,5 +485,3 @@ export default function LandingPage() {
     </>
   );
 };
-
-    
