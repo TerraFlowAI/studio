@@ -70,7 +70,7 @@ const serviceKpiData = [
 
 const listings = [
   { id: "1", title: "Luxury Apartment", location: "Lenteng Agung DKI Jakarta", price: "₹1.9 Cr", specs: "2 Beds, 2 Bath, 1,032 sqft", imageUrl: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxMdXh1cnklMjBhcGFydG1lbnR8ZW58MHx8fHwxNzUwNTA0OTEzfDA&ixlib=rb-4.1.0&q=80&w=1080", aiHint: "modern apartment exterior" },
-  { id: "2", title: "Modern Villa", location: "South Delhi", price: "₹3.5 Cr", specs: "4 Beds, 3 Bath, 2,500 sqft", imageUrl: "https://placehold.co/600x400.png", aiHint: "luxury villa house" },
+  { id: "2", title: "Modern Villa", location: "South Delhi", price: "₹3.5 Cr", specs: "4 Beds, 3 Bath, 2,500 sqft", imageUrl: "https://images.unsplash.com/photo-1613977257363-707ba9348227?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB2aWxsYXxlbnwwfHx8fDE3NTA5OTE2MzF8MA&ixlib=rb-4.1.0&q=80&w=1080", aiHint: "luxury villa house" },
   { id: "3", title: "Penthouse Suite", location: "Bandra West, Mumbai", price: "₹7.2 Cr", specs: "3 Beds, 4 Bath, 3,100 sqft", imageUrl: "https://placehold.co/600x400.png", aiHint: "penthouse apartment city" },
 ];
 
