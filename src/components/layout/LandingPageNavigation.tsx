@@ -15,7 +15,6 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
-import { ThemeToggle } from '@/components/shared/ThemeToggle';
 import { StarBorder } from '@/components/ui/star-border';
 import { Logo } from '@/components/shared/Logo';
 
@@ -122,11 +121,9 @@ export const LandingPageNavigation = () => {
             >
               <span className="animate-text-shimmer text-sm">Request Free Demo</span>
             </StarBorder>
-            <ThemeToggle />
           </div>
 
           <div className="lg:hidden flex items-center">
-            <ThemeToggle />
             <Button
               variant="ghost"
               size="icon"

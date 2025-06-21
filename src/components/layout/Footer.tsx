@@ -6,7 +6,6 @@ import { Logo } from "@/components/shared/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Facebook, Twitter, Linkedin, Instagram, Youtube, Send } from "lucide-react";
-import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 const footerLinks = {
   platform: [
@@ -134,7 +133,6 @@ export function Footer() {
                 </Link>
               );
             })}
-            <ThemeToggle />
           </div>
         </div>
       </div>

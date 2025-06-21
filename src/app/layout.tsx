@@ -25,8 +25,8 @@ export default function RootLayout({
       <body className="font-body antialiased flex flex-col min-h-screen" suppressHydrationWarning={true}>
         <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="light"
+            enableSystem={false}
             disableTransitionOnChange
           >
           {children}
