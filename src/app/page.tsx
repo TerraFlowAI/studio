@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation';
 import { AIDemoVisual } from '@/components/landing/AIDemoVisual';
 import BeforeAfterAI from '@/components/landing/BeforeAfterAI';
+import Typewriter from 'typewriter-effect';
 
 
 export default function LandingPage() { 
@@ -162,7 +163,19 @@ export default function LandingPage() {
               <span
                 className={`block text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 min-h-[5rem] md:min-h-[6rem] lg:min-h-[7rem]`}
               >
-                Business on Auto-pilot with AI
+                <Typewriter
+                  options={{
+                    strings: [
+                      'Business on Auto-pilot with AI',
+                      'Close More Deals, Faster',
+                      'Automate Your Success',
+                    ],
+                    autoStart: true,
+                    loop: true,
+                    delay: 50,
+                    deleteSpeed: 20,
+                  }}
+                />
               </span>
             </h1>
 
