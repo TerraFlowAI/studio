@@ -377,7 +377,7 @@ export default function LandingPage() {
                             clickedItem === 'property-card' ? 'shadow-[-2px_-2px_5px_rgba(100,116,139,0.25),_2px_2px_5px_rgba(15,23,42,0.35)] scale-95' : ''
                           }`}>
                             <Image 
-                              src="https://placehold.co/400x250.png"
+                              src="https://images.unsplash.com/photo-1717167398882-15d1cefd22f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxMdXh1cnklMjBWaWxsYXxlbnwwfHx8fDE3NTA0ODUyNjB8MA&ixlib=rb-4.1.0&q=80&w=1080"
                               alt="Luxury Villa"
                               width={400}
                               height={250}
