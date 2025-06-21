@@ -1,21 +1,71 @@
 
 "use client";
 import { motion } from "framer-motion";
-import { OverviewKpiCard } from "@/components/dashboard/OverviewKpiCard";
 import { ActionableBanner } from "@/components/dashboard/ActionableBanner";
 import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard";
 import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCard";
 import { ListingCard } from "@/components/dashboard/ListingCard";
 import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
-import { Button } from "@/components/ui/button"; // Added this import
+import { Button } from "@/components/ui/button"; 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
-import { BarChartHorizontal, TrendingUp, PieChartIcon, LineChartIcon, Files, Home, Users, BarChart3, FileText, AreaChart, Briefcase, Camera, Search } from "lucide-react";
 
-const kpiData = [
-  { title: "Active Listings", value: "756", trend: "-1k from last month", trendColor: "text-red-500", icon: BarChartHorizontal, service: "Property Management" },
-  { title: "Hot Leads", value: "569", trend: "+2.7k from last month", trendColor: "text-green-500", icon: PieChartIcon, service: "TerraLead™" },
-  { title: "Total Sale Value", value: "₹50 Cr", trend: "+5Cr this month", trendColor: "text-green-500", icon: TrendingUp, service: "TerraValuate™" },
-  { title: "Total Revenue", value: "₹5 Cr", trend: "+5Cr this month", trendColor: "text-green-500", icon: PieChartIcon, service: "Dynamic Pricing Optimization" },
+import { Bot, TrendingUp, Brain, BarChart3, PenSquare, Camera, Shield, FileSignature, Files, Home, Users, FileText, AreaChart, Briefcase, Search, Calculator, ArrowRight } from "lucide-react";
+
+const serviceKpiData = [
+  { 
+    title: "TerraLead™", 
+    icon: Bot,
+    overlayIcon: TrendingUp,
+    stats: [
+        { label: "Hot Leads", value: "82" },
+        { label: "Conversion Rate", value: "18%" }
+    ],
+    actionText: "Manage Leads",
+    actionLink: "/leads",
+    colorClass: "from-teal-500 to-green-500",
+    textColor: "text-teal-400"
+  },
+  { 
+    title: "TerraValuate™", 
+    icon: Brain, 
+    overlayIcon: Calculator,
+    stats: [
+        { label: "Properties Valued", value: "241" },
+        { label: "Avg. Accuracy", value: "96.5%" }
+    ],
+    actionText: "Run New CMA",
+    actionLink: "/terravaluate",
+    colorClass: "from-blue-500 to-sky-500",
+    textColor: "text-blue-400"
+  },
+  { 
+    title: "TerraScribe™", 
+    icon: PenSquare, 
+    overlayIcon: Camera,
+    stats: [
+        { label: "Listings Gen.", value: "42" },
+        { label: "RERA Docs Drafted", value: "8" }
+    ],
+    actionText: "Open Scribe Studio",
+    actionLink: "/scribe",
+    colorClass: "from-purple-500 to-violet-500",
+    textColor: "text-purple-400"
+  },
+    { 
+    title: "TerraSecure™", 
+    icon: Shield, 
+    overlayIcon: FileSignature,
+    stats: [
+        { label: "Docs Verified", value: "112" },
+        { label: "Risks Flagged", value: "14" }
+    ],
+    actionText: "Verify Document",
+    actionLink: "/documents",
+    colorClass: "from-orange-500 to-amber-500",
+    textColor: "text-orange-400"
+  },
 ];
 
 const listings = [
@@ -56,39 +106,62 @@ export default function OverviewDashboardPage() {
 
   return (
     <div className="p-6 md:p-8 space-y-6 md:space-y-8 bg-background min-h-screen">
-      {/* KPI Cards Row */}
+      {/* AI Co-Pilot Service Cards Row */}
       <motion.div 
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         initial="hidden"
         animate="visible"
       >
-        {kpiData.map((kpi, index) => (
-          <motion.div key={kpi.title} variants={cardVariants} custom={index}>
-            <OverviewKpiCard
-              title={kpi.title}
-              value={kpi.value}
-              trend={kpi.trend}
-              trendColor={kpi.trendColor}
-              icon={kpi.icon}
-            />
-          </motion.div>
-        ))}
+        {serviceKpiData.map((kpi, index) => {
+            const Icon = kpi.icon;
+            const OverlayIcon = kpi.overlayIcon;
+            return (
+              <motion.div key={kpi.title} variants={cardVariants} custom={index}>
+                <Card className="shadow-md hover:shadow-lg transition-shadow duration-300 bg-card h-full flex flex-col">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-3">
+                        <div className={`relative w-10 h-10 flex items-center justify-center rounded-lg bg-gradient-to-br ${kpi.colorClass}`}>
+                            <Icon className="w-6 h-6 text-white" />
+                            <OverlayIcon className="absolute w-4 h-4 text-white bg-black/30 rounded-full p-0.5 -bottom-1 -right-1" />
+                        </div>
+                        <CardTitle className="text-lg font-semibold font-headline text-foreground">{kpi.title}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-grow space-y-2">
+                    {kpi.stats.map(stat => (
+                        <div key={stat.label} className="flex justify-between items-baseline">
+                            <p className="text-sm text-muted-foreground">{stat.label}</p>
+                            <p className="text-lg font-bold text-foreground">{stat.value}</p>
+                        </div>
+                    ))}
+                  </CardContent>
+                  <div className="p-4 pt-2">
+                    <Button variant="link" asChild className="p-0 h-auto text-sm font-semibold text-primary">
+                        <Link href={kpi.actionLink}>
+                            {kpi.actionText} <ArrowRight className="ml-1 h-4 w-4" />
+                        </Link>
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+            )
+        })}
       </motion.div>
 
       {/* Actionable Banner */}
-      <motion.div variants={cardVariants} custom={kpiData.length}>
+      <motion.div variants={cardVariants} custom={serviceKpiData.length}>
         <ActionableBanner
-          icon={Files}
-          headline="74 High-Risk Contracts Flagged by TerraSecure™ AI."
-          subHeadline="Compliance issues and fraudulent clauses detected. Review immediately."
-          buttonText="Review Contracts"
-          onClick={() => console.log("Review Contracts Clicked")}
+          icon={Shield}
+          headline="TerraSecure™ Alert: E-Khata for 'Prestige Falcon City' may have inconsistencies."
+          subHeadline="Immediate review is recommended to ensure compliance and mitigate risk."
+          buttonText="View Verification Report"
+          onClick={() => console.log("Review Verification Report Clicked")}
         />
       </motion.div>
 
       {/* Main Analytics Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-        <motion.div className="lg:col-span-2" variants={cardVariants} custom={kpiData.length + 1}>
+        <motion.div className="lg:col-span-2" variants={cardVariants} custom={serviceKpiData.length + 1}>
           <SalesStatisticsCard 
             chartData={salesChartData}
             totalSales="₹32,372 Cr" 
@@ -96,7 +169,7 @@ export default function OverviewDashboardPage() {
             totalCost="₹12,372 Cr"
           />
         </motion.div>
-        <motion.div variants={cardVariants} custom={kpiData.length + 2}>
+        <motion.div variants={cardVariants} custom={serviceKpiData.length + 2}>
           <GrowthStatisticsCard 
             totalRevenue="₹732,629 Cr"
             chartData={growthChartData}
@@ -106,7 +179,7 @@ export default function OverviewDashboardPage() {
 
       {/* Lower Dashboard Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-        <motion.div className="lg:col-span-2" variants={cardVariants} custom={kpiData.length + 3}>
+        <motion.div className="lg:col-span-2" variants={cardVariants} custom={serviceKpiData.length + 3}>
           <div className="bg-card p-6 rounded-lg shadow-md h-full">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-foreground">Listing Board</h2>
@@ -132,7 +205,7 @@ export default function OverviewDashboardPage() {
             </div>
           </div>
         </motion.div>
-        <motion.div variants={cardVariants} custom={kpiData.length + 4}>
+        <motion.div variants={cardVariants} custom={serviceKpiData.length + 4}>
           <AiAssistantCard />
         </motion.div>
       </div>
