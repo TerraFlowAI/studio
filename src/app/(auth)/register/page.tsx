@@ -9,7 +9,6 @@ const AuthHeader = () => (
             <Logo size="md" />
         </Link>
         <nav className="flex items-center gap-6 text-sm font-medium">
-             <Link href="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
              <Link href="/login" className="text-muted-foreground hover:text-primary transition-colors">Log In</Link>
         </nav>
     </div>
