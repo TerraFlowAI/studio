@@ -7,7 +7,6 @@ import { useState, useEffect } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
 import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation';
-import BeforeAfterAI from '@/components/landing/BeforeAfterAI';
 import Typewriter from 'typewriter-effect';
 import { Footer } from '@/components/layout/Footer';
 import { WaitlistSection } from '@/components/landing/WaitlistSection';
@@ -495,7 +494,6 @@ export default function LandingPage() {
           </div>
         </section>
         
-        <BeforeAfterAI />
         <WaitlistSection />
         <ContactSection />
       </main>
