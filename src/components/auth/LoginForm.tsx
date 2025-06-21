@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Image from 'next/image';
 
 const formSchema = z.object({
@@ -41,7 +41,7 @@ export function LoginForm() {
     <div className="w-full">
         <div className="text-left mb-8">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-1">WELCOME BACK</p>
-            <h1 className="text-4xl font-bold font-headline text-foreground">Log in to your account.</h1>
+            <h1 className="text-4xl font-bold font-headline text-foreground">Log in to TerraFlowAI.</h1>
             <p className="mt-2 text-muted-foreground">
                 Need an account?{" "}
                 <Link href="/register" className="font-semibold text-primary hover:underline">
@@ -81,6 +81,7 @@ export function LoginForm() {
                     Log in with Google
                 </Button>
                 <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground text-base" disabled={form.formState.isSubmitting}>
+                    {form.formState.isSubmitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
                     {form.formState.isSubmitting ? "Logging In..." : "Log In"}
                 </Button>
             </div>
