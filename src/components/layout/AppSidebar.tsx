@@ -28,7 +28,9 @@ import {
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Logo } from '@/components/shared/Logo'; // Import the new Logo component
+import { Logo } from '@/components/shared/Logo';
+import { auth } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
 
 export interface NavItem {
   href: string;
@@ -63,6 +65,15 @@ export function AppSidebar() {
   const { setOpenMobile, isMobile, state } = useSidebar();
 
   const navItemsToRender = mainNavItems;
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push('/login');
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
 
   return (
     <Sidebar
@@ -151,7 +162,7 @@ export function AppSidebar() {
               </div>
             )}
         </div>
-         <Button variant="ghost" className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-11 px-3" onClick={() => router.push('/auth/login')}>
+         <Button variant="ghost" className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-11 px-3" onClick={handleLogout}>
             <LogOut className="h-5 w-5 mr-3 shrink-0" />
              {(state === 'expanded' || isMobile) && <span>Logout</span>}
         </Button>
