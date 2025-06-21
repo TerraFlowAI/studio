@@ -9,8 +9,7 @@ const Wave = () => (
         viewBox="0 0 75 800" 
         preserveAspectRatio="none"
     >
-        <path d="M75 800V0C25 160 125 400 25 800h50z" fill="currentColor"></path>
-        <path d="M75 800V0C25 160 125 400 25 800" stroke="hsl(var(--border))" fill="none" strokeDasharray="4 4" strokeWidth="0.5"></path>
+        <path d="M 75 800 V 0 L 0 0 C 50 400, 50 400, 0 800 Z" fill="currentColor"></path>
     </svg>
 );
 
