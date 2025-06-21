@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,6 @@ import { useState, useEffect } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
 import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation';
-import { AIDemoVisual } from '@/components/landing/AIDemoVisual';
 import BeforeAfterAI from '@/components/landing/BeforeAfterAI';
 import Typewriter from 'typewriter-effect';
 import { Footer } from '@/components/layout/Footer';
@@ -494,7 +492,6 @@ export default function LandingPage() {
           </div>
         </section>
         
-        <AIDemoVisual />
         <BeforeAfterAI />
       </main>
       <Footer />
