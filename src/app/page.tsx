@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,8 @@ import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation
 import BeforeAfterAI from '@/components/landing/BeforeAfterAI';
 import Typewriter from 'typewriter-effect';
 import { Footer } from '@/components/layout/Footer';
+import { WaitlistSection } from '@/components/landing/WaitlistSection';
+import { ContactSection } from '@/components/landing/ContactSection';
 
 
 export default function LandingPage() { 
@@ -62,7 +65,7 @@ export default function LandingPage() {
         setPropertyValue(prev => parseFloat((prev + (Math.random() * 0.4 - 0.2)).toFixed(1)));
         setConversionRate(prev => Math.max(50, Math.min(90, prev + Math.floor(Math.random() * 10 - 5))));
         setAiProcessing(false);
-      }, 1500);
+      }, 4000);
     }, 4000);
 
     const cursorInterval = setInterval(() => {
@@ -493,6 +496,8 @@ export default function LandingPage() {
         </section>
         
         <BeforeAfterAI />
+        <WaitlistSection />
+        <ContactSection />
       </main>
       <Footer />
     </>
