@@ -398,7 +398,7 @@ export default function LandingPage() {
                           </div>
                           <div className="bg-slate-700 rounded-lg overflow-hidden shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)] relative group">
                              <Image 
-                              src="https://placehold.co/400x250.png"
+                              src="https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8TW9kZXJuJTIwQXBhcnRtZW50fGVufDB8fHx8MTc1MDQ4NTg5Mnww&ixlib=rb-4.1.0&q=80&w=1080"
                               alt="Modern Apartment"
                               width={400}
                               height={250}
