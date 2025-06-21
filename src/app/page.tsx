@@ -2,7 +2,7 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { ArrowDown, Sparkles, Zap, TrendingUp, Brain, BarChart3, Users, Target, Activity, Loader2, Home, Settings, PieChart, MapPin, Camera, FileText, Calendar, Bell, User, Menu, Search, Filter, ShieldCheck, ChevronDown } from 'lucide-react';
+import { ArrowDown, Sparkles, Zap, TrendingUp, Brain, BarChart3, Users, Target, Activity, Loader2, Home, Settings, PieChart, MapPin, Camera, FileText, Calendar, Bell, User, Menu, Search, Filter, ShieldCheck, ChevronDown, Bot, PenSquare, FileSignature, Shield } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
@@ -489,6 +489,81 @@ export default function LandingPage() {
                       ))}
                     </div>
                   </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-24 bg-white dark:bg-slate-900" data-section-view="core-services">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12 md:mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 font-headline text-slate-800 dark:text-slate-100">
+                The TerraFlow Operating System: Intelligence, Automation & Compliance
+              </h2>
+              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto">
+                From the first lead to the final signature, TerraFlow's AI-powered suites handle every critical aspect of your real estate business.
+              </p>
+            </div>
+        
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {/* Card 1 */}
+              <div className="bg-card dark:bg-slate-800/50 p-6 rounded-xl shadow-lg border border-border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <div className="relative w-16 h-16 flex items-center justify-center rounded-full bg-teal-100 dark:bg-teal-900/50 mb-4">
+                  <Bot className="w-8 h-8 text-teal-600 dark:text-teal-300" />
+                  <TrendingUp className="absolute w-5 h-5 text-white bg-teal-600 dark:bg-teal-400 rounded-full p-1 -bottom-1 -right-1" />
+                </div>
+                <h3 className="text-xl font-bold font-headline text-foreground mb-2">Automate Your Entire Sales Pipeline</h3>
+                <p className="text-sm text-muted-foreground mb-4">Never miss an opportunity. Our AI captures, qualifies, scores, and nurtures leads 24/7, surfacing hot prospects so your team can focus on what they do best: closing deals.</p>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 px-2 py-1 rounded-full">AI Lead Scoring</span>
+                  <span className="bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 px-2 py-1 rounded-full">Automated Follow-ups</span>
+                  <span className="bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 px-2 py-1 rounded-full">Chatbot Qualification</span>
+                </div>
+              </div>
+        
+              {/* Card 2 */}
+              <div className="bg-card dark:bg-slate-800/50 p-6 rounded-xl shadow-lg border border-border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <div className="relative w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 mb-4">
+                  <Brain className="w-8 h-8 text-blue-600 dark:text-blue-300" />
+                  <BarChart3 className="absolute w-5 h-5 text-white bg-blue-600 dark:bg-blue-400 rounded-full p-1 -bottom-1 -right-1" />
+                </div>
+                <h3 className="text-xl font-bold font-headline text-foreground mb-2">Predictive Market & Pricing Intelligence</h3>
+                <p className="text-sm text-muted-foreground mb-4">Go beyond guesswork. Leverage our AI for precise property valuations, dynamic pricing recommendations, and predictive forecasts on market trends and demand hotspots.</p>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full">AI Valuation</span>
+                  <span className="bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full">Market Forecasting</span>
+                  <span className="bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full">Dynamic Pricing</span>
+                </div>
+              </div>
+        
+              {/* Card 3 */}
+              <div className="bg-card dark:bg-slate-800/50 p-6 rounded-xl shadow-lg border border-border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <div className="relative w-16 h-16 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/50 mb-4">
+                  <PenSquare className="w-8 h-8 text-purple-600 dark:text-purple-300" />
+                  <Camera className="absolute w-5 h-5 text-white bg-purple-600 dark:bg-purple-400 rounded-full p-1 -bottom-1 -right-1" />
+                </div>
+                <h3 className="text-xl font-bold font-headline text-foreground mb-2">Generate Content & Immersive Experiences</h3>
+                <p className="text-sm text-muted-foreground mb-4">Instantly create compelling property descriptions, marketing emails, and social media posts. Showcase your listings with stunning, integrated VR tours.</p>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-2 py-1 rounded-full">AI Content Creation</span>
+                  <span className="bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-2 py-1 rounded-full">VR Tour Integration</span>
+                  <span className="bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-2 py-1 rounded-full">Marketing Automation</span>
+                </div>
+              </div>
+        
+              {/* Card 4 */}
+              <div className="bg-card dark:bg-slate-800/50 p-6 rounded-xl shadow-lg border border-border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <div className="relative w-16 h-16 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 mb-4">
+                  <Shield className="w-8 h-8 text-slate-600 dark:text-slate-300" />
+                  <FileSignature className="absolute w-5 h-5 text-white bg-slate-600 dark:bg-slate-500 rounded-full p-1 -bottom-1 -right-1" />
+                </div>
+                <h3 className="text-xl font-bold font-headline text-foreground mb-2">Automate Compliance & Secure Transactions</h3>
+                <p className="text-sm text-muted-foreground mb-4">The ultimate peace of mind. Our AI helps you generate RERA-compliant documents, verify E-Khatas and title deeds, and automatically detects fraud and contract risks.</p>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-full">RERA Compliance</span>
+                  <span className="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-full">E-Khata Verification</span>
+                  <span className="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-full">Fraud Detection</span>
+                </div>
               </div>
             </div>
           </div>
