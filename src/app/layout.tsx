@@ -3,7 +3,6 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "next-themes"; // Import ThemeProvider
-import { Footer } from "@/components/layout/Footer"; // Import the new Footer
 
 export const metadata: Metadata = {
   title: 'TerraFlowAI',
@@ -30,10 +29,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer /> 
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>
