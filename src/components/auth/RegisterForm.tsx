@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Image from 'next/image';
+import { auth } from '@/lib/firebase';
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required."),
@@ -30,17 +32,30 @@ export function RegisterForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log("Register values:", values);
-    toast({
-      title: "Account Created!",
-      description: "Welcome to TerraFlowAI. You can now log in.",
-    });
-    router.push("/login");
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      await updateProfile(userCredential.user, {
+        displayName: `${values.firstName} ${values.lastName}`
+      });
+
+      toast({
+        title: "Account Created!",
+        description: "Welcome to TerraFlowAI! Redirecting you to the dashboard.",
+      });
+      router.push("/dashboard");
+
+    } catch (error: any) {
+      console.error("Sign Up Error:", error);
+      let errorMessage = "An unexpected error occurred. Please try again.";
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = "This email is already in use. Please try another or log in.";
+      }
+      form.setError("root", { type: "manual", message: errorMessage });
+    }
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-md">
         <div className="text-left mb-8">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-1">START YOUR 14-DAY FREE TRIAL</p>
             <h1 className="text-4xl font-bold font-headline text-foreground">Create your TerraFlowAI account.</h1>
@@ -81,6 +96,10 @@ export function RegisterForm() {
                 </FormItem>
             )} />
             
+            {form.formState.errors.root && (
+              <p className="text-sm font-medium text-destructive text-center">{form.formState.errors.root.message}</p>
+            )}
+
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Button type="button" variant="outline" className="w-full h-12 bg-muted hover:bg-muted/80 border-none">
                     <Image src="https://www.google.com/favicon.ico" alt="Google" width={20} height={20} className="mr-2"/>

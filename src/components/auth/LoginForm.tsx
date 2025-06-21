@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Image from 'next/image';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -28,17 +30,25 @@ export function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log("Login values:", values);
-    toast({
-      title: "Login Successful",
-      description: "Welcome back!",
-    });
-    router.push("/dashboard");
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast({
+        title: "Login Successful",
+        description: "Welcome back! Redirecting you to the dashboard.",
+      });
+      router.push("/dashboard");
+    } catch (error: any) {
+      console.error("Login Error:", error);
+      let errorMessage = "An unexpected error occurred. Please try again.";
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          errorMessage = "Invalid email or password. Please try again.";
+      }
+      form.setError("root", { type: "manual", message: errorMessage });
+    }
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-md">
         <div className="text-left mb-8">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-1">WELCOME BACK</p>
             <h1 className="text-4xl font-bold font-headline text-foreground">Log in to TerraFlowAI.</h1>
@@ -74,6 +84,10 @@ export function LoginForm() {
                     Forgot Password?
                 </Link>
             </div>
+            
+            {form.formState.errors.root && (
+              <p className="text-sm font-medium text-destructive text-center">{form.formState.errors.root.message}</p>
+            )}
             
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Button type="button" variant="outline" className="w-full h-12 bg-muted hover:bg-muted/80 border-none">
