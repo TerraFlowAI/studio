@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -152,7 +151,7 @@ export function AppSidebar() {
               </div>
             )}
         </div>
-         <Button variant="ghost" className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-11 px-3" onClick={() => router.push('/login')}>
+         <Button variant="ghost" className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-11 px-3" onClick={() => router.push('/auth/login')}>
             <LogOut className="h-5 w-5 mr-3 shrink-0" />
              {(state === 'expanded' || isMobile) && <span>Logout</span>}
         </Button>
