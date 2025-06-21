@@ -1,15 +1,19 @@
 
 "use client";
 
-import { CalendarDays, Upload, Search } from 'lucide-react';
+import * as React from "react";
+import { Upload, Search, PanelLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useSidebar } from '../ui/sidebar'; // Keep if sidebar toggle is needed on mobile
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'; // Keep for mobile nav
-import { PanelLeft } from 'lucide-react'; // For mobile sidebar toggle
+import { useSidebar } from '../ui/sidebar';
+import { DateRangePicker, type DateRange } from "@/components/shared/DateRangePicker";
 
 export function AppHeader() {
   const { toggleSidebar, isMobile } = useSidebar();
+  const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
+    from: new Date(new Date().setMonth(new Date().getMonth() - 1)), // Default to last month
+    to: new Date(),
+  });
 
   return (
     <header className="flex h-20 items-center gap-4 border-b bg-card px-6 md:px-8 sticky top-0 z-30 shadow-sm">
@@ -38,10 +42,15 @@ export function AppHeader() {
             className="pl-10 pr-3 py-2 h-10 w-full sm:w-64 md:w-72 rounded-lg bg-background border-border focus:border-primary"
           />
         </div>
-        <Button variant="outline" className="h-10 hidden md:flex items-center gap-2 text-muted-foreground hover:text-foreground hover:border-primary/50">
-          <CalendarDays className="h-4 w-4" />
-          <span>May 5 - June 5, 24</span>
-        </Button>
+        <div className="hidden md:block">
+          <DateRangePicker
+            initialDateFrom={dateRange?.from}
+            initialDateTo={dateRange?.to}
+            onUpdate={(values) => setDateRange(values.range)}
+            align="end"
+            triggerClassName="h-10 w-[260px] text-muted-foreground hover:text-foreground hover:border-primary/50"
+          />
+        </div>
         <Button className="h-10 flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground">
           <Upload className="h-4 w-4" />
           <span className="hidden sm:inline">Export Report</span>
