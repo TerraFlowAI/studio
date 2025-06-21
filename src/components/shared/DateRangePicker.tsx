@@ -79,7 +79,7 @@ export function DateRangePicker({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align={align}>
+        <PopoverContent className="w-auto p-0 bg-background/80 backdrop-blur-sm border-primary/20 shadow-2xl" align={align}>
           <Calendar
             initialFocus
             mode="range"
@@ -99,4 +99,3 @@ export function DateRangePicker({
 
 // This type might be useful in other parts of the app.
 export type { DateRange };
-
