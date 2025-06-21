@@ -1,5 +1,4 @@
 
-import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface LogoProps {
@@ -21,19 +20,36 @@ const iconDimensionsConfig = {
   lg: { width: 28, height: 28 },
 };
 
+// The new SVG icon component based on your design prompt
+const LogoIcon = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={cn("text-primary", className)}
+    {...props}
+  >
+    <path d="M3,7 Q9,2 12,7 T21,7" />
+    <path d="M3,12 Q9,7 12,12 T21,12" opacity="0.8" />
+    <path d="M3,17 Q9,12 12,17 T21,17" opacity="0.6" />
+  </svg>
+);
+
+
 export function Logo({ size = 'md', showIcon = true, hideText = false, className }: LogoProps) {
   const iconDims = iconDimensionsConfig[size] || iconDimensionsConfig.md;
 
   return (
-    <div className={cn("flex items-center gap-2 text-primary group", className)}>
+    <div className={cn("flex items-center gap-2 group", className)}>
       {showIcon && (
-        <Image
-          src={`https://placehold.co/${iconDims.width}x${iconDims.height}.png`}
-          alt="TerraFlowAI Logo"
+        <LogoIcon
           width={iconDims.width}
           height={iconDims.height}
-          className="group-hover:opacity-90 transition-opacity object-contain"
-          data-ai-hint="green T"
+          className="group-hover:opacity-90 transition-opacity"
         />
       )}
       {!hideText && (
