@@ -1,3 +1,7 @@
+
+"use client";
+
+import { motion } from "framer-motion";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import { AuthVisual } from "@/components/auth/AuthVisual";
 import { Logo } from "@/components/shared/Logo";
@@ -7,7 +11,12 @@ import { ChevronLeft } from "lucide-react";
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-screen w-full bg-background font-body">
+    <motion.div 
+      className="min-h-screen w-full bg-background font-body"
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       
       <Button asChild variant="ghost" className="absolute top-8 left-4 sm:left-8 z-20 text-muted-foreground hover:text-primary">
           <Link href="/">
@@ -40,6 +49,6 @@ export default function RegisterPage() {
            <AuthVisual />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
