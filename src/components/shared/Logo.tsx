@@ -20,7 +20,7 @@ const iconDimensionsConfig = {
   lg: { width: 28, height: 28 },
 };
 
-// The new SVG icon component based on your design prompt
+// SVG icon component representing 'Terra' (stability) and 'Flow' (dynamic movement)
 const LogoIcon = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -33,9 +33,10 @@ const LogoIcon = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
     className={cn("text-primary", className)}
     {...props}
   >
-    <path d="M3,7 Q9,2 12,7 T21,7" />
-    <path d="M3,12 Q9,7 12,12 T21,12" opacity="0.8" />
-    <path d="M3,17 Q9,12 12,17 T21,17" opacity="0.6" />
+    <path d="M3 20h18" stroke="hsl(var(--muted-foreground))" strokeWidth="2.5" />
+    <path d="M7 16s-2-4 0-6 4-2 6 0" stroke="hsl(var(--primary))" />
+    <path d="M11 16s-2-4 0-6 4-2 6 0" stroke="hsl(var(--primary))" opacity="0.7" />
+    <path d="M15 16s-2-4 0-6 4-2 6 0" stroke="hsl(var(--primary))" opacity="0.4" />
   </svg>
 );
 
