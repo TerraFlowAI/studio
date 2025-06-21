@@ -18,7 +18,7 @@ export function AuthVisual() {
     return (
         <div className="relative h-full w-full overflow-hidden bg-card">
             <Image
-              src="https://images.unsplash.com/photo-1582407947304-c899e5217333?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBidWlsZGluZ3xlbnwwfHx8fDE3NTE1MTc3ODF8MA&ixlib=rb-4.1.0&q=80&w=1080"
+              src="https://images.unsplash.com/photo-1689366154849-b8e58a995fbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNHx8TW9kZXJuJTIwQXJjaGl0ZWN0dXJhbCUyMEJ1aWxkaW5nfGVufDB8fHx8MTc1MDQ4ODk5OXww&ixlib=rb-4.1.0&q=80&w=1080"
               alt="Modern architectural building"
               layout="fill"
               objectFit="cover"
