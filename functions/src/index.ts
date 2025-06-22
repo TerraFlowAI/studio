@@ -54,10 +54,10 @@ export const getDashboardKPIs = onCall(async (request) => {
     const leadsRef = db.collection("leads");
     const propertiesRef = db.collection("properties");
 
-    // Active Leads: Count leads with status "New" or "Contacted".
+    // Active Leads: Count leads with status "New", "Contacted", or "Qualified".
     const activeLeadsQuery = leadsRef
         .where("ownerId", "==", uid)
-        .where("status", "in", ["New", "Contacted"]);
+        .where("status", "in", ["New", "Contacted", "Qualified"]);
     const activeLeadsPromise = activeLeadsQuery.count().get();
 
     // Properties Sold: Count properties with status "Sold".
