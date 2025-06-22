@@ -2,8 +2,8 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ReceiptText, Wallet, Coins } from "lucide-react"; // Using more specific icons
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
+import { ChevronDown, ReceiptText, Wallet, Coins } from "lucide-react";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { ChartTooltipContent } from "@/components/ui/chart";
 
 interface SalesStatisticsCardProps {
@@ -32,7 +32,7 @@ export function SalesStatisticsCard({ chartData, totalSales, totalProfit, totalC
           <p className="label text-sm font-medium text-foreground">{`${label}`}</p>
           {payload.map((pld: any, index: number) => (
             <div key={index} style={{ color: pld.stroke }} className="text-xs">
-              {`${chartData.datasets[index]?.name || `Series ${index + 1}`}: ${pld.value}`}
+              {`${chartData.datasets[index]?.name || `Series ${index + 1}`}: ₹${pld.value.toLocaleString()}`}
             </div>
           ))}
         </div>
@@ -43,23 +43,29 @@ export function SalesStatisticsCard({ chartData, totalSales, totalProfit, totalC
 
 
   return (
-    <Card className="shadow-md bg-card h-full">
+    <Card className="shadow-lg bg-card h-full">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
         <div>
-          <CardTitle className="text-xl font-semibold text-foreground">Sales Statistics</CardTitle>
+          <CardTitle className="text-xl font-semibold font-headline text-foreground">Sales Statistics</CardTitle>
         </div>
         <Button variant="outline" size="sm" className="text-muted-foreground hover:text-foreground hover:border-primary/50">
           Last months <ChevronDown className="ml-1 h-4 w-4" />
         </Button>
       </CardHeader>
       <CardContent>
-        <div className="h-[250px] w-full mb-6 -ml-4"> {/* Added -ml-4 to offset default recharts padding */}
+        <div className="h-[250px] w-full mb-6 -ml-4">
            <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={dataForChart} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+            <LineChart data={dataForChart} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+              <defs>
+                <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
+                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={{ stroke: 'hsl(var(--border))' }} tickLine={{ stroke: 'hsl(var(--border))' }} />
-              <YAxis tickFormatter={(value) => `₹${value/1000}k`} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={{ stroke: 'hsl(var(--border))' }} tickLine={{ stroke: 'hsl(var(--border))' }} />
-              <Tooltip content={<CustomTooltip />} cursor={{fill: 'hsl(var(--accent)/0.1)'}}/>
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(value) => `₹${value/1000}k`} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} cursor={{stroke: 'hsl(var(--primary))', strokeWidth:1, strokeDasharray: "3 3"}}/>
               {chartData.datasets.map((dataset, index) => (
                 <Line 
                   key={index} 
@@ -75,7 +81,7 @@ export function SalesStatisticsCard({ chartData, totalSales, totalProfit, totalC
           </ResponsiveContainer>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="flex items-center gap-3 p-3 bg-background rounded-md border">
+          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border">
             <div className="p-2 bg-primary/10 rounded-md">
               <ReceiptText className="h-5 w-5 text-primary" />
             </div>
@@ -84,7 +90,7 @@ export function SalesStatisticsCard({ chartData, totalSales, totalProfit, totalC
               <p className="text-md font-semibold text-foreground">{totalSales}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-background rounded-md border">
+          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border">
             <div className="p-2 bg-green-500/10 rounded-md">
               <Wallet className="h-5 w-5 text-green-500" />
             </div>
@@ -93,7 +99,7 @@ export function SalesStatisticsCard({ chartData, totalSales, totalProfit, totalC
               <p className="text-md font-semibold text-foreground">{totalProfit}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-background rounded-md border">
+          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border">
             <div className="p-2 bg-orange-500/10 rounded-md">
               <Coins className="h-5 w-5 text-orange-500" />
             </div>
