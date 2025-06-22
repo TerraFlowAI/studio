@@ -15,6 +15,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CheckCircle, Wand2, MapPin, Building2, Image as ImageIcon, ArrowLeft, ArrowRight, Save, Loader2, Sparkles, Tv } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/app/context/AuthContext";
+import { firestore } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
 
 // --- WIZARD SETUP ---
 
@@ -32,6 +36,7 @@ const initialPropertyData = {
   locality: "",
   city: "",
   propertyType: "",
+  listingFor: "Sale",
   furnishingStatus: "",
   bedrooms: 3,
   bathrooms: 2,
@@ -52,6 +57,7 @@ interface AddPropertyWizardProps {
 
 export function AddPropertyWizard({ onClose }: AddPropertyWizardProps) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = React.useState(1);
   const [propertyData, setPropertyData] = React.useState(initialPropertyData);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -73,25 +79,105 @@ export function AddPropertyWizard({ onClose }: AddPropertyWizardProps) {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSaveDraft = async () => {
-    console.log("Saving Draft:", propertyData);
-    toast({ title: "Draft Saved!", description: "(Check console for data)" });
-    onClose();
+  const prepareDataForFirestore = (status: "Active" | "Draft") => {
+    const {
+      buildingName, streetAddress, locality, city, headline, description,
+      price, area, bedrooms, bathrooms, propertyType, listingFor, furnishingStatus, vrTourUrl, keyHighlights
+    } = propertyData;
+
+    return {
+      title: headline || `${propertyType} in ${locality}`,
+      address: `${buildingName}, ${streetAddress}`,
+      locality,
+      city,
+      description,
+      status,
+      ownerId: user?.uid,
+      createdAt: serverTimestamp(),
+      price: `₹${price.toLocaleString()}`,
+      areaSqft: area,
+      bedrooms,
+      bathrooms,
+      propertyType,
+      listingFor,
+      furnishingStatus,
+      vrTourUrl,
+      keyHighlights,
+      imageUrl: 'https://placehold.co/600x400.png',
+      aiHint: 'property exterior',
+      views: 0,
+      leadsGenerated: 0,
+      hasVrTour: !!vrTourUrl,
+      dateAdded: serverTimestamp() // Compatibility with hook
+    };
   };
 
-  const handlePublish = async () => {
+  const handleSaveDraft = async () => {
+    if (!user) {
+        toast({ title: "Error", description: "You must be logged in to save a draft.", variant: "destructive" });
+        return;
+    }
     setIsSubmitting(true);
-    // 1. Get current user (from useAuth hook in a real scenario)
-    console.log("Getting current user...");
-    // 2. Add propertyData to Firestore 'properties' collection
-    console.log("Publishing Data:", propertyData);
-    // 3. Associate ownerId
-    console.log("Associating owner ID...");
-    await new Promise(res => setTimeout(res, 1500)); // Simulate async operation
-    // 4. Close modal and show success toast
-    toast({ title: "Property Published!", description: "Your listing is now live." });
-    setIsSubmitting(false);
-    onClose();
+    try {
+        const draftData = prepareDataForFirestore("Draft");
+        const propertiesCollectionRef = collection(firestore, "properties");
+        const docRef = await addDoc(propertiesCollectionRef, draftData);
+        console.log("Successfully saved draft with ID: ", docRef.id);
+        toast({ title: "Draft Saved!", description: "Your property draft has been saved." });
+        onClose();
+    } catch (error) {
+        console.error("Error saving draft to Firestore:", error);
+        toast({
+            title: "Save Failed",
+            description: "Could not save your draft. Please check your connection and try again.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
+  };
+
+
+  const handlePublish = async () => {
+    // 1. Guard Clauses: Check for essential data first.
+    if (!user) {
+      console.error("No user is logged in. Cannot publish.");
+      toast({ title: "Error", description: "You must be logged in to publish a property.", variant: "destructive" });
+      return;
+    }
+    
+    if (!propertyData.streetAddress || !propertyData.price) {
+        toast({ title: "Missing Information", description: "Please ensure all required fields are filled out.", variant: "destructive" });
+        return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // 2. Prepare the data object to be saved
+      const newPropertyData = prepareDataForFirestore("Active");
+
+      // 3. Add the document to Firestore
+      const propertiesCollectionRef = collection(firestore, "properties");
+      const docRef = await addDoc(propertiesCollectionRef, newPropertyData);
+
+      // 4. Success Feedback
+      console.log("Successfully published property with ID: ", docRef.id);
+      toast({ title: "Success!", description: "Your property has been published." });
+
+      onClose();
+
+    } catch (error) {
+      // 5. Detailed Error Feedback
+      console.error("Error publishing property to Firestore:", error);
+      toast({
+        title: "Publishing Failed",
+        description: "Could not save your property to the database. Please check your connection and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const nextButtonText = STEPS[currentStep] ? `Next: ${STEPS[currentStep].title}` : 'Publish Listing';
@@ -136,7 +222,7 @@ export function AddPropertyWizard({ onClose }: AddPropertyWizardProps) {
         <Button variant="secondary" onClick={handleSaveDraft}>Save as Draft & Close</Button>
         <div className="flex-grow"></div>
         {currentStep > 1 && (
-            <Button variant="outline" onClick={handlePrevStep}>
+            <Button variant="outline" onClick={handlePrevStep} disabled={isSubmitting}>
                 <ArrowLeft className="mr-2 h-4 w-4"/> Back
             </Button>
         )}

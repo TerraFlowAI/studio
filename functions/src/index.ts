@@ -1,3 +1,5 @@
+// functions/src/index.ts
+
 /**
  * Import function triggers from their respective submodules:
  *
@@ -12,7 +14,8 @@ import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {onDocumentUpdated} from "firebase-functions/v2/firestore";
 import * as logger from "firebase-functions/logger";
 import {initializeApp, getApps} from "firebase-admin/app";
-import {getFirestore, Timestamp} from "firebase-admin/firestore";
+// FIX: Import AggregateField for type safety and clarity
+import {getFirestore, Timestamp, AggregateField} from "firebase-admin/firestore";
 
 // Initialize Firebase Admin SDK if not already done.
 if (getApps().length === 0) {
@@ -20,17 +23,7 @@ if (getApps().length === 0) {
 }
 const db = getFirestore();
 
-
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
+// Set global options for function instances.
 setGlobalOptions({maxInstances: 10});
 
 /**
@@ -54,37 +47,37 @@ export const getDashboardKPIs = onCall(async (request) => {
     const leadsRef = db.collection("leads");
     const propertiesRef = db.collection("properties");
 
-    // Active Leads: Count leads with status "New", "Contacted", or "Qualified".
     const activeLeadsQuery = leadsRef
         .where("ownerId", "==", uid)
         .where("status", "in", ["New", "Contacted", "Qualified"]);
     const activeLeadsPromise = activeLeadsQuery.count().get();
 
-    // Properties Sold: Count properties with status "Sold".
+    // This query will be used for both counting sold properties and aggregating revenue.
     const soldPropertiesQuery = propertiesRef
         .where("ownerId", "==", uid)
         .where("status", "==", "Sold");
-    const propertiesSoldPromise = soldPropertiesQuery.count().get();
 
-    // Total Revenue: Sum the 'expectedPrice' of sold properties.
-    const revenueAggregationQuery = soldPropertiesQuery.aggregate({
-      totalRevenue: getFirestore().collection("properties").aggregate.sum("expectedPrice"),
-    });
-    const revenuePromise = revenueAggregationQuery.get();
+    // FIX: Perform the aggregation directly on the filtered query object.
+    const revenueAggregationPromise = soldPropertiesQuery.aggregate({
+      totalRevenue: AggregateField.sum("expectedPrice"),
+      // FIX: We can also get the count from the same aggregation for efficiency.
+      propertiesSold: AggregateField.count(),
+    }).get();
+
 
     // Execute all queries in parallel for efficiency.
     const [
       activeLeadsSnapshot,
-      propertiesSoldSnapshot,
       revenueSnapshot,
+      // FIX: We no longer need a separate promise for counting sold properties.
     ] = await Promise.all([
       activeLeadsPromise,
-      propertiesSoldPromise,
-      revenuePromise,
+      revenueAggregationPromise,
     ]);
 
     const activeLeads = activeLeadsSnapshot.data().count;
-    const propertiesSold = propertiesSoldSnapshot.data().count;
+    // FIX: Get both revenue and count from the single aggregation snapshot.
+    const propertiesSold = revenueSnapshot.data().propertiesSold || 0;
     const totalRevenue = revenueSnapshot.data().totalRevenue || 0;
     const avgDealTime = 32; // Static placeholder value.
 
@@ -100,7 +93,6 @@ export const getDashboardKPIs = onCall(async (request) => {
     return kpiData;
   } catch (error) {
     logger.error("Error fetching dashboard KPIs for user:", {uid, error});
-    // Throw a generic error to the client.
     throw new HttpsError(
         "internal",
         "An error occurred while fetching dashboard data.",
@@ -129,31 +121,28 @@ export const getSalesStatsChart = onCall(async (request) => {
   try {
     // 2. Data Fetching
     const propertiesRef = db.collection("properties");
+    
+    // FIX: Also filter by date to fetch only relevant documents, improving performance.
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    
     const soldPropertiesQuery = propertiesRef
         .where("ownerId", "==", uid)
-        .where("status", "==", "Sold");
+        .where("status", "==", "Sold")
+        .where("soldAt", ">=", Timestamp.fromDate(sixMonthsAgo)); // FIX: Query optimization
 
     const snapshot = await soldPropertiesQuery.get();
 
     // 3. Data Processing
     const salesByMonth: {[key: string]: number} = {};
 
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-    sixMonthsAgo.setDate(1);
-    sixMonthsAgo.setHours(0, 0, 0, 0);
-
     snapshot.forEach((doc) => {
       const data = doc.data();
-      // Assume soldAt field exists and is a Firestore Timestamp
-      if (data.soldAt && data.soldAt instanceof Timestamp) {
+      // FIX: Add a check to ensure price is a number before adding.
+      if (data.soldAt && data.soldAt instanceof Timestamp && typeof data.expectedPrice === 'number') {
         const soldDate = data.soldAt.toDate();
-
-        if (soldDate >= sixMonthsAgo) {
-          const monthKey = `${soldDate.getFullYear()}-${(soldDate.getMonth() + 1).toString().padStart(2, "0")}`;
-          const price = data.expectedPrice || 0;
-          salesByMonth[monthKey] = (salesByMonth[monthKey] || 0) + price;
-        }
+        const monthKey = `${soldDate.getFullYear()}-${(soldDate.getMonth() + 1).toString().padStart(2, "0")}`;
+        salesByMonth[monthKey] = (salesByMonth[monthKey] || 0) + data.expectedPrice;
       }
     });
 
@@ -189,27 +178,25 @@ export const getSalesStatsChart = onCall(async (request) => {
  * Creates a notification when a document's verification status is updated.
  */
 export const onDocumentVerificationComplete = onDocumentUpdated("documents/{docId}", async (event) => {
-  // 1. Log the function execution.
   logger.info(`Document update triggered for: ${event.params.docId}`, {params: event.params});
 
-  const before = event.data?.before.data();
-  const after = event.data?.after.data();
+  const beforeData = event.data?.before.data();
+  const afterData = event.data?.after.data();
 
-  // 2. Ensure data exists before and after the update.
-  if (!before || !after) {
+  if (!beforeData || !afterData) {
       logger.warn("Document data is missing before or after update.", {docId: event.params.docId});
       return;
   }
 
-  const oldStatus = before.verificationStatus;
-  const newStatus = after.verificationStatus;
+  const oldStatus = beforeData.verificationStatus;
+  const newStatus = afterData.verificationStatus;
   
-  // 3. Check if the verificationStatus has changed to a "complete" state.
   if (oldStatus !== newStatus && (newStatus === "Verified" || newStatus === "Issues Found")) {
       logger.info(`Verification status changed for docId: ${event.params.docId}. New status: ${newStatus}`);
 
-      const ownerId = after.ownerId;
-      const docName = after.name || "Untitled Document";
+      const ownerId = afterData.ownerId;
+      // FIX: Use a safer fallback for the document name.
+      const docName = afterData.fileName || "an unnamed document";
       const docId = event.params.docId;
 
       if (!ownerId) {
@@ -217,24 +204,21 @@ export const onDocumentVerificationComplete = onDocumentUpdated("documents/{docI
           return;
       }
 
-      // 4. Construct the notification object.
       const notification = {
           userId: ownerId,
-          message: `Verification for document '${docName}' is complete. Status: ${newStatus}.`,
+          message: `Verification for '${docName}' is complete. Status: ${newStatus}.`,
           createdAt: Timestamp.now(),
           isRead: false,
           actionLink: `/documents/${docId}`,
       };
       
       try {
-          // 5. Create a new document in the "notifications" collection.
           const notificationRef = await db.collection("notifications").add(notification);
           logger.info(`Successfully created notification ${notificationRef.id} for user ${ownerId}.`);
       } catch (error) {
           logger.error(`Failed to create notification for user ${ownerId}.`, {error, notificationData: notification});
       }
   } else {
-      // Log that no action was taken if the status didn't meet the criteria.
       logger.info(`No relevant status change for docId: ${event.params.docId}. Old: ${oldStatus}, New: ${newStatus}. No notification created.`);
   }
 });
