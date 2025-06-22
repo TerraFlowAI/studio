@@ -1,74 +1,92 @@
-
 "use client";
 
 import { useAuth } from "@/app/context/AuthContext";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { KpiCard } from "@/components/dashboard/KpiCard";
-import { ActionableBanner, type BannerItem } from "@/components/dashboard/ActionableBanner";
 import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard";
 import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
-import { useRouter } from "next/navigation";
-
-import {
-  FileSignature,
-  TrendingUp,
-  DollarSign,
-  Briefcase,
-  Users,
-  PlusCircle,
-} from "lucide-react";
+import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
+import { ListingBoard } from "@/components/dashboard/ListingBoard";
+import { useDashboardData } from "@/hooks/useDashboardData";
+import { Skeleton } from "@/components/ui/skeleton";
+import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 
-// Mock Data for the dashboard based on the screenshot
-const kpiData = [
-  { title: "Active Leads", value: "87", icon: Users, trend: "+12 from last week", trendDirection: "up" as const },
-  { title: "Properties Sold", value: "4", icon: Briefcase, trend: "-1 this month", trendDirection: "down" as const },
-  { title: "Total Revenue", value: "₹1.8 Cr", icon: DollarSign, trend: "+8.5% this quarter", trendDirection: "up" as const },
-  { title: "Avg. Deal Time", value: "32 Days", icon: TrendingUp, trend: "-3 days from last Q", trendDirection: "down" as const },
-];
+const DashboardSkeleton = () => (
+  <div className="space-y-8">
+    <div className="flex justify-between items-center">
+      <div className="space-y-2">
+        <Skeleton className="h-8 w-64" />
+        <Skeleton className="h-4 w-80" />
+      </div>
+      <Skeleton className="h-10 w-40" />
+    </div>
 
-const salesChartData = {
-  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-  datasets: [
-    { data: [300000, 450000, 600000, 500000, 750000, 900000], color: "hsl(var(--primary))", name: "Total Sales" },
-  ],
-};
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <Skeleton className="h-28 w-full" />
+      <Skeleton className="h-28 w-full" />
+      <Skeleton className="h-28 w-full" />
+      <Skeleton className="h-28 w-full" />
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <Skeleton className="lg:col-span-2 h-[450px]" />
+      <Skeleton className="lg:col-span-1 h-[450px]" />
+    </div>
+
+    <div>
+        <Skeleton className="h-8 w-48 mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-48 w-full" />
+        </div>
+    </div>
+    
+    <div>
+        <Skeleton className="h-8 w-48 mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-48 w-full" />
+        </div>
+    </div>
+  </div>
+);
 
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const router = useRouter();
+  const { loading, kpiData, salesStats, aiMessage, recentProperties } = useDashboardData();
 
-  // A single, static banner item as shown in the screenshot
-  const bannerItems: BannerItem[] = [
-    {
-      id: "secure-docs",
-      icon: FileSignature,
-      headline: "Secure Your Documents",
-      subHeadline: "Verify legal documents and contracts with TerraSecure™.",
-      buttonText: "Verify Document",
-      onClick: () => router.push('/documents'),
-    },
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
+
+  const kpiCards = [
+      { title: "Active Leads", value: kpiData.activeLeads.toString(), icon: Users, trend: "+12 from last week", trendDirection: "up" as const },
+      { title: "Properties Sold (Q)", value: kpiData.propertiesSold.toString(), icon: Briefcase, trend: "-1 this month", trendDirection: "down" as const },
+      { title: "Total Revenue (Q)", value: kpiData.totalRevenue, icon: DollarSign, trend: "+8.5% this quarter", trendDirection: "up" as const },
+      { title: "Avg. Deal Time", value: `${kpiData.avgDealTime} Days`, icon: TrendingUp, trend: "-3 days from last Q", trendDirection: "down" as const },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         title={`Welcome, ${user?.displayName?.split(' ')[0] || 'User'}!`}
         description="Here’s your business overview for today."
       >
         <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <a href="/properties/new">
+            <Link href="/properties/new">
                 <PlusCircle className="mr-2 h-4 w-4" /> Add New Property
-            </a>
+            </Link>
         </Button>
       </PageHeader>
       
-      <ActionableBanner items={bannerItems} />
-
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {kpiData.map((kpi) => (
+        {kpiCards.map((kpi) => (
           <KpiCard
             key={kpi.title}
             title={kpi.title}
@@ -83,17 +101,23 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <SalesStatisticsCard 
-            chartData={salesChartData}
-            totalSales="₹4.2 Cr"
+            chartData={salesStats}
+            // These totals should ideally come from the hook as well
+            totalSales="₹4.2 Cr" 
             totalProfit="₹1.1 Cr"
             totalCost="₹3.1 Cr"
           />
         </div>
 
         <div className="lg:col-span-1">
-          <AiAssistantCard />
+          <AiAssistantCard message={aiMessage} />
         </div>
       </div>
+      
+      <AiCoPilots />
+
+      <ListingBoard properties={recentProperties} />
+
     </div>
   );
 }
