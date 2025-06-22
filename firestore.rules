@@ -1,47 +1,39 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // A user must be signed in to perform any action.
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    // Helper to check if the user owns the document being written.
-    function isCreatingOwnDocument() {
-      return isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+    // Helper function to check if the requesting user is the owner of a document.
+    function isOwner(docData) {
+      return request.auth.uid == docData.ownerId;
     }
     
-    // Helper to check if the user owns an existing document.
-    function isOwner(doc) {
-      return isSignedIn() && doc.data.ownerId == request.auth.uid;
-    }
-
-    // LEADS: A user can only manage their own leads.
-    match /leads/{leadId} {
-      allow create: if isCreatingOwnDocument();
-      allow read, update, delete: if isOwner(resource);
+    // Helper function to check if the user is the recipient of a notification.
+    function isNotificationRecipient(docData) {
+      return request.auth.uid == docData.userId;
     }
     
-    // PROPERTIES: A user can only manage their own properties.
-    match /properties/{propertyId} {
-      allow create: if isCreatingOwnDocument();
-      allow read, update, delete: if isOwner(resource);
-    }
-    
-    // DOCUMENTS: A user can only manage their own documents.
-    match /documents/{docId} {
-      allow create: if isCreatingOwnDocument();
-      allow read, update, delete: if isOwner(resource);
+    // Generic rules for all collections where documents are owned by a user.
+    // This includes 'leads', 'properties', and 'documents'.
+    match /{collection}/{docId} 
+      where collection in ['leads', 'properties', 'documents'] {
+      
+      // A user can create a document only if they set themselves as the owner.
+      // This rule is checked on write operations (create).
+      allow create: if isOwner(request.resource.data);
+
+      // A user can read, update, or delete their own documents.
+      // This rule is checked on read, update, and delete operations.
+      // For 'list' (query) operations to succeed, the client-side query
+      // MUST include a `where("ownerId", "==", request.auth.uid)` clause.
+      allow read, update, delete: if isOwner(resource.data);
     }
 
-    // NOTIFICATIONS: Users can only read their own notifications.
+    // Notifications are special: client can only read them.
+    // They are created by backend functions, not the client.
     match /notifications/{notificationId} {
-      // Nobody can write to notifications from the client; only backend functions.
-      allow write: if false;
-
-      // Allow read if the notification's userId matches the user's uid.
-      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow read: if isNotificationRecipient(resource.data);
+      allow write: if false; // Deny all client-side writes
     }
   }
 }
