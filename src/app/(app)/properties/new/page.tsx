@@ -20,6 +20,7 @@ import { generatePropertyDescription } from "@/ai/flows/generate-property-descri
 import { saveNewProperty } from "./actions";
 
 import { MapPin, Building2, Wand2, Image as ImageIcon, CheckCircle, Loader2, Sparkles, RefreshCcw, ArrowLeft, ArrowRight, Save, X, DatabaseZap } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // --- Validation Schema ---
 const propertySchema = z.object({
@@ -40,6 +41,8 @@ const propertySchema = z.object({
   
   // Step 3
   keyHighlights: z.string().min(10, "Provide at least one highlight."),
+  targetAudience: z.string().min(1, "Target audience is required."),
+  style: z.string().min(1, "Writing style is required."),
   aiGeneratedHeadline: z.string(),
   aiGeneratedDescription: z.string(),
 
@@ -53,10 +56,14 @@ type PropertyFormValues = z.infer<typeof propertySchema>;
 const STEPS = [
   { id: 1, title: "Location & Type", icon: MapPin, fields: ["propertyType", "listingFor", "addressBuilding", "addressStreet", "addressLocality", "addressCity"] },
   { id: 2, title: "Details & Price", icon: Building2, fields: ["bedrooms", "bathrooms", "areaSqft", "furnishingStatus", "expectedPrice"] },
-  { id: 3, title: "AI Content", icon: Wand2, fields: ["keyHighlights", "aiGeneratedHeadline", "aiGeneratedDescription"] },
+  { id: 3, title: "AI Content", icon: Wand2, fields: ["keyHighlights", "targetAudience", "style", "aiGeneratedHeadline", "aiGeneratedDescription"] },
   { id: 4, title: "Media", icon: ImageIcon, fields: ["imageUrls", "vrTourUrl"] },
   { id: 5, title: "Review & Publish", icon: CheckCircle, fields: [] },
 ];
+
+const writingStyles = ["Professional", "Casual", "Luxury", "Friendly", "Technical", "Enthusiastic", "Concise", "Persuasive", "Storytelling", "Minimalist"];
+const targetAudiences = ["Young Professionals", "Families with Children", "Retirees/Downsizers", "Investors", "First-time Home Buyers", "Luxury Buyers", "Students", "Tech Employees", "Artists/Creatives"];
+
 
 export default function AddNewPropertyPage() {
   const router = useRouter();
@@ -80,6 +87,8 @@ export default function AddNewPropertyPage() {
       furnishingStatus: "Semi-Furnished",
       expectedPrice: 5000000,
       keyHighlights: "Spacious Balcony\nSea View\nModern Kitchen",
+      targetAudience: "Families with Children",
+      style: "Professional",
       aiGeneratedHeadline: "",
       aiGeneratedDescription: "",
       imageUrls: [],
@@ -100,6 +109,18 @@ export default function AddNewPropertyPage() {
   };
   
   const handleGenerateAIContent = async () => {
+      // Validate fields required for generation
+      const fieldsForAI = ["propertyType", "addressLocality", "addressCity", "bedrooms", "bathrooms", "areaSqft", "keyHighlights", "targetAudience", "style"];
+      const isAiFormValid = await form.trigger(fieldsForAI as any);
+      if (!isAiFormValid) {
+        toast({
+          variant: "destructive",
+          title: "Missing Information",
+          description: "Please fill in all property and content details before generating."
+        });
+        return;
+      }
+      
       setIsLoading(true);
       const values = form.getValues();
       try {
@@ -110,8 +131,8 @@ export default function AddNewPropertyPage() {
               bathrooms: values.bathrooms,
               squareFootage: values.areaSqft,
               keyFeatures: values.keyHighlights,
-              targetAudience: "Families", // Mocked for now
-              style: "Professional" // Mocked for now
+              targetAudience: values.targetAudience,
+              style: values.style
           });
           form.setValue("aiGeneratedHeadline", result.headline);
           form.setValue("aiGeneratedDescription", result.description);
@@ -301,14 +322,32 @@ const Step3AIContent = ({ form, onGenerate, isLoading }: { form: any, onGenerate
     <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground">AI Generated Content (TerraScribe™)</h3>
         <div className="grid md:grid-cols-2 gap-6">
-            <div>
+            <div className="space-y-4">
                  <FormField control={form.control} name="keyHighlights" render={({ field }) => (
                     <FormItem><FormLabel>Key Highlights *</FormLabel>
-                        <FormControl><Textarea placeholder="List unique features, one per line. e.g.,&#10;Panoramic Sea View&#10;Rooftop Infinity Pool" {...field} rows={6} /></FormControl>
+                        <FormControl><Textarea placeholder="List unique features, one per line. e.g.,&#10;Panoramic Sea View&#10;Rooftop Infinity Pool" {...field} rows={4} /></FormControl>
                         <FormDescription className="text-xs">Provide the best features to guide the AI.</FormDescription>
                     <FormMessage /></FormItem>
                 )} />
-                <Button onClick={onGenerate} disabled={isLoading} className="mt-4 w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="targetAudience" render={({ field }) => (
+                      <FormItem><FormLabel>Target Audience *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Select audience" /></SelectTrigger></FormControl>
+                              <SelectContent><ScrollArea className="h-48">{targetAudiences.map(audience => <SelectItem key={audience} value={audience}>{audience}</SelectItem>)}</ScrollArea></SelectContent>
+                          </Select>
+                      <FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="style" render={({ field }) => (
+                      <FormItem><FormLabel>Writing Style *</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Select style" /></SelectTrigger></FormControl>
+                              <SelectContent><ScrollArea className="h-48">{writingStyles.map(style => <SelectItem key={style} value={style}>{style}</SelectItem>)}</ScrollArea></SelectContent>
+                          </Select>
+                      <FormMessage /></FormItem>
+                  )} />
+                </div>
+                <Button onClick={onGenerate} disabled={isLoading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                     {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Wand2 className="mr-2 h-4 w-4"/>}
                     {isLoading ? 'Generating...' : 'Generate with TerraScribe™'}
                 </Button>
@@ -321,7 +360,7 @@ const Step3AIContent = ({ form, onGenerate, isLoading }: { form: any, onGenerate
                 )} />
                  <FormField control={form.control} name="aiGeneratedDescription" render={({ field }) => (
                     <FormItem><FormLabel>Property Description</FormLabel>
-                        <FormControl><Textarea placeholder="AI will generate this..." {...field} rows={8} /></FormControl>
+                        <FormControl><Textarea placeholder="AI will generate this..." {...field} rows={10} /></FormControl>
                     <FormMessage /></FormItem>
                 )} />
             </div>
