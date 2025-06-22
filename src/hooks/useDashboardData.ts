@@ -2,14 +2,15 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
-import { firestore } from '@/lib/firebase';
-import { collection, query, where, getCountFromServer, getDocs, Timestamp, limit, orderBy } from 'firebase/firestore';
+import { firestore, app } from '@/lib/firebase'; // Import app for functions
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { collection, query, where, getDocs, Timestamp, limit, orderBy } from 'firebase/firestore';
 
 // Define return types
 interface KpiData {
   activeLeads: number;
   propertiesSold: number;
-  totalRevenue: string; // Keep as string for display
+  totalRevenue: string;
   avgDealTime: number;
 }
 
@@ -64,24 +65,55 @@ export function useDashboardData() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // --- KPI Data ---
-        const leadsRef = collection(firestore, 'leads');
-        const activeLeadsQuery = query(leadsRef, where('ownerId', '==', user.uid), where('status', 'in', ['New', 'Contacted', 'Viewing Scheduled', 'Offer Made', 'Qualified']));
-        const activeLeadsSnap = await getCountFromServer(activeLeadsQuery);
+        const functions = getFunctions(app);
 
-        const propertiesRef = collection(firestore, 'properties');
-        const soldPropertiesQuery = query(propertiesRef, where('ownerId', '==', user.uid), where('status', '==', 'Sold'));
-        const soldPropertiesSnap = await getDocs(soldPropertiesQuery);
-        
-        const propertiesSoldCount = soldPropertiesSnap.size;
-        
-        const totalRevenueValue = propertiesSoldCount * 18000000; // Mocking 1.8 Cr per sold property
-        const formattedRevenue = `₹${(totalRevenueValue / 10000000).toFixed(1)} Cr`;
+        // --- Setup Callable Functions ---
+        const getDashboardKPIs = httpsCallable(functions, 'getDashboardKPIs');
+        const getSalesStatsChart = httpsCallable(functions, 'getSalesStatsChart');
 
-        // Growth Stats
-        const totalSalesFormatted = `₹${(totalRevenueValue / 10000000).toFixed(1)} Cr`;
-        const totalProfitFormatted = `₹${(totalRevenueValue * 0.25 / 10000000).toFixed(1)} Cr`; // mock 25% profit
-        const totalCostFormatted = `₹${(totalRevenueValue * 0.75 / 10000000).toFixed(1)} Cr`; // mock 75% cost
+        // --- Fetch Data in Parallel ---
+        const kpiPromise = getDashboardKPIs();
+        const salesStatsPromise = getSalesStatsChart();
+        const recentPropertiesQuery = query(
+          collection(firestore, "properties"),
+          where('ownerId', '==', user.uid),
+          where('status', '==', 'Active'),
+          orderBy('dateAdded', 'desc'),
+          limit(3)
+        );
+        const recentPropertiesPromise = getDocs(recentPropertiesQuery);
+
+        const [kpiResult, salesStatsResult, recentPropertiesSnap] = await Promise.all([
+          kpiPromise,
+          salesStatsPromise,
+          recentPropertiesPromise
+        ]);
+
+        // --- Process KPI Data ---
+        const rawKpiData = kpiResult.data as any;
+        const revenueInLakh = (rawKpiData.totalRevenue || 0) / 100000;
+        const formattedRevenue = revenueInLakh >= 100 
+          ? `₹${(revenueInLakh / 100).toFixed(2)} Cr` 
+          : `₹${revenueInLakh.toFixed(2)} Lakh`;
+        
+        setKpiData({
+            activeLeads: rawKpiData.activeLeads || 0,
+            propertiesSold: rawKpiData.propertiesSold || 0,
+            totalRevenue: formattedRevenue,
+            avgDealTime: rawKpiData.avgDealTime || 0,
+        });
+
+        // --- Process Growth Stats Data from KPI ---
+        const totalSalesFormatted = formattedRevenue;
+        const totalProfitInLakh = revenueInLakh * 0.25; // mock 25% profit
+        const totalProfitFormatted = totalProfitInLakh >= 100
+            ? `₹${(totalProfitInLakh / 100).toFixed(2)} Cr`
+            : `₹${totalProfitInLakh.toFixed(2)} Lakh`;
+            
+        const totalCostInLakh = revenueInLakh * 0.75; // mock 75% cost
+        const totalCostFormatted = totalCostInLakh >= 100
+            ? `₹${(totalCostInLakh / 100).toFixed(2)} Cr`
+            : `₹${totalCostInLakh.toFixed(2)} Lakh`;
 
         setGrowthStats({
             totalSales: totalSalesFormatted,
@@ -89,31 +121,14 @@ export function useDashboardData() {
             totalCost: totalCostFormatted,
         });
 
-        // --- Sales Chart Data ---
-        const salesData: { [key: string]: number } = {};
-        const monthLabels: string[] = [];
-        const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-        const mockSalesPerMonth = [500000, 800000, 1200000, 700000, 1500000, 2100000];
+        // --- Process Sales Chart Data ---
+        const rawSalesData = salesStatsResult.data as any;
+        setSalesStats({
+            labels: rawSalesData.labels || [],
+            datasets: [{ data: rawSalesData.data || [], color: "hsl(var(--primary))", name: "Total Sales" }]
+        });
         
-        for (let i = 5; i >= 0; i--) {
-            const d = new Date();
-            d.setMonth(d.getMonth() - i);
-            const monthYear = d.toLocaleString('default', { month: 'short' });
-            monthLabels.push(monthYear);
-            salesData[monthYear] = mockSalesPerMonth[5-i];
-        }
-        const salesChartValues = monthLabels.map(label => salesData[label] || 0);
-
-        // --- Recent Properties ---
-        const recentPropertiesQuery = query(
-          collection(firestore, "properties"),
-          where('ownerId', '==', user.uid), 
-          where('status', '==', 'Active'),
-          orderBy('dateAdded', 'desc'),
-          limit(3)
-        );
-        const recentPropertiesSnap = await getDocs(recentPropertiesQuery);
+        // --- Process Recent Properties ---
         const fetchedProperties: Property[] = recentPropertiesSnap.docs.map(doc => ({
             id: doc.id,
             title: doc.data().title || 'Untitled',
@@ -122,24 +137,10 @@ export function useDashboardData() {
             imageUrl: doc.data().imageUrl || 'https://placehold.co/600x400.png',
             aiHint: doc.data().aiHint || 'property exterior',
         }));
-
-
-        setKpiData({
-          activeLeads: activeLeadsSnap.data().count,
-          propertiesSold: propertiesSoldCount,
-          totalRevenue: formattedRevenue,
-          avgDealTime: 32, // Static as requested
-        });
-
-        setSalesStats({
-          labels: monthLabels,
-          datasets: [{ data: salesChartValues, color: "hsl(var(--primary))", name: "Total Sales" }],
-        });
-
         setRecentProperties(fetchedProperties);
 
       } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+        console.error("Error fetching dashboard data from Cloud Functions:", error);
       } finally {
         setLoading(false);
       }
