@@ -9,6 +9,7 @@
 
 import {setGlobalOptions} from "firebase-functions/v2";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
+import {onDocumentUpdated} from "firebase-functions/v2/firestore";
 import * as logger from "firebase-functions/logger";
 import {initializeApp, getApps} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
@@ -180,5 +181,60 @@ export const getSalesStatsChart = onCall(async (request) => {
         "An error occurred while fetching sales chart data.",
         error,
     );
+  }
+});
+
+
+/**
+ * Creates a notification when a document's verification status is updated.
+ */
+export const onDocumentVerificationComplete = onDocumentUpdated("documents/{docId}", async (event) => {
+  // 1. Log the function execution.
+  logger.info(`Document update triggered for: ${event.params.docId}`, {params: event.params});
+
+  const before = event.data?.before.data();
+  const after = event.data?.after.data();
+
+  // 2. Ensure data exists before and after the update.
+  if (!before || !after) {
+      logger.warn("Document data is missing before or after update.", {docId: event.params.docId});
+      return;
+  }
+
+  const oldStatus = before.verificationStatus;
+  const newStatus = after.verificationStatus;
+  
+  // 3. Check if the verificationStatus has changed to a "complete" state.
+  if (oldStatus !== newStatus && (newStatus === "Verified" || newStatus === "Issues Found")) {
+      logger.info(`Verification status changed for docId: ${event.params.docId}. New status: ${newStatus}`);
+
+      const ownerId = after.ownerId;
+      const docName = after.name || "Untitled Document";
+      const docId = event.params.docId;
+
+      if (!ownerId) {
+          logger.error(`Document ${docId} is missing ownerId. Cannot create notification.`);
+          return;
+      }
+
+      // 4. Construct the notification object.
+      const notification = {
+          userId: ownerId,
+          message: `Verification for document '${docName}' is complete. Status: ${newStatus}.`,
+          createdAt: Timestamp.now(),
+          isRead: false,
+          actionLink: `/documents/${docId}`,
+      };
+      
+      try {
+          // 5. Create a new document in the "notifications" collection.
+          const notificationRef = await db.collection("notifications").add(notification);
+          logger.info(`Successfully created notification ${notificationRef.id} for user ${ownerId}.`);
+      } catch (error) {
+          logger.error(`Failed to create notification for user ${ownerId}.`, {error, notificationData: notification});
+      }
+  } else {
+      // Log that no action was taken if the status didn't meet the criteria.
+      logger.info(`No relevant status change for docId: ${event.params.docId}. Old: ${oldStatus}, New: ${newStatus}. No notification created.`);
   }
 });
