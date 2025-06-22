@@ -4,6 +4,7 @@
 import { useAuth } from "@/app/context/AuthContext";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard";
 import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
@@ -11,8 +12,37 @@ import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
 import { ListingBoard } from "@/components/dashboard/ListingBoard";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp } from "lucide-react";
+import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp, FileSignature, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+
+
+const SecureDocumentsBanner = () => (
+  <motion.div
+    initial={{ opacity: 0, y: -20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, ease: "easeOut" }}
+  >
+    <Card className="bg-green-600 text-white shadow-lg border-none overflow-hidden">
+      <CardContent className="p-4 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-white/20 rounded-full">
+            <FileSignature className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h3 className="font-bold font-headline text-lg">Secure Your Documents</h3>
+            <p className="text-sm text-white/90">Verify legal documents and contracts with TerraSecure™ AI.</p>
+          </div>
+        </div>
+        <Button asChild variant="secondary" className="bg-white hover:bg-slate-100 text-green-700 font-semibold shrink-0">
+          <Link href="/documents">
+            Verify Document <ArrowRight className="ml-2 h-4 w-4 hidden sm:inline-block" />
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  </motion.div>
+);
 
 
 const DashboardSkeleton = () => (
@@ -24,6 +54,8 @@ const DashboardSkeleton = () => (
       </div>
       <Skeleton className="h-10 w-40" />
     </div>
+
+    <Skeleton className="h-24 w-full" /> 
 
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Skeleton className="h-28 w-full" />
@@ -86,6 +118,8 @@ export default function DashboardPage() {
         </Button>
       </PageHeader>
       
+      <SecureDocumentsBanner />
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {kpiCards.map((kpi) => (
           <KpiCard
@@ -103,7 +137,6 @@ export default function DashboardPage() {
         <div className="lg:col-span-2">
           <SalesStatisticsCard 
             chartData={salesStats}
-            // These totals should ideally come from the hook as well
             totalSales="₹4.2 Cr" 
             totalProfit="₹1.1 Cr"
             totalCost="₹3.1 Cr"

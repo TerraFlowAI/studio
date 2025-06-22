@@ -58,6 +58,7 @@ export function useDashboardData() {
         const activeLeadsSnap = await getCountFromServer(activeLeadsQuery);
 
         const propertiesRef = collection(firestore, 'properties');
+        // This is a placeholder as `status: "Sold"` may not exist in user's mock data yet.
         const soldPropertiesQuery = query(propertiesRef, where('ownerId', '==', user.uid), where('status', '==', 'Sold'));
         const soldPropertiesSnap = await getDocs(soldPropertiesQuery);
         
@@ -68,13 +69,11 @@ export function useDashboardData() {
         const formattedRevenue = `₹${(totalRevenueValue / 10000000).toFixed(1)} Cr`;
 
         // --- Sales Chart Data ---
+        // This is a mock implementation as a numeric price and sold date are not available on all property docs.
         const salesData: { [key: string]: number } = {};
         const monthLabels: string[] = [];
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-        // This is a mock implementation as a numeric price and sold date are not available on all property docs.
-        // In a real app, ensure 'soldAt' (Timestamp) and 'priceInRupees' (number) fields exist for accurate charting.
         const mockSalesPerMonth = [500000, 800000, 1200000, 700000, 1500000, 2100000];
         
         for (let i = 5; i >= 0; i--) {
@@ -84,7 +83,6 @@ export function useDashboardData() {
             monthLabels.push(monthYear);
             salesData[monthYear] = mockSalesPerMonth[5-i];
         }
-        
         const salesChartValues = monthLabels.map(label => salesData[label] || 0);
 
         // --- Recent Properties ---
