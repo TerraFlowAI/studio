@@ -1,4 +1,3 @@
-
 // src/components/properties/detail/TerraScribeDisplayCard.tsx
 "use client";
 
@@ -33,5 +32,3 @@ export function TerraScribeDisplayCard({ description, onRefine }: TerraScribeDis
     </Card>
   );
 }
-
-    

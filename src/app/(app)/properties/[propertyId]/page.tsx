@@ -1,4 +1,3 @@
-
 // src/app/(app)/properties/[propertyId]/page.tsx
 "use client";
 
@@ -148,5 +147,3 @@ export default function PropertyDetailPage() {
     </div>
   );
 }
-
-    

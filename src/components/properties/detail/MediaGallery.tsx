@@ -1,4 +1,3 @@
-
 // src/components/properties/detail/MediaGallery.tsx
 "use client";
 
@@ -121,5 +120,3 @@ export function MediaGallery({
     </Card>
   );
 }
-
-    

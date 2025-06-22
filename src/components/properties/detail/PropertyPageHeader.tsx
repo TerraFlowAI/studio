@@ -1,4 +1,3 @@
-
 // src/components/properties/detail/PropertyPageHeader.tsx
 "use client";
 
@@ -82,5 +81,3 @@ export function PropertyPageHeader({
     </div>
   );
 }
-
-    

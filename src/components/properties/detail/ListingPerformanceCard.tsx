@@ -1,4 +1,3 @@
-
 // src/components/properties/detail/ListingPerformanceCard.tsx
 "use client";
 
@@ -98,5 +97,3 @@ export function ListingPerformanceCard({
     </Card>
   );
 }
-
-    

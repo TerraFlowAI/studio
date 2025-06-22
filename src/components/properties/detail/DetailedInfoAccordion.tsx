@@ -1,4 +1,3 @@
-
 // src/components/properties/detail/DetailedInfoAccordion.tsx
 "use client";
 
@@ -104,5 +103,3 @@ export function DetailedInfoAccordion({
     </Card>
   );
 }
-
-    

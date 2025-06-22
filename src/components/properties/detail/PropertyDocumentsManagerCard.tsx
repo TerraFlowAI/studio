@@ -1,4 +1,3 @@
-
 // src/components/properties/detail/PropertyDocumentsManagerCard.tsx
 "use client";
 
@@ -87,5 +86,3 @@ export function PropertyDocumentsManagerCard({
     </Card>
   );
 }
-
-    

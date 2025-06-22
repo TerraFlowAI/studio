@@ -1,4 +1,3 @@
-
 // src/components/properties/detail/KeyDetailsBar.tsx
 "use client";
 
@@ -42,5 +41,3 @@ export function KeyDetailsBar({ price, beds, baths, sqft }: KeyDetailsBarProps) 
     </Card>
   );
 }
-
-    
