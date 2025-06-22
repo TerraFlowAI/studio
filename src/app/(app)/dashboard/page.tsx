@@ -103,6 +103,11 @@ export default function DashboardPage() {
       { title: "Avg. Deal Time", value: `${kpiData.avgDealTime} Days`, icon: TrendingUp, trend: "-3 days from last Q", trendDirection: "down" as const },
   ];
 
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  };
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -118,20 +123,33 @@ export default function DashboardPage() {
       
       <SecureDocumentsBanner />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <motion.div 
+        className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ staggerChildren: 0.1, delay: 0.1 }}
+      >
         {kpiCards.map((kpi) => (
-          <KpiCard
-            key={kpi.title}
-            title={kpi.title}
-            value={kpi.value}
-            icon={kpi.icon}
-            trend={kpi.trend}
-            trendDirection={kpi.trendDirection}
-          />
+          <motion.div key={kpi.title} variants={sectionVariants}>
+            <KpiCard
+              title={kpi.title}
+              value={kpi.value}
+              icon={kpi.icon}
+              trend={kpi.trend}
+              trendDirection={kpi.trendDirection}
+            />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.2 }}
+      >
         <div className="lg:col-span-2">
           <SalesStatisticsCard chartData={salesStats} />
         </div>
@@ -142,18 +160,26 @@ export default function DashboardPage() {
             totalCost={growthStats.totalCost}
           />
         </div>
-      </div>
+      </motion.div>
       
-      <AiCoPilots />
+      <motion.div variants={sectionVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
+        <AiCoPilots />
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.4 }}
+      >
         <div className="lg:col-span-2">
             <ListingBoard properties={recentProperties} />
         </div>
         <div className="lg:col-span-1">
             <AiAssistantCard message={aiMessage} />
         </div>
-      </div>
+      </motion.div>
 
     </div>
   );
