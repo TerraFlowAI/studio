@@ -72,13 +72,14 @@ export default function PropertiesPage() {
           status: data.status || "Draft",
           hasVrTour: data.hasVrTour || false,
           price: data.price || "N/A",
-          beds: data.beds || 0,
-          baths: data.baths || 0,
-          sqft: data.sqft || 0,
+          beds: data.bedrooms || 0, // Mapped from bedrooms
+          baths: data.bathrooms || 0, // Mapped from bathrooms
+          sqft: data.areaSqft || 0, // Mapped from areaSqft
           views: data.views || 0,
           leadsGenerated: data.leadsGenerated || 0,
           dateAdded: dateAdded,
           propertyType: data.propertyType || "Other",
+          listingFor: data.listingFor || "Sale",
         });
       });
       setProperties(fetchedProperties);
@@ -88,7 +89,7 @@ export default function PropertiesPage() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Could not fetch properties from the database.",
+        description: "Could not fetch properties from the database. Check permissions.",
       });
       setIsLoading(false);
     });
@@ -226,12 +227,14 @@ export default function PropertiesPage() {
           </div>
         </PageHeader>
 
-        <PropertyFiltersToolbar 
-          filters={filters} 
-          onFiltersChange={handleFiltersChange}
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-        />
+        {properties.length > 0 && (
+          <PropertyFiltersToolbar 
+            filters={filters} 
+            onFiltersChange={handleFiltersChange}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
+        )}
         
         <div className="mt-6">
           {renderContent()}

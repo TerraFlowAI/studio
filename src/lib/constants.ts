@@ -1,5 +1,4 @@
 
-
 export const LEAD_STATUSES = [
   { id: 'new', label: 'New', color: 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-700/30 dark:text-blue-200 dark:border-blue-600' },
   { id: 'contacted', label: 'Contacted', color: 'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-700/30 dark:text-amber-200 dark:border-amber-600' },
@@ -57,10 +56,10 @@ export type PropertyTypeId = typeof PROPERTY_TYPES[number]['id'];
 
 // For styling status badges/dots consistently
 export const PROPERTY_STATUSES_CONFIG = {
-  active: { dotColor: 'hsl(var(--chart-1))', badgeColor: 'bg-green-500' }, // Solid Green for better visibility
-  draft: { dotColor: 'hsl(var(--muted-foreground))', badgeColor: 'bg-slate-500' }, // Solid Slate
-  pending: { dotColor: 'hsl(var(--chart-3))', badgeColor: 'bg-yellow-500' }, // Solid Yellow
-  sold: { dotColor: 'hsl(var(--primary))', badgeColor: 'bg-blue-500' }, // Solid Blue (Primary)
-  archived: { dotColor: 'hsl(var(--destructive))', badgeColor: 'bg-red-500' }, // Solid Red
-  default: { dotColor: 'hsl(var(--border))', badgeColor: 'bg-gray-400' } // Solid Gray
+  active: { dotColor: 'hsl(var(--chart-1))', badgeColor: 'bg-green-500' },
+  draft: { dotColor: 'hsl(var(--muted-foreground))', badgeColor: 'bg-slate-500' },
+  pending: { dotColor: 'hsl(var(--chart-3))', badgeColor: 'bg-yellow-500' },
+  sold: { dotColor: 'hsl(var(--primary))', badgeColor: 'bg-blue-500' },
+  archived: { dotColor: 'hsl(var(--destructive))', badgeColor: 'bg-red-500' },
+  default: { dotColor: 'hsl(var(--border))', badgeColor: 'bg-gray-400' }
 } as const;

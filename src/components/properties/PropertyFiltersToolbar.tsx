@@ -21,7 +21,6 @@ export interface PropertyFilters {
   searchTerm: string;
   status: PropertyStatusId[];
   propertyType: PropertyTypeId[];
-  // location: string; // Future: for typeahead
 }
 
 interface PropertyFiltersToolbarProps {
@@ -50,8 +49,6 @@ export function PropertyFiltersToolbar({ filters, onFiltersChange, viewMode, onV
       : [...filters.propertyType, typeId];
     onFiltersChange({ ...filters, propertyType: newType });
   };
-
-  // TODO: Handle location filter with typeahead
 
   return (
     <div className="py-4 space-y-4 md:space-y-0 md:flex md:flex-wrap md:items-center md:justify-between md:gap-4 bg-card p-4 rounded-lg shadow-sm border">
@@ -107,14 +104,6 @@ export function PropertyFiltersToolbar({ filters, onFiltersChange, viewMode, onV
           </DropdownMenuContent>
         </DropdownMenu>
         
-        {/* TODO: Location Filter (Typeahead) - Simple input for now
-        <Input
-            placeholder="Filter by Location..."
-            value={filters.location || ""}
-            onChange={(e) => onFiltersChange({...filters, location: e.target.value})}
-            className="h-10 rounded-md border w-full md:w-auto"
-        /> 
-        */}
       </div>
       
       <div className="flex items-center gap-1 p-0.5 bg-muted rounded-md">
