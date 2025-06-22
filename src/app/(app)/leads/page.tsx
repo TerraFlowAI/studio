@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -8,7 +7,7 @@ import { LeadsTable, type Lead } from "@/components/leads/LeadsTable";
 import { LeadFiltersToolbar, type Filters } from "@/components/leads/LeadFiltersToolbar";
 import { BulkActionsToolbar } from "@/components/leads/BulkActionsToolbar";
 import { AddLeadSheet } from "@/components/leads/AddLeadSheet";
-import { PlusCircle, Upload, Zap } from "lucide-react";
+import { PlusCircle, Upload, Zap, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { LeadStatusId, LeadSourceId, AiSmartViewId } from "@/lib/constants";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/app/context/AuthContext";
 import { firestore } from "@/lib/firebase";
 import { addDoc, collection, serverTimestamp, query, where, onSnapshot, orderBy, Timestamp } from "firebase/firestore";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function LeadsPage() {
   const router = useRouter();
@@ -25,6 +25,7 @@ export default function LeadsPage() {
 
   const [leads, setLeads] = React.useState<Lead[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
   const [filters, setFilters] = React.useState<Filters>({
     searchTerm: "",
     status: [],
@@ -38,11 +39,17 @@ export default function LeadsPage() {
   const [currentPage, setCurrentPage] = React.useState(1);
   const leadsPerPage = 10;
 
-  // Real-time data fetching from Firestore
+  // Real-time data fetching from Firestore, now more robust
   React.useEffect(() => {
-    if (!user) return; // Don't fetch if no user is logged in
+    // If there's no user logged in yet, don't even try to fetch.
+    if (!user) {
+      setIsLoading(false); // Stop loading if there's no user
+      return;
+    }
 
     setIsLoading(true);
+    setError(null); // Reset error on a new fetch attempt
+    
     const leadsCollectionRef = collection(firestore, "leads");
     
     const q = query(
@@ -73,18 +80,16 @@ export default function LeadsPage() {
       });
       setLeads(fetchedLeads);
       setIsLoading(false);
-    }, (error) => {
-      console.error("Error fetching leads: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Could not fetch leads from the database.",
-      });
+      console.log(`Successfully fetched ${fetchedLeads.length} leads.`);
+    }, (err) => {
+      // This will catch security rule errors or other Firestore issues!
+      console.error("Error fetching leads:", err);
+      setError("Failed to fetch leads. You may not have permission to view this data.");
       setIsLoading(false);
     });
 
     return () => unsubscribe(); // Cleanup listener on unmount
-  }, [user, toast]);
+  }, [user]);
 
 
   const handleFiltersChange = (newFilters: Filters) => {
@@ -219,6 +224,14 @@ export default function LeadsPage() {
             </Button>
           </div>
         </PageHeader>
+
+        {error && (
+            <Alert variant="destructive" className="mb-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Data Fetching Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+            </Alert>
+        )}
 
         <LeadFiltersToolbar filters={filters} onFiltersChange={handleFiltersChange} />
 
