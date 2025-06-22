@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -30,6 +31,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/shared/Logo';
 import { auth } from '@/lib/firebase';
+import { useAuth } from '@/app/context/AuthContext';
 import { signOut } from 'firebase/auth';
 
 export interface NavItem {
@@ -44,11 +46,7 @@ export const mainNavItems: NavItem[] = [
   { href: '/leads', label: 'Leads', icon: Users },
   { href: '/properties', label: 'Properties', icon: Briefcase },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { 
-    href: '/scribe', 
-    label: 'Scribe Studio', 
-    icon: PenSquare,
-  },
+  { href: '/scribe', label: 'TerraScribe', icon: PenSquare },
   { href: '/smartflow', label: 'SmartFlow', icon: Zap }, 
   { href: '/documents', label: 'Documents', icon: FileSignature },
 ];
@@ -62,9 +60,8 @@ export const utilityNavItems: NavItem[] = [
 export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter(); 
+  const { user } = useAuth();
   const { setOpenMobile, isMobile, state } = useSidebar();
-
-  const navItemsToRender = mainNavItems;
 
   const handleLogout = async () => {
     try {
@@ -85,30 +82,29 @@ export function AppSidebar() {
     >
       <SidebarHeader className="p-4 h-20 flex items-center justify-center group-data-[collapsible=icon]:justify-center group-data-[state=expanded]:justify-start border-b border-sidebar-border">
         <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setOpenMobile(false)}>
-          {/* Use the Logo component, conditionally hide text */}
           <Logo size={state === 'expanded' || isMobile ? 'md' : 'sm'} hideText={state !== 'expanded' && !isMobile} />
         </Link>
       </SidebarHeader>
       <SidebarContent className="flex-1 p-3 mt-2 overflow-y-auto">
         <SidebarMenu>
-          {navItemsToRender.map((item) => (
+          {mainNavItems.map((item) => (
             <SidebarMenuItem key={item.href} className="mb-1">
               <Link href={item.href}>
                 <SidebarMenuButton
-                  isActive={pathname.startsWith(item.href)} 
+                  isActive={pathname === item.href}
                   tooltip={item.label}
                   onClick={() => {
                     if (isMobile) setOpenMobile(false);
                   }}
                   className={cn(
                     "justify-start w-full h-11 px-3 rounded-lg text-sm",
-                    (pathname.startsWith(item.href))
+                    (pathname === item.href)
                       ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
                       : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   )}
                 >
                   <item.icon className={cn("h-5 w-5 mr-3 shrink-0",
-                    (pathname.startsWith(item.href))
+                    (pathname === item.href)
                        ? "text-sidebar-primary-foreground"
                        : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
                   )} />
@@ -148,7 +144,7 @@ export function AppSidebar() {
           ))}
         <div className="flex items-center gap-3 pt-2">
             <Image
-                src="https://placehold.co/40x40.png"
+                src={user?.photoURL || "https://placehold.co/40x40.png"}
                 alt="User Avatar"
                 width={36}
                 height={36}
@@ -157,8 +153,8 @@ export function AppSidebar() {
             />
             {(state === 'expanded' || isMobile) && (
               <div>
-                <p className="text-sm font-semibold text-foreground">Aman</p>
-                <p className="text-xs text-muted-foreground">aman@terraflow.ai</p>
+                <p className="text-sm font-semibold text-foreground">{user?.displayName || 'User'}</p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
             )}
         </div>
