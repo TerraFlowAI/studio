@@ -15,6 +15,8 @@ import { useAuth } from "@/app/context/AuthContext";
 import { firestore } from "@/lib/firebase";
 import { collection, query, where, onSnapshot, orderBy, Timestamp } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { AddPropertyWizard } from "@/components/properties/AddPropertyWizard";
 
 export default function PropertiesPage() {
   const { user } = useAuth();
@@ -29,6 +31,7 @@ export default function PropertiesPage() {
   });
   const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid');
   const [selectedProperties, setSelectedProperties] = React.useState<Set<string>>(new Set());
+  const [isWizardOpen, setIsWizardOpen] = React.useState(false);
 
   // Pagination state
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -156,11 +159,11 @@ export default function PropertiesPage() {
           <Building className="h-20 w-20 text-primary/20 mb-4" />
           <h3 className="text-xl font-semibold mb-2">Your inventory is empty.</h3>
           <p className="mb-4">Get started by adding your first property listing.</p>
-          <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/properties/new">
+          <DialogTrigger asChild>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
               <PlusCircle className="mr-2 h-4 w-4" /> Add New Property
-            </Link>
-          </Button>
+            </Button>
+          </DialogTrigger>
         </div>
       );
     }
@@ -205,33 +208,38 @@ export default function PropertiesPage() {
   };
   
   return (
-    <div className="container mx-auto">
-      <PageHeader title="Properties">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => alert("Import Listings: Coming Soon!")}>
-            <Upload className="mr-2 h-4 w-4" /> Import Listings
-          </Button>
-          <Button variant="outline" onClick={() => alert("Manage Settings: Coming Soon!")}>
-            <SettingsIcon className="mr-2 h-4 w-4" /> Manage Settings
-          </Button>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
-            <Link href="/properties/new">
-              <PlusCircle className="mr-2 h-4 w-4" /> Add New Property
-            </Link>
-          </Button>
-        </div>
-      </PageHeader>
+    <Dialog open={isWizardOpen} onOpenChange={setIsWizardOpen}>
+      <div className="container mx-auto">
+        <PageHeader title="Properties">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => alert("Import Listings: Coming Soon!")}>
+              <Upload className="mr-2 h-4 w-4" /> Import Listings
+            </Button>
+            <Button variant="outline" onClick={() => alert("Manage Settings: Coming Soon!")}>
+              <SettingsIcon className="mr-2 h-4 w-4" /> Manage Settings
+            </Button>
+            <DialogTrigger asChild>
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                <PlusCircle className="mr-2 h-4 w-4" /> Add New Property
+              </Button>
+            </DialogTrigger>
+          </div>
+        </PageHeader>
 
-      <PropertyFiltersToolbar 
-        filters={filters} 
-        onFiltersChange={handleFiltersChange}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-      />
-      
-      <div className="mt-6">
-        {renderContent()}
+        <PropertyFiltersToolbar 
+          filters={filters} 
+          onFiltersChange={handleFiltersChange}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+        />
+        
+        <div className="mt-6">
+          {renderContent()}
+        </div>
       </div>
-    </div>
+      <DialogContent className="sm:max-w-4xl p-0">
+          <AddPropertyWizard onClose={() => setIsWizardOpen(false)} />
+      </DialogContent>
+    </Dialog>
   );
 }
