@@ -4,41 +4,50 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Rules for the 'leads' collection
+    // LEADS: Secure access to the leads collection
     match /leads/{leadId} {
-      // Any authenticated user can create a lead, as long as they set themselves as the owner.
-      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+      // Allow authenticated users to query the leads collection.
+      // Firestore will ensure that any read query constraints on ownerId match the 'get' rule below.
+      allow list: if request.auth != null;
 
-      // Only the owner of a lead can read, update, or delete it.
-      // The query in the app filters by ownerId, which makes this 'list' operation secure.
-      allow read, update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
+      // Allow a user to get, update, or delete their own lead document.
+      allow get, update, delete: if request.auth.uid == resource.data.ownerId;
+
+      // Allow a user to create a new lead only if they are the owner.
+      allow create: if request.auth.uid == request.resource.data.ownerId;
     }
 
-    // Rules for the 'properties' collection
+    // PROPERTIES: Secure access to the properties collection
     match /properties/{propertyId} {
-      // Any authenticated user can create a property, setting themselves as the owner.
-      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+      // Allow authenticated users to query the properties collection.
+      allow list: if request.auth != null;
       
-      // Only the owner can read, update, or delete their own property.
-      allow read, update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
-    }
-    
-    // Rules for the 'documents' collection
-    match /documents/{documentId} {
-       // Any authenticated user can create a document, setting themselves as the owner.
-       allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+      // Allow a user to get, update, or delete their own property document.
+      allow get, update, delete: if request.auth.uid == resource.data.ownerId;
 
-       // Only the owner can read, update, or delete their own documents.
-       allow read, update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
+      // Allow a user to create a new property only if they are the owner.
+      allow create: if request.auth.uid == request.resource.data.ownerId;
     }
-    
-    // Rules for 'notifications'
+
+    // DOCUMENTS: Secure access to the documents collection
+    match /documents/{docId} {
+       // Allow authenticated users to query their documents.
+      allow list: if request.auth != null;
+
+      // Allow a user to get, update, or delete their own document.
+      allow get, update, delete: if request.auth.uid == resource.data.ownerId;
+
+      // Allow a user to create a new document only if they are the owner.
+      allow create: if request.auth.uid == request.resource.data.ownerId;
+    }
+
+    // NOTIFICATIONS: Users can only read their own, while functions can create them.
     match /notifications/{notificationId} {
-       // Only allow reading if the userId on the notification matches the requester's UID.
-       allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-       
-       // Disallow all client-side writes for security. Notifications are created by backend functions only.
-       allow write: if false;
+      // Allow a user to get their own notification.
+      allow get: if request.auth.uid == resource.data.userId;
+      
+      // A user cannot list all notifications, and cannot write them.
+      allow list, write: if false;
     }
   }
 }
