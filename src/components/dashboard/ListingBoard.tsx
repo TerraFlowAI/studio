@@ -1,18 +1,11 @@
+
 'use client';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Briefcase, ArrowRight, SearchX } from "lucide-react";
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface Property {
-    id: string;
-    title: string;
-    locality: string;
-    price: string;
-    imageUrl: string;
-    aiHint: string;
-}
+import type { Property } from "@/hooks/useDashboardData";
 
 interface ListingBoardProps {
     properties: Property[];
