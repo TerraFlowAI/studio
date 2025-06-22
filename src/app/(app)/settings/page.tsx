@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Users, CreditCard, Bell, Plug, Shield, Palette, Globe, MapPin, Edit3, Trash2, LogOut, Eye, MoreVertical } from "lucide-react";
+import { User, Users, CreditCard, Bell, Plug, Shield, Palette, Globe, MapPin, Edit3, Trash2, LogOut, Eye, MoreVertical, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -21,6 +21,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/app/context/AuthContext";
+import { updateProfile } from "firebase/auth";
 
 type SettingsSection = "profile" | "team" | "billing" | "notifications" | "integrations" | "security";
 
@@ -49,17 +51,25 @@ const integrations = [
 
 export default function SettingsPage() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [activeSection, setActiveSection] = React.useState<SettingsSection>("profile");
   const [isDarkMode, setIsDarkMode] = React.useState(false);
 
-  // Form state for profile (simplified, real app would use react-hook-form)
-  const [fullName, setFullName] = React.useState("Aman (Current User)");
-  const [phoneNumber, setPhoneNumber] = React.useState("+91 9876543210");
+  // State for profile form
+  const [displayName, setDisplayName] = React.useState('');
+  const [isSaving, setIsSaving] = React.useState(false);
+
+  // When the component loads and we have user data, populate the form
+  React.useEffect(() => {
+    if (user) {
+      setDisplayName(user.displayName || '');
+    }
+  }, [user]);
 
 
   React.useEffect(() => {
-    const darkModePreference = localStorage.getItem('darkMode') === 'true' || 
-      (localStorage.getItem('darkMode') === null && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const darkModePreference = typeof window !== 'undefined' && (localStorage.getItem('darkMode') === 'true' || 
+      (localStorage.getItem('darkMode') === null && window.matchMedia('(prefers-color-scheme: dark)').matches));
     setIsDarkMode(darkModePreference);
     if (darkModePreference) {
       document.documentElement.classList.add('dark');
@@ -83,8 +93,22 @@ export default function SettingsPage() {
       });
   };
 
-  const handleProfileSave = () => {
-    toast({ title: "Profile Updated", description: "Your profile information has been saved." });
+  const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!user) {
+        toast({ title: "Error", description: "You must be logged in to update your profile.", variant: "destructive" });
+        return;
+    }
+    setIsSaving(true);
+    try {
+        await updateProfile(user, { displayName });
+        toast({ title: "Profile Updated", description: "Your profile information has been saved successfully." });
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        toast({ title: "Update Failed", description: "Could not update your profile. Please try again.", variant: "destructive" });
+    } finally {
+        setIsSaving(false);
+    }
   };
 
   const handlePasswordChange = () => {
@@ -99,6 +123,15 @@ export default function SettingsPage() {
     { id: "integrations", label: "Integrations", icon: Plug },
     { id: "security", label: "Security", icon: Shield },
   ];
+  
+  if (!user) {
+      return (
+          <div className="flex items-center justify-center h-full">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="ml-2">Loading profile...</p>
+          </div>
+      )
+  }
 
   const renderContent = () => {
     switch (activeSection) {
@@ -107,32 +140,33 @@ export default function SettingsPage() {
           <div className="space-y-8">
             <Card className="shadow-lg">
               <CardHeader><CardTitle className="font-headline text-xl">Your Information</CardTitle></CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-1">
-                  <Label htmlFor="fullName">Full Name</Label>
-                  <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" defaultValue="aman@terraflow.ai" disabled />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="phoneNumber">Phone Number</Label>
-                  <Input id="phoneNumber" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                </div>
-                 <div className="space-y-1">
-                  <Label htmlFor="role">Role</Label>
-                  <Input id="role" defaultValue={userRole.charAt(0).toUpperCase() + userRole.slice(1)} disabled />
-                </div>
-                <Button onClick={handleProfileSave} className="bg-primary hover:bg-primary/90">Save Changes</Button>
+              <CardContent>
+                <form onSubmit={handleProfileUpdate} className="space-y-4">
+                  <div className="space-y-1">
+                    <Label htmlFor="displayName">Full Name</Label>
+                    <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input id="email" type="email" value={user?.email || ''} disabled />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="role">Role</Label>
+                    <Input id="role" value={userRole.charAt(0).toUpperCase() + userRole.slice(1)} disabled />
+                  </div>
+                  <Button type="submit" disabled={isSaving} className="bg-primary hover:bg-primary/90">
+                    {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Save Changes
+                  </Button>
+                </form>
               </CardContent>
             </Card>
             <Card className="shadow-lg">
               <CardHeader><CardTitle className="font-headline text-xl">Profile Picture</CardTitle></CardHeader>
               <CardContent className="flex flex-col items-center space-y-4 sm:flex-row sm:items-start sm:space-y-0 sm:space-x-6">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src="https://placehold.co/100x100.png" alt="User Avatar" data-ai-hint="person avatar" />
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarImage src={user.photoURL || "https://placehold.co/100x100.png"} alt="User Avatar" data-ai-hint="person avatar" />
+                  <AvatarFallback>{displayName.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col space-y-2 items-center sm:items-start">
                   <Button variant="outline" onClick={() => alert("Upload New Picture clicked")}>Upload New Picture</Button>
@@ -392,5 +426,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
-    
