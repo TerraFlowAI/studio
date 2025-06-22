@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -18,14 +19,85 @@ import { firestore } from "@/lib/firebase";
 import { addDoc, collection, serverTimestamp, query, where, onSnapshot, orderBy, Timestamp } from "firebase/firestore";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+
+// This is the custom hook that fetches your leads data
+const useLeads = () => {
+  const { user } = useAuth(); // Get the current user from our AuthContext
+  const [leads, setLeads] = React.useState<Lead[]>([]); // Lead type should be defined
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    // FIX #1: If there's no user logged in yet, don't even try to fetch.
+    // The listener will re-run this effect when the user state changes.
+    if (!user) {
+      setLoading(false); // Stop loading if there's no user
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    // Define the query to get leads for the current user, ordered by creation date
+    const leadsCollectionRef = collection(firestore, "leads");
+    const q = query(
+      leadsCollectionRef,
+      where("ownerId", "==", user.uid), // This is the crucial filter
+      orderBy("createdAt", "desc")
+    );
+
+    // onSnapshot listens for real-time updates
+    const unsubscribe = onSnapshot(q, 
+      (querySnapshot) => {
+        const fetchedLeads: Lead[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          fetchedLeads.push({
+            id: doc.id,
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            aiScore: data.aiScore || 0,
+            aiScoreFactors: data.aiScoreFactors || "No factors available.",
+            source: data.source,
+            dateAdded: data.createdAt instanceof Timestamp 
+              ? data.createdAt.toDate().toISOString().split('T')[0] 
+              : new Date().toISOString().split('T')[0],
+            status: data.status,
+            propertyOfInterest: data.propertyOfInterest,
+          });
+        });
+
+        setLeads(fetchedLeads);
+        setLoading(false);
+        
+        // FIX #2: Add this console log for powerful debugging
+        console.log(`Successfully fetched ${fetchedLeads.length} leads.`);
+      },
+      (err) => {
+        // FIX #3: This will catch security rule errors!
+        console.error("Error fetching leads:", err);
+        setError("Failed to fetch leads. You may not have permission.");
+        setLoading(false);
+      }
+    );
+
+    // Cleanup function to stop listening when the component unmounts
+    return () => unsubscribe();
+
+  }, [user]); // Re-run this effect whenever the user object changes
+
+  return { leads, loading, error };
+};
+
+
 export default function LeadsPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const [leads, setLeads] = React.useState<Lead[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const { leads, loading: isLoading, error } = useLeads();
+
   const [filters, setFilters] = React.useState<Filters>({
     searchTerm: "",
     status: [],
@@ -38,59 +110,6 @@ export default function LeadsPage() {
 
   const [currentPage, setCurrentPage] = React.useState(1);
   const leadsPerPage = 10;
-
-  // Real-time data fetching from Firestore, now more robust
-  React.useEffect(() => {
-    // If there's no user logged in yet, don't even try to fetch.
-    if (!user) {
-      setIsLoading(false); // Stop loading if there's no user
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null); // Reset error on a new fetch attempt
-    
-    const leadsCollectionRef = collection(firestore, "leads");
-    
-    const q = query(
-      leadsCollectionRef, 
-      where("ownerId", "==", user.uid),
-      orderBy("createdAt", "desc")
-    );
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const fetchedLeads: Lead[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        fetchedLeads.push({
-          id: doc.id,
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          aiScore: data.aiScore || 0,
-          aiScoreFactors: data.aiScoreFactors || "No factors available.",
-          source: data.source,
-          // Convert Firestore Timestamp to a string date
-          dateAdded: data.createdAt instanceof Timestamp 
-            ? data.createdAt.toDate().toISOString().split('T')[0] 
-            : new Date().toISOString().split('T')[0],
-          status: data.status,
-          propertyOfInterest: data.propertyOfInterest,
-        });
-      });
-      setLeads(fetchedLeads);
-      setIsLoading(false);
-      console.log(`Successfully fetched ${fetchedLeads.length} leads.`);
-    }, (err) => {
-      // This will catch security rule errors or other Firestore issues!
-      console.error("Error fetching leads:", err);
-      setError("Failed to fetch leads. You may not have permission to view this data.");
-      setIsLoading(false);
-    });
-
-    return () => unsubscribe(); // Cleanup listener on unmount
-  }, [user]);
-
 
   const handleFiltersChange = (newFilters: Filters) => {
     setFilters(newFilters);
