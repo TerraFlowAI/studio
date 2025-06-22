@@ -1,10 +1,19 @@
+
 'use client';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PenSquare, Calculator, Zap, ArrowRight } from "lucide-react";
+import { PenSquare, Calculator, Zap, ArrowRight, Users } from "lucide-react";
 import Link from 'next/link';
 
 const coPilots = [
+    {
+        icon: Users,
+        title: "TerraLead™",
+        description: "Capture, score, and automatically nurture leads with an AI-powered CRM.",
+        href: "/leads",
+        color: "text-green-500",
+        bgColor: "bg-green-500/10"
+    },
     {
         icon: PenSquare,
         title: "TerraScribe™",
@@ -35,7 +44,7 @@ export function AiCoPilots() {
     return (
         <div>
             <h2 className="text-2xl font-bold font-headline mb-4 text-foreground">Your AI Co-Pilots</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {coPilots.map((pilot) => {
                     const Icon = pilot.icon;
                     return (

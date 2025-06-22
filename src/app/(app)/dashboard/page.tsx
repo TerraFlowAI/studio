@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard";
+import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCard";
 import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
 import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
 import { ListingBoard } from "@/components/dashboard/ListingBoard";
@@ -31,7 +32,7 @@ const SecureDocumentsBanner = () => (
           </div>
           <div>
             <h3 className="font-bold font-headline text-lg">Secure Your Documents</h3>
-            <p className="text-sm text-white/90">Verify legal documents and contracts with TerraSecure™ AI.</p>
+            <p className="text-sm text-white/90">Verify legal documents and contracts with TerraSecure™.</p>
           </div>
         </div>
         <Button asChild variant="secondary" className="bg-white hover:bg-slate-100 text-green-700 font-semibold shrink-0">
@@ -65,26 +66,23 @@ const DashboardSkeleton = () => (
     </div>
 
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <Skeleton className="lg:col-span-2 h-[450px]" />
-      <Skeleton className="lg:col-span-1 h-[450px]" />
+        <Skeleton className="lg:col-span-2 h-[450px]" />
+        <Skeleton className="lg:col-span-1 h-[450px]" />
     </div>
 
     <div>
         <Skeleton className="h-8 w-48 mb-4" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Skeleton className="h-48 w-full" />
             <Skeleton className="h-48 w-full" />
             <Skeleton className="h-48 w-full" />
             <Skeleton className="h-48 w-full" />
         </div>
     </div>
     
-    <div>
-        <Skeleton className="h-8 w-48 mb-4" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-        </div>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Skeleton className="lg:col-span-2 h-[450px]" />
+        <Skeleton className="lg:col-span-1 h-[450px]" />
     </div>
   </div>
 );
@@ -92,7 +90,7 @@ const DashboardSkeleton = () => (
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { loading, kpiData, salesStats, aiMessage, recentProperties } = useDashboardData();
+  const { loading, kpiData, salesStats, aiMessage, recentProperties, growthStats } = useDashboardData();
 
   if (loading) {
     return <DashboardSkeleton />;
@@ -135,22 +133,27 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <SalesStatisticsCard 
-            chartData={salesStats}
-            totalSales="₹4.2 Cr" 
-            totalProfit="₹1.1 Cr"
-            totalCost="₹3.1 Cr"
-          />
+          <SalesStatisticsCard chartData={salesStats} />
         </div>
-
         <div className="lg:col-span-1">
-          <AiAssistantCard message={aiMessage} />
+          <GrowthStatisticsCard 
+            totalSales={growthStats.totalSales}
+            totalProfit={growthStats.totalProfit}
+            totalCost={growthStats.totalCost}
+          />
         </div>
       </div>
       
       <AiCoPilots />
 
-      <ListingBoard properties={recentProperties} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+            <ListingBoard properties={recentProperties} />
+        </div>
+        <div className="lg:col-span-1">
+            <AiAssistantCard message={aiMessage} />
+        </div>
+      </div>
 
     </div>
   );

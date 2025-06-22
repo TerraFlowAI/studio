@@ -2,21 +2,17 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ReceiptText, Wallet, Coins } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { ChartTooltipContent } from "@/components/ui/chart";
 
 interface SalesStatisticsCardProps {
   chartData: {
     labels: string[];
     datasets: Array<{ data: number[]; color: string; name?: string }>;
   };
-  totalSales: string;
-  totalProfit: string;
-  totalCost: string;
 }
 
-export function SalesStatisticsCard({ chartData, totalSales, totalProfit, totalCost }: SalesStatisticsCardProps) {
+export function SalesStatisticsCard({ chartData }: SalesStatisticsCardProps) {
   const dataForChart = chartData.labels.map((label, index) => {
     const entry: { name: string; [key: string]: any } = { name: label };
     chartData.datasets.forEach((dataset, i) => {
@@ -49,11 +45,11 @@ export function SalesStatisticsCard({ chartData, totalSales, totalProfit, totalC
           <CardTitle className="text-xl font-semibold font-headline text-foreground">Sales Statistics</CardTitle>
         </div>
         <Button variant="outline" size="sm" className="text-muted-foreground hover:text-foreground hover:border-primary/50">
-          Last months <ChevronDown className="ml-1 h-4 w-4" />
+          Last 6 months <ChevronDown className="ml-1 h-4 w-4" />
         </Button>
       </CardHeader>
       <CardContent>
-        <div className="h-[250px] w-full mb-6 -ml-4">
+        <div className="h-[350px] w-full mb-6 -ml-4">
            <ResponsiveContainer width="100%" height="100%">
             <LineChart data={dataForChart} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
               <defs>
@@ -79,35 +75,6 @@ export function SalesStatisticsCard({ chartData, totalSales, totalProfit, totalC
               ))}
             </LineChart>
           </ResponsiveContainer>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border">
-            <div className="p-2 bg-primary/10 rounded-md">
-              <ReceiptText className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Total Sales</p>
-              <p className="text-md font-semibold text-foreground">{totalSales}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border">
-            <div className="p-2 bg-green-500/10 rounded-md">
-              <Wallet className="h-5 w-5 text-green-500" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Total Profit</p>
-              <p className="text-md font-semibold text-foreground">{totalProfit}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border">
-            <div className="p-2 bg-orange-500/10 rounded-md">
-              <Coins className="h-5 w-5 text-orange-500" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Total Cost</p>
-              <p className="text-md font-semibold text-foreground">{totalCost}</p>
-            </div>
-          </div>
         </div>
       </CardContent>
     </Card>
