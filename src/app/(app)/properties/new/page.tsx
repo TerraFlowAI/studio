@@ -17,10 +17,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { generatePropertyDescription } from "@/ai/flows/generate-property-description";
-import { saveNewProperty } from "./actions";
-
-import { MapPin, Building2, Wand2, Image as ImageIcon, CheckCircle, Loader2, Sparkles, RefreshCcw, ArrowLeft, ArrowRight, Save, X, DatabaseZap } from "lucide-react";
+import { MapPin, Building2, Wand2, Image as ImageIcon, CheckCircle, Loader2, Sparkles, ArrowLeft, ArrowRight, Save, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+
+import { useAuth } from "@/app/context/AuthContext";
+import { firestore } from "@/lib/firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 // --- Validation Schema ---
 const propertySchema = z.object({
@@ -68,6 +70,7 @@ const targetAudiences = ["Young Professionals", "Families with Children", "Retir
 export default function AddNewPropertyPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
@@ -109,7 +112,6 @@ export default function AddNewPropertyPage() {
   };
   
   const handleGenerateAIContent = async () => {
-      // Validate fields required for generation
       const fieldsForAI = ["propertyType", "addressLocality", "addressCity", "bedrooms", "bathrooms", "areaSqft", "keyHighlights", "targetAudience", "style"];
       const isAiFormValid = await form.trigger(fieldsForAI as any);
       if (!isAiFormValid) {
@@ -145,14 +147,18 @@ export default function AddNewPropertyPage() {
   };
 
   const processForm = async (status: 'Active' | 'Draft') => {
+    if (!user) {
+      toast({ variant: "destructive", title: "Authentication Error", description: "You must be logged in to save a property." });
+      return;
+    }
+
     setIsLoading(true);
     if (status === 'Draft') setIsSavingDraft(true);
 
-    // Final validation before submitting
     const isValid = await form.trigger();
     if (!isValid && status === 'Active') {
         toast({ variant: 'destructive', title: 'Missing Information', description: 'Please complete all required fields before publishing.' });
-        // Find first step with an error and go to it
+        // Go to first step with an error
         for (const step of STEPS) {
             for (const field of step.fields) {
                 if (form.formState.errors[field as keyof PropertyFormValues]) {
@@ -166,11 +172,31 @@ export default function AddNewPropertyPage() {
     }
 
     try {
-        await saveNewProperty(form.getValues(), status);
+        const values = form.getValues();
+        const { aiGeneratedHeadline, aiGeneratedDescription, addressLocality, addressBuilding, addressStreet, addressCity, expectedPrice, ...restOfData } = values;
+
+        await addDoc(collection(firestore, 'properties'), {
+            ownerId: user.uid,
+            status: status,
+            title: aiGeneratedHeadline || `${restOfData.propertyType} in ${addressLocality}`,
+            description: aiGeneratedDescription,
+            address: `${addressBuilding}, ${addressStreet}`,
+            locality: addressLocality,
+            city: addressCity,
+            price: `₹${expectedPrice.toLocaleString()}`,
+            ...restOfData,
+            imageUrl: values.imageUrls?.[0] || 'https://placehold.co/600x400.png',
+            aiHint: 'property exterior',
+            views: 0,
+            leadsGenerated: 0,
+            dateAdded: serverTimestamp(),
+        });
+        
         toast({ title: `Property ${status === 'Active' ? 'Published' : 'Saved as Draft'}!`, description: 'Your new property has been saved successfully.' });
         router.push('/properties');
     } catch (error) {
-        toast({ variant: 'destructive', title: 'Save Failed', description: 'There was an error saving your property.' });
+        console.error("Error saving property to Firestore: ", error);
+        toast({ variant: 'destructive', title: 'Save Failed', description: 'There was an error saving your property to the database.' });
     } finally {
         setIsLoading(false);
         setIsSavingDraft(false);
@@ -189,7 +215,6 @@ export default function AddNewPropertyPage() {
         </Button>
       </div>
 
-      {/* Stepper */}
       <div className="mb-8 flex items-center justify-between">
         {STEPS.map((step, index) => (
           <React.Fragment key={step.id}>
@@ -375,7 +400,6 @@ const Step4Media = ({ form }: { form: any }) => (
             <CardHeader><CardTitle className="text-base">Property Photos</CardTitle><CardDescription>Drag & drop coming soon. Please upload via a service and paste URLs.</CardDescription></CardHeader>
             <CardContent>
                 <p className="text-sm text-muted-foreground text-center p-8 border-2 border-dashed rounded-lg">Placeholder for Drag & Drop Image Uploader</p>
-                 {/* This is a placeholder UI. Real implementation needs state management for file list */}
             </CardContent>
         </Card>
         <FormField control={form.control} name="vrTourUrl" render={({ field }) => (
