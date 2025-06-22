@@ -14,6 +14,9 @@ import { LEAD_STATUSES, LEAD_SOURCES } from "@/lib/constants";
 import type { LeadStatusId, LeadSourceId, AiSmartViewId } from "@/lib/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { firestore, auth } from "@/lib/firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const initialMockLeads: Lead[] = [
   {
@@ -394,6 +397,7 @@ const initialMockLeads: Lead[] = [
 
 export default function LeadsPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [leads, setLeads] = React.useState<Lead[]>(initialMockLeads);
   const [filters, setFilters] = React.useState<Filters>({
     searchTerm: "",
@@ -437,15 +441,53 @@ export default function LeadsPage() {
     });
   };
   
-  const handleAddLead = (newLeadData: Omit<Lead, 'id' | 'aiScore' | 'aiScoreFactors' | 'dateAdded'>) => {
-    const newLead: Lead = {
-      ...newLeadData,
-      id: (leads.length + 1 + Math.random()).toString(), 
-      aiScore: Math.floor(Math.random() * 60) + 40, 
-      aiScoreFactors: "Manually added (+5), Source: " + newLeadData.source,
-      dateAdded: new Date().toISOString().split('T')[0],
-    };
-    setLeads(prev => [newLead, ...prev]);
+  const handleAddLead = async (leadData: Omit<Lead, 'id' | 'aiScore' | 'aiScoreFactors' | 'dateAdded'>) => {
+    const { currentUser } = auth;
+    if (!currentUser) {
+      toast({
+        variant: "destructive",
+        title: "Not Authenticated",
+        description: "You must be logged in to add a new lead.",
+      });
+      return;
+    }
+
+    try {
+      // Create a new document in the 'leads' collection
+      await addDoc(collection(firestore, "leads"), {
+        ...leadData,
+        ownerId: currentUser.uid,
+        createdAt: serverTimestamp(),
+        // Default values for fields not in the form
+        aiScore: 0, // Initial AI score can be 0 or calculated by a backend function
+        aiScoreFactors: "Lead manually created",
+        status: leadData.status || "New",
+      });
+
+      toast({
+        title: "Lead Created!",
+        description: `${leadData.name} has been successfully added to your leads.`,
+      });
+      
+      // Here you would typically refetch the leads from Firestore
+      // For now, we'll just add it to the local mock state to see the result immediately
+      const newLeadForState: Lead = {
+        ...leadData,
+        id: Date.now().toString(), // Mock ID for local state
+        aiScore: 0,
+        aiScoreFactors: "Lead manually created",
+        dateAdded: new Date().toISOString().split('T')[0],
+      };
+      setLeads(prev => [newLeadForState, ...prev]);
+
+    } catch (error) {
+      console.error("Error adding lead to Firestore: ", error);
+      toast({
+        variant: "destructive",
+        title: "Save Failed",
+        description: "Could not save the lead to the database. Please try again.",
+      });
+    }
   };
 
 
