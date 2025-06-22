@@ -1,53 +1,47 @@
-
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // LEADS: Secure access to the leads collection
+    // A user must be signed in to perform any action.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Helper to check if the user owns the document being written.
+    function isCreatingOwnDocument() {
+      return isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+    }
+    
+    // Helper to check if the user owns an existing document.
+    function isOwner(doc) {
+      return isSignedIn() && doc.data.ownerId == request.auth.uid;
+    }
+
+    // LEADS: A user can only manage their own leads.
     match /leads/{leadId} {
-      // Allow authenticated users to query the leads collection.
-      // Firestore will ensure that any read query constraints on ownerId match the 'get' rule below.
-      allow list: if request.auth != null;
-
-      // Allow a user to get, update, or delete their own lead document.
-      allow get, update, delete: if request.auth.uid == resource.data.ownerId;
-
-      // Allow a user to create a new lead only if they are the owner.
-      allow create: if request.auth.uid == request.resource.data.ownerId;
+      allow create: if isCreatingOwnDocument();
+      allow read, update, delete: if isOwner(resource);
     }
-
-    // PROPERTIES: Secure access to the properties collection
+    
+    // PROPERTIES: A user can only manage their own properties.
     match /properties/{propertyId} {
-      // Allow authenticated users to query the properties collection.
-      allow list: if request.auth != null;
-      
-      // Allow a user to get, update, or delete their own property document.
-      allow get, update, delete: if request.auth.uid == resource.data.ownerId;
-
-      // Allow a user to create a new property only if they are the owner.
-      allow create: if request.auth.uid == request.resource.data.ownerId;
+      allow create: if isCreatingOwnDocument();
+      allow read, update, delete: if isOwner(resource);
     }
-
-    // DOCUMENTS: Secure access to the documents collection
+    
+    // DOCUMENTS: A user can only manage their own documents.
     match /documents/{docId} {
-       // Allow authenticated users to query their documents.
-      allow list: if request.auth != null;
-
-      // Allow a user to get, update, or delete their own document.
-      allow get, update, delete: if request.auth.uid == resource.data.ownerId;
-
-      // Allow a user to create a new document only if they are the owner.
-      allow create: if request.auth.uid == request.resource.data.ownerId;
+      allow create: if isCreatingOwnDocument();
+      allow read, update, delete: if isOwner(resource);
     }
 
-    // NOTIFICATIONS: Users can only read their own, while functions can create them.
+    // NOTIFICATIONS: Users can only read their own notifications.
     match /notifications/{notificationId} {
-      // Allow a user to get their own notification.
-      allow get: if request.auth.uid == resource.data.userId;
-      
-      // A user cannot list all notifications, and cannot write them.
-      allow list, write: if false;
+      // Nobody can write to notifications from the client; only backend functions.
+      allow write: if false;
+
+      // Allow read if the notification's userId matches the user's uid.
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
   }
 }
