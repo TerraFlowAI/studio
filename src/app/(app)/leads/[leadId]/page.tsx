@@ -10,60 +10,99 @@ import { LeadContactInfoCard } from "@/components/leads/detail/LeadContactInfoCa
 import { LeadPreferencesCard } from "@/components/leads/detail/LeadPreferencesCard";
 import { MatchedPropertiesCard } from "@/components/leads/detail/MatchedPropertiesCard";
 import { ActivityHub } from "@/components/leads/detail/ActivityHub";
-import type { Lead } from "@/components/leads/LeadsTable"; // Assuming Lead type is exported
-import type { ActivityEvent } from "@/components/leads/detail/ActivityTimelineItem"; // Define this type
+import type { Lead } from "@/components/leads/LeadsTable";
+import type { ActivityEvent } from "@/components/leads/detail/ActivityTimelineItem";
+import { doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { firestore } from "@/lib/firebase";
+import { useAuth } from "@/app/context/AuthContext";
+import { Loader2 } from "lucide-react";
 
-// Mock data for a single lead
-const mockLeadData: Lead = {
-  id: "1",
-  name: "Shamanth Umesh",
-  email: "shamanth@example.com",
-  phone: "+91 9123456789",
-  aiScore: 88,
-  aiScoreFactors: "High budget match (+20), Viewed 5+ listings (+15), Inquired on 'Luxury Apartment' (+10), Frequent site visits (+10), Downloaded brochure (+5)",
-  source: "Website Chatbot",
-  dateAdded: "2023-10-26",
-  status: "Contacted",
-  propertyOfInterest: "Luxury Apartment in Bandra",
-};
-
+// Mock data for components that are not yet connected to the backend
 const mockMatchedProperties = [
   { id: "prop1", title: "Sea View Penthouse", price: "₹3.8 Cr", imageUrl: "https://images.unsplash.com/photo-1685300077128-ca33b07cc561?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzZWElMjB2aWV3JTIwcGVudGhvdXNlfGVufDB8fHx8MTc1MDQyNzQ0OHww&ixlib=rb-4.1.0&q=80&w=1080", aiHint: "sea view", hasVrTour: true },
   { id: "prop2", title: "Spacious Bandra Flat", price: "₹3.5 Cr", imageUrl: "https://placehold.co/300x200.png", aiHint: "apartment interior", hasVrTour: false },
   { id: "prop3", title: "Juhu Beachfront Villa", price: "₹4.2 Cr", imageUrl: "https://placehold.co/300x200.png", aiHint: "luxury villa", hasVrTour: true },
 ];
 
-const mockActivities: ActivityEvent[] = [
-  { id: "act1", type: "AI Update", user: "TerraFlow AI", content: "AI detected lead score increase to 88. Reason: Viewed 3 new properties in Bandra.", timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000), leadName: mockLeadData.name },
-  { id: "act2", type: "Call", user: "Loushik", content: "Discussed requirements for 3BHK in Bandra. Client is keen on sea-facing properties.", timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), leadName: mockLeadData.name },
-  { id: "act3", type: "Email", user: "Loushik", content: "Sent initial brochure and company profile.", timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), leadName: mockLeadData.name },
-  { id: "act4", type: "Note", user: "Loushik", content: "Client mentioned they are pre-approved for a loan up to ₹4 Cr.", timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), leadName: mockLeadData.name },
-];
-
 
 export default function LeadDetailPage() {
   const params = useParams();
   const leadId = params.leadId as string;
+  const { user: authUser } = useAuth();
 
-  // In a real app, you would fetch lead data based on leadId
-  const [lead, setLead] = React.useState<Lead>(mockLeadData);
-  const [activities, setActivities] = React.useState<ActivityEvent[]>(mockActivities);
+  const [lead, setLead] = React.useState<Lead | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [activities, setActivities] = React.useState<ActivityEvent[]>([]);
 
-  const handleStatusChange = (newStatus: string) => {
-    setLead(prev => ({ ...prev, status: newStatus }));
-    // Add a system activity for status change
-    const newActivity: ActivityEvent = {
-      id: `act-${Date.now()}`,
-      type: "System Update",
-      user: "System",
-      content: `Lead status changed to ${newStatus}.`,
-      timestamp: new Date(),
-      leadName: lead.name,
+  // Fetch lead data from Firestore
+  React.useEffect(() => {
+    if (!leadId) return;
+
+    const fetchLead = async () => {
+      setIsLoading(true);
+      try {
+        const leadDocRef = doc(firestore, "leads", leadId);
+        const docSnap = await getDoc(leadDocRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const fetchedLead: Lead = {
+            id: docSnap.id,
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            aiScore: data.aiScore || 0,
+            aiScoreFactors: data.aiScoreFactors || "No factors available.",
+            source: data.source,
+            dateAdded: data.createdAt instanceof Timestamp 
+              ? data.createdAt.toDate().toISOString().split('T')[0] 
+              : new Date().toISOString().split('T')[0],
+            status: data.status,
+            propertyOfInterest: data.propertyOfInterest,
+          };
+          setLead(fetchedLead);
+
+          // For demo, let's also initialize the activities with a personalized message
+          setActivities([
+            { id: "act_init", type: "AI Update", user: "TerraFlow AI", content: `AI profile loaded for ${data.name}.`, timestamp: new Date(), leadName: data.name }
+          ]);
+
+        } else {
+          console.log("No such document!");
+          setLead(null);
+        }
+      } catch (error) {
+        console.error("Error fetching lead:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    setActivities(prev => [newActivity, ...prev]);
+
+    fetchLead();
+  }, [leadId]);
+  
+  const handleStatusChange = async (newStatus: string) => {
+    if (!lead) return;
+    const leadDocRef = doc(firestore, "leads", lead.id);
+    try {
+        await updateDoc(leadDocRef, { status: newStatus });
+        setLead(prev => prev ? ({ ...prev, status: newStatus }) : null);
+        const newActivity: ActivityEvent = {
+          id: `act-${Date.now()}`,
+          type: "System Update",
+          user: "System",
+          content: `Lead status changed to ${newStatus}.`,
+          timestamp: new Date(),
+          leadName: lead.name,
+        };
+        setActivities(prev => [newActivity, ...prev]);
+    } catch (error) {
+        console.error("Error updating status: ", error);
+    }
   };
 
   const handleAddActivity = (activity: Omit<ActivityEvent, 'id' | 'timestamp' | 'leadName'>) => {
+    if (!lead) return;
     const newActivity: ActivityEvent = {
       ...activity,
       id: `act-${Date.now()}`,
@@ -73,10 +112,21 @@ export default function LeadDetailPage() {
     setActivities(prev => [newActivity, ...prev]);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!lead) {
-    // TODO: Add a proper loading state or not found page
-    return <div>Loading lead details...</div>;
+    return (
+      <div className="container mx-auto p-4 text-center">
+        <h2 className="text-xl font-semibold">Lead not found</h2>
+        <p className="text-muted-foreground">The lead you are looking for does not exist or could not be loaded.</p>
+      </div>
+    );
   }
 
   return (
@@ -86,14 +136,11 @@ export default function LeadDetailPage() {
         currentStatus={lead.status}
         onStatusChange={handleStatusChange}
       />
-      {/* Top section: Activity Hub on left, AI Insights & Contact Info on right */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (Activity Hub) */}
         <div className="lg:col-span-2">
           <ActivityHub activities={activities} onAddActivity={handleAddActivity} leadName={lead.name} />
         </div>
 
-        {/* Right Column (Top Profile & Intel Cards) */}
         <div className="lg:col-span-1 space-y-3">
           <AiInsightsCard
             leadScore={lead.aiScore}
@@ -104,12 +151,11 @@ export default function LeadDetailPage() {
             email={lead.email}
             phone={lead.phone}
             source={lead.source}
-            assignedTo="Loushik" // Mocked
+            assignedTo={authUser?.displayName || "Agent"}
           />
         </div>
       </div>
 
-      {/* Bottom section: Client Preferences and Matched Properties side-by-side */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <LeadPreferencesCard
           location="Bandra West, Juhu" // Mocked
