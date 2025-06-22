@@ -11,7 +11,7 @@ import {setGlobalOptions} from "firebase-functions/v2";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import {initializeApp, getApps} from "firebase-admin/app";
-import {getFirestore} from "firebase-admin/firestore";
+import {getFirestore, Timestamp} from "firebase-admin/firestore";
 
 // Initialize Firebase Admin SDK if not already done.
 if (getApps().length === 0) {
@@ -103,6 +103,81 @@ export const getDashboardKPIs = onCall(async (request) => {
     throw new HttpsError(
         "internal",
         "An error occurred while fetching dashboard data.",
+        error,
+    );
+  }
+});
+
+
+/**
+ * Calculates and returns sales statistics for the last 6 months for a chart.
+ * This function is callable by authenticated users only.
+ */
+export const getSalesStatsChart = onCall(async (request) => {
+  // 1. Authentication Check
+  if (!request.auth) {
+    logger.warn("Unauthenticated user tried to call getSalesStatsChart.");
+    throw new HttpsError(
+        "unauthenticated",
+        "The function must be called while authenticated.",
+    );
+  }
+  const {uid} = request.auth;
+  logger.info(`Fetching sales stats for user: ${uid}`);
+
+  try {
+    // 2. Data Fetching
+    const propertiesRef = db.collection("properties");
+    const soldPropertiesQuery = propertiesRef
+        .where("ownerId", "==", uid)
+        .where("status", "==", "Sold");
+
+    const snapshot = await soldPropertiesQuery.get();
+
+    // 3. Data Processing
+    const salesByMonth: {[key: string]: number} = {};
+
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    sixMonthsAgo.setDate(1);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      // Assume soldAt field exists and is a Firestore Timestamp
+      if (data.soldAt && data.soldAt instanceof Timestamp) {
+        const soldDate = data.soldAt.toDate();
+
+        if (soldDate >= sixMonthsAgo) {
+          const monthKey = `${soldDate.getFullYear()}-${(soldDate.getMonth() + 1).toString().padStart(2, "0")}`;
+          const price = data.expectedPrice || 0;
+          salesByMonth[monthKey] = (salesByMonth[monthKey] || 0) + price;
+        }
+      }
+    });
+
+    // 4. Formatting for Chart
+    const labels: string[] = [];
+    const data: number[] = [];
+    const today = new Date();
+
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
+      const monthLabel = date.toLocaleString("default", {month: "short"});
+
+      labels.push(monthLabel);
+      data.push(salesByMonth[monthKey] || 0);
+    }
+
+    const chartData = {labels, data};
+    logger.info("Successfully fetched sales stats for user.", {uid, chartData});
+    return chartData;
+  } catch (error) {
+    logger.error("Error fetching sales stats for user:", {uid, error});
+    throw new HttpsError(
+        "internal",
+        "An error occurred while fetching sales chart data.",
         error,
     );
   }
