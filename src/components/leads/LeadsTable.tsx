@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { MoreVertical, Eye, Mail, Activity, Edit3, Phone, MessageSquare, Zap, UserPlus } from "lucide-react";
+import { MoreVertical, Eye, Mail, Activity, Edit3, Phone, MessageSquare, Zap, UserPlus, Loader2, UserX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LEAD_STATUSES } from "@/lib/constants";
@@ -36,6 +36,7 @@ export interface Lead {
 
 interface LeadsTableProps {
   leads: Lead[];
+  isLoading: boolean;
   selectedLeads: Set<string>;
   onSelectLead: (leadId: string, isSelected: boolean) => void;
   onSelectAllLeads: (isSelected: boolean) => void;
@@ -59,7 +60,7 @@ const getAIScoreTextClasses = (score: number): string => {
 };
 
 
-export function LeadsTable({ leads, selectedLeads, onSelectLead, onSelectAllLeads, isAllSelectedInCurrentPage }: LeadsTableProps) {
+export function LeadsTable({ leads, isLoading, selectedLeads, onSelectLead, onSelectAllLeads, isAllSelectedInCurrentPage }: LeadsTableProps) {
   const router = useRouter();
 
   const handleNavigateToDetail = (leadId: string) => {
@@ -97,10 +98,23 @@ export function LeadsTable({ leads, selectedLeads, onSelectLead, onSelectAllLead
             </TableRow>
           </TableHeader>
           <TableBody>
-            {leads.length === 0 ? (
+            {isLoading ? (
+               <TableRow>
+                <TableCell colSpan={7} className="h-48 text-center text-muted-foreground">
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <span className="ml-2">Loading leads...</span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : leads.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
-                  No leads found. Try adjusting your filters.
+                <TableCell colSpan={7} className="h-48 text-center text-muted-foreground">
+                  <div className="flex flex-col items-center justify-center">
+                      <UserX className="h-12 w-12 text-primary/30 mb-2"/>
+                      <p className="font-semibold">No leads found.</p>
+                      <p className="text-sm">Try adjusting your filters or add a new lead.</p>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (
