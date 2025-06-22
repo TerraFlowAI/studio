@@ -2,9 +2,7 @@
 'use server';
 
 import { z } from 'zod';
-import { auth } from '@/lib/firebase-admin'; // Use Admin SDK on the server
-import { firestore } from '@/lib/firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
+import { auth, firestore, FieldValue } from '@/lib/firebase-admin';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 
