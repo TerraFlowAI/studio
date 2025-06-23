@@ -577,7 +577,7 @@ export const Hero = () => {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Trusted By Section - Modified for infinite slider and integrated into Hero background */}
           <div className="mt-20 w-full max-w-5xl mx-auto z-10 relative"> {/* Added z-10 to ensure it's above background glows */}
