@@ -33,7 +33,7 @@ const generateImageFromTextFlow = ai.defineFlow(
   },
   async (input) => {
     const {media} = await ai.generate({
-      model: 'googleai/gemini-2.0-flash-exp', // Specific model for image generation
+      model: 'googleai/gemini-2.0-flash-preview-image-generation', // Specific model for image generation
       prompt: `Generate a photorealistic image of a property based on this description: ${input.description}`,
       config: {
         responseModalities: ['TEXT', 'IMAGE'], // Must include both
