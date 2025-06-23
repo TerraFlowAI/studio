@@ -1,12 +1,19 @@
+
 // src/app/(auth)/login/page.tsx
-import Link from 'next/link';
+import LoginForm from "@/components/auth/LoginForm";
+import { AuthVisual } from "@/components/auth/AuthVisual";
 
 export default function LoginPage() {
     return (
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <h1>Login Page</h1>
-            <p>This is a placeholder for the login form.</p>
-            <Link href="/dashboard">Go to Dashboard (mock)</Link>
+        <div className="grid md:grid-cols-2 min-h-screen">
+            <div className="flex flex-col items-center justify-center p-8 bg-background">
+                <div className="w-full max-w-md">
+                   <LoginForm />
+                </div>
+            </div>
+            <div className="hidden md:block">
+                <AuthVisual />
+            </div>
         </div>
-    )
+    );
 }

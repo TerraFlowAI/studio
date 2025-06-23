@@ -1,12 +1,23 @@
+
 "use client";
 import React, { ReactNode, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { Loader2 } from 'lucide-react';
-import { AppSidebar } from '@/components/layout/AppSidebar';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const AppSidebar = dynamic(() => 
+  import('@/components/layout/AppSidebar').then(mod => mod.AppSidebar), 
+  { 
+    ssr: false,
+    loading: () => <Skeleton className="hidden md:block w-64 h-screen" />
+  }
+);
+
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -33,12 +44,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
         <div className="flex min-h-screen bg-muted/40 dark:bg-slate-950">
             <AppSidebar />
-            <main className="flex flex-1 flex-col overflow-hidden">
+            <div className="flex flex-1 flex-col overflow-hidden">
                 <AppHeader />
-                <div className={cn("flex-1 overflow-y-auto", !isBuilderPage && "p-4 md:p-6 lg:p-8")}>
+                <main className={cn("flex-1 overflow-y-auto", !isBuilderPage && "p-4 md:p-6 lg:p-8")}>
                     {children}
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
     </SidebarProvider>
   );
