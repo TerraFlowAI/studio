@@ -1,51 +1,53 @@
 "use client"
 
 import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes" // Assuming next-themes is installed or will be
-
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { useEffect, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
+  // Ensure component is mounted on the client to avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  // Render a placeholder until mounted
   if (!mounted) {
-    // Render a placeholder or null during SSR and initial client render
-    // to avoid hydration mismatch if theme relies on localStorage.
-    return <Button variant="ghost" size="icon" disabled className="h-9 w-9"></Button>;
+    return <Button variant="ghost" size="icon" disabled className="h-9 w-9" />;
+  }
+  
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === "light" ? "dark" : "light");
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={toggleTheme}
+      className="h-9 w-9"
+      aria-label="Toggle theme"
+    >
+      <AnimatePresence initial={false} mode="wait">
+        <motion.div
+          key={resolvedTheme}
+          initial={{ y: -20, opacity: 0, rotate: -90 }}
+          animate={{ y: 0, opacity: 1, rotate: 0 }}
+          exit={{ y: 20, opacity: 0, rotate: 90 }}
+          transition={{ duration: 0.2 }}
+          className="flex items-center justify-center"
+        >
+          {resolvedTheme === 'dark' ? (
+            <Sun className="h-[1.2rem] w-[1.2rem]" />
+          ) : (
+            <Moon className="h-[1.2rem] w-[1.2rem]" />
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </Button>
   )
 }
