@@ -1,20 +1,20 @@
-// src/components/properties/detail/ListingPerformanceCard.tsx
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Eye, Users, Percent, TrendingUp, Calculator, LineChart as LineChartIcon } from "lucide-react"; // Added LineChartIcon for config
+import { Eye, Users, Percent, TrendingUp, Calculator, LineChart as LineChartIcon } from "lucide-react"; 
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
 interface ViewHistoryPoint {
-  date: string; // e.g., "2024-07-26"
+  date: string; 
   views: number;
 }
 
 interface ListingPerformanceCardProps {
   views: number;
   leads: number;
-  ctr: number; // Click-through rate as a percentage
+  ctr: number; 
   viewHistory: ViewHistoryPoint[];
   aiPriceAnalysis: string;
 }
@@ -76,7 +76,7 @@ export function ListingPerformanceCard({
                 <Line
                   type="monotone"
                   dataKey="views"
-                  stroke="var(--color-views)" // Use color from chartConfig
+                  stroke="var(--color-views)" 
                   strokeWidth={2}
                   dot={{ r: 3, fill: 'var(--color-views)', strokeWidth:0 }}
                   activeDot={{ r: 5, fill: 'var(--color-views)', stroke: 'hsl(var(--background))', strokeWidth: 1 }}

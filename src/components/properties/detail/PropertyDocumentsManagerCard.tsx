@@ -1,18 +1,18 @@
-// src/components/properties/detail/PropertyDocumentsManagerCard.tsx
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileText, UploadCloud, ShieldCheck, ShieldAlert, BadgeCheck, Star } from "lucide-react"; // Using BadgeCheck for verified
+import { FileText, UploadCloud, ShieldCheck, ShieldAlert, BadgeCheck, Star } from "lucide-react"; 
 import { cn } from "@/lib/utils";
 
 interface DocumentItem {
   id: string;
   name: string;
-  url: string; // Placeholder
+  url: string; 
   verifiedStatus: boolean;
-  type: string; // e.g., Legal, Layout, Compliance
+  type: string; 
 }
 
 interface PropertyDocumentsManagerCardProps {

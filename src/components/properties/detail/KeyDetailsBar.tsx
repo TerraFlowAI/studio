@@ -1,8 +1,8 @@
-// src/components/properties/detail/KeyDetailsBar.tsx
+
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { BedDouble, Bath, Ruler, DollarSign } from "lucide-react"; // Using DollarSign for price
+import { BedDouble, Bath, Ruler, DollarSign } from "lucide-react"; 
 
 interface KeyDetailItemProps {
   icon: React.ElementType;

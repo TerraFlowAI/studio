@@ -1,4 +1,4 @@
-// src/components/properties/detail/TerraScribeDisplayCard.tsx
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";

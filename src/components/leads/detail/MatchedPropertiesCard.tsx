@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
-import { Eye, Mail, Search } from "lucide-react"; // Eye for VR tour
+import { Eye, Mail, Search, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Property {

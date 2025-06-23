@@ -1,4 +1,4 @@
-// src/components/properties/detail/PropertyPageHeader.tsx
+
 "use client";
 
 import * as React from "react";
@@ -49,8 +49,8 @@ export function PropertyPageHeader({
             <DropdownMenuTrigger asChild>
               <Badge
                 className={cn(
-                  "px-3 py-1 text-sm font-semibold rounded-full border cursor-pointer hover:opacity-80 transition-opacity whitespace-nowrap capitalize",
-                  statusConfig.badgeColor, "text-white"
+                  "px-3 py-1 text-sm font-semibold rounded-full border cursor-pointer hover:opacity-80 transition-opacity whitespace-nowrap capitalize text-white",
+                  statusConfig.badgeColor
                 )}
                 style={{ backgroundColor: statusConfig.dotColor }}
               >

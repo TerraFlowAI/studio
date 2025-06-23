@@ -1,18 +1,18 @@
-// src/components/properties/detail/AssociatedLeadsListCard.tsx
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { UserPlus, UserCircle } from "lucide-react"; // UserCircle for lead icon
+import { UserPlus, UserCircle, Users } from "lucide-react"; 
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import type { Lead } from "@/components/leads/LeadsTable"; // Assuming Lead type is defined
+import type { Lead } from "@/components/leads/LeadsTable";
 import { cn } from "@/lib/utils";
 import { LEAD_STATUSES } from "@/lib/constants";
 
 interface AssociatedLeadsListCardProps {
-  leads: Partial<Lead>[]; // Allow partial lead data for display
+  leads: Partial<Lead>[]; 
 }
 
 const getStatusPillStyle = (statusLabel?: string): string => {
@@ -75,6 +75,3 @@ export function AssociatedLeadsListCard({ leads }: AssociatedLeadsListCardProps)
     </Card>
   );
 }
-
-// Dummy Users icon if not imported from lucide already
-const Users = ({ className }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;

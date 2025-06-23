@@ -1,4 +1,4 @@
-// src/components/properties/detail/MediaGallery.tsx
+
 "use client";
 
 import * as React from "react";
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 interface MediaGalleryProps {
   mainImage: string;
   thumbnailImages: string[];
-  aiHints: string[]; // To match thumbnailImages
+  aiHints: string[]; 
   hasVrTour: boolean;
   vrTourUrl: string;
   propertyTitle: string;
@@ -27,12 +27,11 @@ export function MediaGallery({
   propertyTitle,
 }: MediaGalleryProps) {
   const [currentImage, setCurrentImage] = React.useState(mainImage);
-  const [currentImageIndex, setCurrentImageIndex] = React.useState(0); // Assuming mainImage is the first in a conceptual combined list
-  const allImages = [mainImage, ...thumbnailImages]; // Combine for easier indexing
+  const allImages = [mainImage, ...thumbnailImages];
+  const [currentImageIndex, setCurrentImageIndex] = React.useState(allImages.indexOf(currentImage));
 
-  const handleThumbnailClick = (imageSrc: string, index: number) => {
+  const handleThumbnailClick = (imageSrc: string) => {
     setCurrentImage(imageSrc);
-    // Adjust index: if mainImage is at index 0, then thumbnails start from index 1
     setCurrentImageIndex(allImages.indexOf(imageSrc));
   };
 
@@ -57,7 +56,7 @@ export function MediaGallery({
             width={1200}
             height={700}
             className="w-full h-auto aspect-[16/9] md:aspect-[16/8] object-cover transition-transform duration-300 ease-in-out"
-            priority // Prioritize loading the main image
+            priority 
             data-ai-hint={aiHints[currentImageIndex] || "property interior"}
           />
           {hasVrTour && (
@@ -70,7 +69,7 @@ export function MediaGallery({
               <PlayCircle className="mr-2 h-6 w-6" /> View TerraVision™ Tour
             </Button>
           )}
-           {/* Navigation Arrows */}
+           
           <Button
             variant="ghost"
             size="icon"
@@ -92,10 +91,10 @@ export function MediaGallery({
           <div className="p-3 bg-muted/30">
             <ScrollArea className="w-full whitespace-nowrap">
               <div className="flex space-x-3 pb-2">
-                {thumbnailImages.map((thumb, index) => (
+                {allImages.map((thumb, index) => (
                   <button
                     key={index}
-                    onClick={() => handleThumbnailClick(thumb, index +1)} // index + 1 because mainImage is at index 0
+                    onClick={() => handleThumbnailClick(thumb)}
                     className={cn(
                       "block w-24 h-16 rounded-md overflow-hidden border-2 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
                       currentImage === thumb ? "border-primary ring-2 ring-primary ring-offset-2" : "border-transparent"
@@ -107,7 +106,7 @@ export function MediaGallery({
                       width={100}
                       height={67}
                       className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
-                       data-ai-hint={aiHints[index+1] || "property detail"}
+                       data-ai-hint={aiHints[index] || "property detail"}
                     />
                   </button>
                 ))}

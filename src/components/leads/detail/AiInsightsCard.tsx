@@ -3,7 +3,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress"; // For radial progress or gauge, a custom component might be needed or a library
 import { Lightbulb, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -13,20 +12,14 @@ interface AiInsightsCardProps {
   nextBestAction: string; // e.g., "Recommendation: Call now to discuss..."
 }
 
-const getAIScoreColorClasses = (score: number): string => {
-  if (score > 75) return "bg-green-500"; 
-  if (score > 40) return "bg-yellow-500"; 
-  return "bg-red-500"; 
-};
-
 // Basic Radial Progress Bar (can be enhanced)
 const RadialProgress = ({ score }: { score: number }) => {
   const circumference = 2 * Math.PI * 28; // 2 * PI * radius (radius is 28 for a 60x60 viewBox with stroke-width 4)
   const offset = circumference - (score / 100) * circumference;
-  let strokeColor = "hsl(var(--primary))"; // Default teal
-  if (score > 75) strokeColor = "hsl(var(--chart-1))"; // Green
-  else if (score > 40) strokeColor = "hsl(var(--chart-3))"; // Yellow
-  else strokeColor = "hsl(var(--destructive))"; // Red
+  
+  let strokeColorClass = "text-destructive"; // Red
+  if (score > 75) strokeColorClass = "text-green-500";
+  else if (score > 40) strokeColorClass = "text-yellow-500";
 
   return (
     <div className="relative w-24 h-24">
@@ -41,7 +34,7 @@ const RadialProgress = ({ score }: { score: number }) => {
           cy="30"
         />
         <circle
-          style={{ stroke: strokeColor }}
+          className={cn("transform -rotate-90 origin-center", strokeColorClass)}
           strokeWidth="4"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
@@ -51,11 +44,10 @@ const RadialProgress = ({ score }: { score: number }) => {
           r="28"
           cx="30"
           cy="30"
-          className="transform -rotate-90 origin-center"
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-2xl font-bold" style={{ color: strokeColor }}>{score}</span>
+        <span className={cn("text-2xl font-bold", strokeColorClass)}>{score}</span>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-// src/components/properties/detail/DetailedInfoAccordion.tsx
+
 "use client";
 
 import {
@@ -8,12 +8,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckSquare, ListChecks, MapPin, Building2 } from "lucide-react"; // Using Building2 for Property Details
-import { ScrollArea } from "@/components/ui/scroll-area"; // Import ScrollArea
+import { CheckSquare, ListChecks, MapPin, Building2 } from "lucide-react"; 
+import { ScrollArea } from "@/components/ui/scroll-area"; 
 
 interface Amenity {
   name: string;
-  available: boolean; // Or just pass a list of available amenity names
+  available: boolean; 
 }
 
 interface PropertyDetail {
@@ -22,9 +22,9 @@ interface PropertyDetail {
 }
 
 interface DetailedInfoAccordionProps {
-  amenities: string[]; // Assuming these are all available
+  amenities: string[]; 
   propertyDetails: PropertyDetail[];
-  locationCoordinates: { lat: number; lng: number }; // For map
+  locationCoordinates: { lat: number; lng: number }; 
 }
 
 // Placeholder Map Component
@@ -54,7 +54,7 @@ export function DetailedInfoAccordion({
                 </div>
             </AccordionTrigger>
             <AccordionContent>
-              <ScrollArea className="h-48 pr-3"> {/* Scrollable amenities list */}
+              <ScrollArea className="h-48 pr-3"> 
                 <ul className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-sm text-muted-foreground">
                   {amenities.map((amenity, index) => (
                     <li key={index} className="flex items-center">
@@ -95,7 +95,6 @@ export function DetailedInfoAccordion({
             </AccordionTrigger>
             <AccordionContent>
               <LocationMapPlaceholder coordinates={locationCoordinates} />
-              {/* In a real app, you'd integrate Google Maps SDK or similar here */}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
