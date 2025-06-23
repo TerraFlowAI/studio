@@ -1,16 +1,19 @@
-// src/app/(app)/layout.tsx
 "use client";
 import React, { ReactNode, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { Loader2 } from 'lucide-react';
-// Import your actual Sidebar and Header components here later
-// import AppSidebar from '@/components/layout/AppSidebar';
-// import AppHeader from '@/components/layout/AppHeader';
+import { AppSidebar } from '@/components/layout/AppSidebar';
+import { AppHeader } from '@/components/layout/AppHeader';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  
+  const isBuilderPage = pathname.startsWith('/smartflow/new');
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -20,25 +23,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (isLoading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
       </div>
     );
   }
   
   return (
-    <div className="flex min-h-screen">
-      {/* Placeholder for AppSidebar component */}
-      <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-slate-900">
-        <p>Sidebar Area</p>
-      </aside>
-      <main className="flex-1 flex flex-col">
-        {/* Placeholder for AppHeader component */}
-        <header className="h-16 flex items-center justify-end p-4 border-b">
-          <p>Header Area</p>
-        </header>
-        <div className="p-6">{children}</div>
-      </main>
-    </div>
+    <SidebarProvider>
+        <div className="flex min-h-screen bg-muted/40 dark:bg-slate-950">
+            <AppSidebar />
+            <main className="flex flex-1 flex-col overflow-hidden">
+                <AppHeader />
+                <div className={cn("flex-1 overflow-y-auto", !isBuilderPage && "p-4 md:p-6 lg:p-8")}>
+                    {children}
+                </div>
+            </main>
+        </div>
+    </SidebarProvider>
   );
 }

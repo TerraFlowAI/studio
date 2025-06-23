@@ -227,7 +227,7 @@ export default function NewWorkflowPage() {
 
 
   return (
-    <div className="flex flex-col h-screen bg-muted overflow-hidden">
+    <div className="flex flex-col h-full bg-muted overflow-hidden">
       <WorkflowBuilderHeader 
         workflowName={workflowName} 
         onWorkflowNameChange={setWorkflowName}
@@ -238,7 +238,7 @@ export default function NewWorkflowPage() {
       />
       <div className="flex flex-1 overflow-hidden">
         <NodePalette />
-        <WorkflowCanvasPlaceholder /> {/* In a real app, this would have onClick handlers to set selectedNodeForConfig */}
+        <WorkflowCanvasPlaceholder />
         <NodeConfigurationPanelPlaceholder 
             selectedNodeName={selectedNodeForConfig}
             onSaveNodeSettings={handleSaveNodeSettings}
