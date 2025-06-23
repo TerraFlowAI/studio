@@ -1,13 +1,10 @@
+// src/app/page.tsx
 import Link from 'next/link';
-
-export default function HomePage() {
+export default function LandingPage() {
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Welcome to the Homepage!</h1>
-      <p>This is a placeholder page to confirm the routing is working.</p>
-      <nav>
-        <Link href="/login">Login</Link> | <Link href="/dashboard">Dashboard</Link>
-      </nav>
+    <div>
+      <h1>Welcome to TerraFlow</h1>
+      <Link href="/login">Go to Login</Link>
     </div>
   );
 }

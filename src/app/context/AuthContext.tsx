@@ -30,9 +30,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  // A provider's role is to provide state, not to render UI conditionally.
-  // The components that consume this context (like AppLayout) are responsible
-  // for showing loading states based on the `isLoading` value.
   return (
     <AuthContext.Provider value={{ user, isLoading }}>
       {children}
