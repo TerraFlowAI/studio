@@ -1,196 +1,183 @@
-
+// src/app/(app)/properties/page.tsx
 "use client";
 
-import * as React from "react";
-import { PageHeader } from "@/components/shared/PageHeader";
-import { Button } from "@/components/ui/button";
-import { PropertyFiltersToolbar, type PropertyFilters } from "@/components/properties/PropertyFiltersToolbar";
-import { PropertiesGridView } from "@/components/properties/PropertiesGridView";
-import { PropertiesListView } from "@/components/properties/PropertiesListView";
-import { PlusCircle, Upload, Settings as SettingsIcon, Building, Loader2 } from "lucide-react";
-import Link from "next/link";
-import type { Property } from "@/types/property";
-import { PROPERTY_STATUSES, PROPERTY_TYPES } from "@/lib/constants";
-import { useAuth } from "@/app/context/AuthContext";
-import { firestore } from "@/lib/firebase";
-import { collection, query, where, onSnapshot, orderBy, Timestamp } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { AddPropertyWizard } from "@/components/properties/AddPropertyWizard";
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/app/context/AuthContext';
+import { firestore } from '@/lib/firebase';
+import { collection, query, where, onSnapshot, orderBy, Timestamp } from 'firebase/firestore';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-export default function PropertiesPage() {
+// Import your UI components
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Loader2, Plus, List, Grid as GridIcon } from 'lucide-react'; // Renamed Grid to GridIcon
+import Image from 'next/image';
+import { PageHeader } from '@/components/shared/PageHeader';
+import { PropertyFilters, type PropertyFilters as FiltersType } from '@/components/properties/PropertyFiltersToolbar';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { AddPropertyWizard } from '@/components/properties/AddPropertyWizard';
+import { cn } from '@/lib/utils';
+import type { Property as PropertyType } from '@/types/property';
+import { PropertiesGridView } from '@/components/properties/PropertiesGridView';
+import { PropertiesListView } from '@/components/properties/PropertiesListView';
+import { Building } from 'lucide-react';
+import { PropertyFiltersToolbar } from '@/components/properties/PropertyFiltersToolbar';
+
+
+// Custom hook to fetch properties
+const useProperties = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
-  
-  const [properties, setProperties] = React.useState<Property[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [filters, setFilters] = React.useState<PropertyFilters>({
+  const [properties, setProperties] = useState<PropertyType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    const propertiesCollectionRef = collection(firestore, "properties");
+    const q = query(
+      propertiesCollectionRef,
+      where("ownerId", "==", user.uid),
+      orderBy("dateAdded", "desc") // Changed from createdAt to dateAdded to match schema
+    );
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const propertiesData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        const dateAdded = data.dateAdded instanceof Timestamp 
+          ? data.dateAdded.toDate().toISOString() 
+          : new Date().toISOString();
+
+        return {
+          id: doc.id,
+          title: data.title || 'Untitled Property',
+          address: data.address || 'No Address',
+          locality: data.locality || '',
+          city: data.city || '',
+          price: data.price || 'N/A',
+          beds: data.bedrooms || 0,
+          baths: data.bathrooms || 0,
+          sqft: data.areaSqft || 0,
+          status: data.status || 'Draft',
+          listingFor: data.listingFor || 'Sale',
+          propertyType: data.propertyType || 'Other',
+          imageUrl: data.imageUrl || 'https://placehold.co/600x400.png',
+          aiHint: data.aiHint || 'property exterior',
+          hasVrTour: data.hasVrTour || false,
+          views: data.views || 0,
+          leadsGenerated: data.leadsGenerated || 0,
+          dateAdded: dateAdded,
+        } as PropertyType;
+      });
+      setProperties(propertiesData);
+      setLoading(false);
+    }, (error) => {
+        console.error("Error fetching properties: ", error);
+        setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
+  return { properties, loading };
+};
+
+// Main Page Component
+export default function PropertiesPage() {
+  const { properties, loading } = useProperties();
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [filters, setFilters] = useState<FiltersType>({
     searchTerm: "",
     status: [],
     propertyType: [],
   });
-  const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid');
-  const [selectedProperties, setSelectedProperties] = React.useState<Set<string>>(new Set());
-  const [isWizardOpen, setIsWizardOpen] = React.useState(false);
-
-  // Pagination state
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const itemsPerPage = viewMode === 'grid' ? 9 : 10;
-  
-  // Real-time data fetching from Firestore
-  const { properties: fetchedProperties, loading } = useProperties(); // This line will now cause an error
-  
-  React.useEffect(() => {
-      setProperties(fetchedProperties);
-      setIsLoading(loading);
-  }, [fetchedProperties, loading]);
-
-
-  const handleFiltersChange = (newFilters: PropertyFilters) => {
-    setFilters(newFilters);
-    setCurrentPage(1); 
-  };
-
-  const handleSelectProperty = (propertyId: string, isSelected: boolean) => {
-    setSelectedProperties(prev => {
-      const newSelected = new Set(prev);
-      if (isSelected) {
-        newSelected.add(propertyId);
-      } else {
-        newSelected.delete(propertyId);
-      }
-      return newSelected;
-    });
-  };
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const router = useRouter();
 
   const filteredProperties = React.useMemo(() => {
     let tempProperties = [...properties];
-    
     if (filters.searchTerm) {
-      const lowerSearchTerm = filters.searchTerm.toLowerCase();
-      tempProperties = tempProperties.filter(prop =>
-        prop.title.toLowerCase().includes(lowerSearchTerm) ||
-        prop.address.toLowerCase().includes(lowerSearchTerm) ||
-        prop.locality.toLowerCase().includes(lowerSearchTerm) ||
-        prop.id.toLowerCase().includes(lowerSearchTerm)
-      );
+        const lowerSearchTerm = filters.searchTerm.toLowerCase();
+        tempProperties = tempProperties.filter(prop =>
+            prop.title.toLowerCase().includes(lowerSearchTerm) ||
+            prop.address.toLowerCase().includes(lowerSearchTerm) ||
+            prop.locality.toLowerCase().includes(lowerSearchTerm) ||
+            prop.id.toLowerCase().includes(lowerSearchTerm)
+        );
     }
-
     if (filters.status.length > 0) {
-      tempProperties = tempProperties.filter(prop => filters.status.includes(prop.status.toLowerCase() as typeof PROPERTY_STATUSES[number]['id']));
+        tempProperties = tempProperties.filter(prop => filters.status.includes(prop.status.toLowerCase() as any));
     }
-
     if (filters.propertyType.length > 0) {
-      tempProperties = tempProperties.filter(prop => filters.propertyType.includes(prop.propertyType.toLowerCase() as typeof PROPERTY_TYPES[number]['id']));
+        tempProperties = tempProperties.filter(prop => filters.propertyType.includes(prop.propertyType.toLowerCase() as any));
     }
-
     return tempProperties;
   }, [properties, filters]);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProperties = filteredProperties.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredProperties.length / itemsPerPage);
 
   const renderContent = () => {
-    if (isLoading) {
-      return (
-        <div className="flex flex-col items-center justify-center py-24 text-center text-muted-foreground">
-          <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-          <p className="text-lg font-semibold">Loading Your Properties...</p>
-        </div>
-      );
+    if (loading) {
+      return <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
     }
 
     if (properties.length === 0) {
-       return (
-        <div className="flex flex-col items-center justify-center py-24 text-center text-muted-foreground">
-          <Building className="h-20 w-20 text-primary/20 mb-4" />
-          <h3 className="text-xl font-semibold mb-2">Your inventory is empty.</h3>
-          <p className="mb-4">Get started by adding your first property listing.</p>
-          <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              <PlusCircle className="mr-2 h-4 w-4" /> Add New Property
-            </Button>
-          </DialogTrigger>
+      return (
+        <div className="text-center py-16 border-2 border-dashed rounded-lg flex flex-col items-center">
+            <Building className="h-20 w-20 text-primary/20 mb-4" />
+            <h3 className="text-xl font-semibold">Your inventory is empty.</h3>
+            <p className="text-gray-500 mt-2 mb-4">Add your first property to get started.</p>
+            <DialogTrigger asChild>
+                <Button>
+                    <Plus className="mr-2 h-4 w-4" /> Add New Property
+                </Button>
+            </DialogTrigger>
         </div>
       );
     }
-
+    
     return (
-      <>
-        {viewMode === 'grid' ? (
-          <PropertiesGridView properties={currentProperties} />
-        ) : (
-          <PropertiesListView 
-            properties={currentProperties} 
-            selectedProperties={selectedProperties}
-            onSelectProperty={handleSelectProperty}
-            isAllSelectedInCurrentPage={currentProperties.length > 0 && currentProperties.every(prop => selectedProperties.has(prop.id))}
-          />
-        )}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-end space-x-2 py-4 mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </Button>
-            <span className="text-sm text-muted-foreground">
-              Page {currentPage} of {totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </Button>
-          </div>
-        )}
-      </>
-    );
+        <>
+            <PropertyFiltersToolbar 
+                filters={filters}
+                onFiltersChange={setFilters}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+            />
+            <div className="mt-6">
+                {viewMode === 'grid' ? (
+                    <PropertiesGridView properties={filteredProperties} />
+                ) : (
+                    <PropertiesListView 
+                        properties={filteredProperties} 
+                        selectedProperties={new Set()} // Placeholder
+                        onSelectProperty={() => {}} // Placeholder
+                        isAllSelectedInCurrentPage={false} // Placeholder
+                    />
+                )}
+            </div>
+        </>
+    )
   };
-  
+
   return (
     <Dialog open={isWizardOpen} onOpenChange={setIsWizardOpen}>
-      <div className="container mx-auto">
-        <PageHeader title="Properties">
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => alert("Import Listings: Coming Soon!")}>
-              <Upload className="mr-2 h-4 w-4" /> Import Listings
-            </Button>
-            <Button variant="outline" onClick={() => alert("Manage Settings: Coming Soon!")}>
-              <SettingsIcon className="mr-2 h-4 w-4" /> Manage Settings
-            </Button>
-            <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                <PlusCircle className="mr-2 h-4 w-4" /> Add New Property
-              </Button>
-            </DialogTrigger>
-          </div>
-        </PageHeader>
-
-        {properties.length > 0 && (
-          <PropertyFiltersToolbar 
-            filters={filters} 
-            onFiltersChange={handleFiltersChange}
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-          />
-        )}
-        
-        <div className="mt-6">
-          {renderContent()}
+        <div className="container mx-auto">
+            <PageHeader title="Properties">
+                 <DialogTrigger asChild>
+                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                        <Plus className="mr-2 h-4 w-4" /> Add New Property
+                    </Button>
+                </DialogTrigger>
+            </PageHeader>
+            {renderContent()}
         </div>
-      </div>
-      <DialogContent className="sm:max-w-4xl p-0">
+         <DialogContent className="sm:max-w-4xl p-0">
           <AddPropertyWizard onClose={() => setIsWizardOpen(false)} />
-      </DialogContent>
+        </DialogContent>
     </Dialog>
   );
 }

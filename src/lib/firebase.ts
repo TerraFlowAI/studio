@@ -4,6 +4,7 @@ import { initializeApp, getApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration, securely read from environment variables.
 const firebaseConfig = {
@@ -20,6 +21,7 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // Initialize the services we need for TerraFlow
+const firestore = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 

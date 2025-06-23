@@ -1,24 +1,13 @@
-// src/app/page.tsx
-import { LandingPageNavigation } from '@/components/layout/LandingPageNavigation';
-import { HeroSection } from '@/components/landing/HeroSection';
-import { FeaturesSection } from '@/components/landing/FeaturesSection';
-import { TestimonialsSection } from '@/components/landing/TestimonialsSection';
-import { WaitlistSection } from '@/components/landing/WaitlistSection';
-import { ContactSection } from '@/components/landing/ContactSection';
-import { Footer } from '@/components/layout/Footer';
+import Link from 'next/link';
 
-export default function LandingPage() {
+export default function HomePage() {
   return (
-    <div className="bg-background text-foreground">
-      <LandingPageNavigation />
-      <main>
-        <HeroSection />
-        <FeaturesSection />
-        <TestimonialsSection />
-        <WaitlistSection />
-        <ContactSection />
-      </main>
-      <Footer />
+    <div style={{ padding: '2rem' }}>
+      <h1>Welcome to the Homepage!</h1>
+      <p>This is a placeholder page to confirm the routing is working.</p>
+      <nav>
+        <Link href="/login">Login</Link> | <Link href="/dashboard">Dashboard</Link>
+      </nav>
     </div>
   );
 }

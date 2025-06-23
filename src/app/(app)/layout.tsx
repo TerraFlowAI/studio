@@ -16,48 +16,44 @@ const AppSidebar = dynamic(
   { 
     ssr: false,
     // Provide a loading component that matches the default sidebar width to prevent layout shift.
-    loading: () => <div className="hidden md:block w-64 h-screen bg-sidebar" />
+    loading: () => <div className="hidden md:flex flex-col w-64 h-screen bg-white dark:bg-slate-900" />
   }
 );
-
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
-  const mounted = useMounted();
+  const isMounted = useMounted();
 
-  // --- Route Protection Logic ---
   useEffect(() => {
-    // If auth state is done loading and there is no user, redirect to login
-    if (!isLoading && !user) {
+    // Wait until the component is mounted and auth state is determined
+    if (isMounted && !isLoading && !user) {
       router.push('/login');
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router, isMounted]);
 
-  // While checking auth state or before the component has mounted, show a full-screen loader
-  if (isLoading || !mounted) {
+  // While loading or if the user is not authenticated, show a loader.
+  // This prevents a flash of the dashboard content before redirection.
+  if (!isMounted || isLoading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <Loader2 className="h-10 w-10 animate-spin text-teal-500" />
       </div>
     );
   }
-
-  // If there's a user, render the main app layout
-  if (user) {
-    return (
-      <SidebarProvider defaultOpen={true}>
-        <AppSidebar />
-        <main className="relative flex flex-1 flex-col overflow-hidden bg-background">
-          <AppHeader />
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-            {children}
+  
+  // Once authenticated, render the full dashboard layout.
+  return (
+    <SidebarProvider>
+        <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+          <AppSidebar />
+          <div className="flex-1 flex flex-col">
+            <AppHeader />
+            <main className="flex-1 p-4 sm:p-6 lg:p-8">
+              {children}
+            </main>
           </div>
-        </main>
-      </SidebarProvider>
-    );
-  }
-
-  // If no user and not loading, render nothing (the useEffect will redirect)
-  return null;
+        </div>
+    </SidebarProvider>
+  );
 }

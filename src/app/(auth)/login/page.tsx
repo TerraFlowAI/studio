@@ -10,7 +10,7 @@ import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
-import { AuthVisual } from '@/components/auth/AuthVisual';
+import { AuthVisual } from '@/app/(auth)/auth/AuthVisual';
 import { Logo } from '@/components/shared/Logo';
 import { useToast } from '@/hooks/use-toast';
 
