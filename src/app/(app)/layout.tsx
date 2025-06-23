@@ -5,10 +5,21 @@ import React, { ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { AppHeader } from "@/components/layout/AppHeader";
-import { AppSidebar } from "@/components/layout/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Loader2 } from 'lucide-react';
 import { useMounted } from '@/hooks/useMounted';
+import dynamic from 'next/dynamic';
+
+// Dynamically import AppSidebar with SSR disabled to prevent hydration errors.
+const AppSidebar = dynamic(
+  () => import('@/components/layout/AppSidebar').then((mod) => mod.AppSidebar),
+  { 
+    ssr: false,
+    // Provide a loading component that matches the default sidebar width to prevent layout shift.
+    loading: () => <div className="hidden md:block w-64 h-screen bg-sidebar" />
+  }
+);
+
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
