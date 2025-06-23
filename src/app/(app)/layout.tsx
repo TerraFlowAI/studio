@@ -8,10 +8,12 @@ import { AppHeader } from "@/components/layout/AppHeader";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Loader2 } from 'lucide-react';
+import { useMounted } from '@/hooks/useMounted';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
+  const mounted = useMounted();
 
   // --- Route Protection Logic ---
   useEffect(() => {
@@ -21,8 +23,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     }
   }, [user, isLoading, router]);
 
-  // While checking auth state, show a full-screen loader
-  if (isLoading) {
+  // While checking auth state or before the component has mounted, show a full-screen loader
+  if (isLoading || !mounted) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />

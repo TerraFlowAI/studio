@@ -1,4 +1,3 @@
-
 "use client";
 
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -227,7 +226,7 @@ export default function DocumentsPage() {
         // Simulate processing time for this step
         setTimeout(() => {
           // Simulate success or warning for the completed step
-          const isSuccess = Math.random() > 0.2; // 80% chance of success for demo
+          const isSuccess = typeof window !== 'undefined' ? Math.random() > 0.2 : true; // Always success on server for consistency
           setVerificationStepStatuses(prev => ({...prev, [currentStepId]: isSuccess ? 'success' : 'warning'}));
           
           // Update overall progress

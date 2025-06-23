@@ -1,4 +1,3 @@
-
 // src/app/(app)/leads/[leadId]/page.tsx
 "use client";
 
@@ -24,6 +23,7 @@ const mockMatchedProperties = [
   { id: "prop3", title: "Juhu Beachfront Villa", price: "₹4.2 Cr", imageUrl: "https://placehold.co/300x200.png", aiHint: "luxury villa", hasVrTour: true },
 ];
 
+let activityIdCounter = 0;
 
 export default function LeadDetailPage() {
   const params = useParams();
@@ -64,7 +64,7 @@ export default function LeadDetailPage() {
 
           // For demo, let's also initialize the activities with a personalized message
           setActivities([
-            { id: "act_init", type: "AI Update", user: "TerraFlow AI", content: `AI profile loaded for ${data.name}.`, timestamp: new Date(), leadName: data.name }
+            { id: `act_init-${activityIdCounter++}`, type: "AI Update", user: "TerraFlow AI", content: `AI profile loaded for ${data.name}.`, timestamp: new Date(), leadName: data.name }
           ]);
 
         } else {
@@ -88,7 +88,7 @@ export default function LeadDetailPage() {
         await updateDoc(leadDocRef, { status: newStatus });
         setLead(prev => prev ? ({ ...prev, status: newStatus }) : null);
         const newActivity: ActivityEvent = {
-          id: `act-${Date.now()}`,
+          id: `act-${activityIdCounter++}`,
           type: "System Update",
           user: "System",
           content: `Lead status changed to ${newStatus}.`,
@@ -105,7 +105,7 @@ export default function LeadDetailPage() {
     if (!lead) return;
     const newActivity: ActivityEvent = {
       ...activity,
-      id: `act-${Date.now()}`,
+      id: `act-${activityIdCounter++}`,
       timestamp: new Date(),
       leadName: lead.name,
     };

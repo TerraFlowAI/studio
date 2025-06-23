@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -23,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/app/context/AuthContext";
 import { updateProfile } from "firebase/auth";
+import { useTheme } from "next-themes";
 
 type SettingsSection = "profile" | "team" | "billing" | "notifications" | "integrations" | "security";
 
@@ -52,12 +54,17 @@ const integrations = [
 export default function SettingsPage() {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [activeSection, setActiveSection] = React.useState<SettingsSection>("profile");
-  const [isDarkMode, setIsDarkMode] = React.useState(false);
 
   // State for profile form
   const [displayName, setDisplayName] = React.useState('');
   const [isSaving, setIsSaving] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // When the component loads and we have user data, populate the form
   React.useEffect(() => {
@@ -66,32 +73,6 @@ export default function SettingsPage() {
     }
   }, [user]);
 
-
-  React.useEffect(() => {
-    const darkModePreference = typeof window !== 'undefined' && (localStorage.getItem('darkMode') === 'true' || 
-      (localStorage.getItem('darkMode') === null && window.matchMedia('(prefers-color-scheme: dark)').matches));
-    setIsDarkMode(darkModePreference);
-    if (darkModePreference) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  const handleToggleDarkMode = (checked: boolean) => {
-    setIsDarkMode(checked);
-    if (checked) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
-    }
-     toast({
-        title: `Theme Changed`,
-        description: `Switched to ${checked ? 'Dark' : 'Light'} Mode.`,
-      });
-  };
 
   const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -124,7 +105,7 @@ export default function SettingsPage() {
     { id: "security", label: "Security", icon: Shield },
   ];
   
-  if (!user) {
+  if (!user || !mounted) {
       return (
           <div className="flex items-center justify-center h-full">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -201,7 +182,11 @@ export default function SettingsPage() {
                     <Label htmlFor="darkMode" className="font-medium flex items-center"><Palette className="mr-2 h-4 w-4 text-primary"/>Dark Mode</Label>
                     <p className="text-sm text-muted-foreground">Toggle between light and dark themes.</p>
                   </div>
-                  <Switch id="darkMode" checked={isDarkMode} onCheckedChange={handleToggleDarkMode} />
+                  <Switch 
+                    id="darkMode" 
+                    checked={theme === 'dark'} 
+                    onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')} 
+                  />
                 </div>
               </CardContent>
             </Card>

@@ -1,8 +1,8 @@
-
 "use client";
 
 import React, { useEffect, useRef, useCallback } from 'react';
 
+// Interfaces for props and particle state
 interface ParticlesProps {
   className?: string;
   quantity?: number;
@@ -28,6 +28,10 @@ interface Circle {
   magnetism: number;
 }
 
+/**
+ * A client-side only component that renders animated particles on a canvas.
+ * All rendering logic is contained within useEffect to prevent hydration errors.
+ */
 export const Particles: React.FC<ParticlesProps> = ({
   className = "",
   quantity = 30,
@@ -36,7 +40,7 @@ export const Particles: React.FC<ParticlesProps> = ({
   size = 0.4,
   color = '#888888',
   refresh = false,
-  vx = 0, 
+  vx = 0,
   vy = 0,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -50,18 +54,78 @@ export const Particles: React.FC<ParticlesProps> = ({
     staticity: staticity,
     magnetism: 0,
   });
-  // DENSITY will be calculated on the client side in makeCircles
-  // const DENSITY = Math.pow(quantity, 0.8) * window.innerHeight * window.innerWidth / 2000000; // MOVED
 
-  const makeCircles = useCallback(() => {
-    if (context.current && canvasRef.current && typeof window !== 'undefined') {
-      // Calculate DENSITY here, only on the client
+  // Update mouse staticity when the prop changes
+  useEffect(() => {
+    mouse.current.staticity = staticity;
+  }, [staticity]);
+
+  // The main animation loop, wrapped in useCallback for performance.
+  const animate = useCallback(() => {
+    if (!canvasRef.current || !context.current) return;
+    const canvas = canvasRef.current;
+    const ctx = context.current;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    circles.current.forEach((circle) => {
+      // Handle mouse interaction
+      const AB = mouse.current.x - circle.x;
+      const AC = mouse.current.y - circle.y;
+      const distance = Math.sqrt(AB * AB + AC * AC);
+      const alpha = Math.atan2(AC, AB);
+      const delta = Math.min(1 / (distance || 1) * mouse.current.magnetism, 10);
+      circle.magnetism += (delta - circle.magnetism) * 0.05;
+      if (distance < mouse.current.staticity) {
+        const magnetismForce = Math.sin(alpha) * circle.magnetism;
+        circle.x += Math.cos(alpha) * circle.magnetism;
+        circle.y += magnetismForce;
+      }
+
+      // Move particle
+      circle.x += circle.dx + vx;
+      circle.y += circle.dy + vy;
+      circle.translateX += ((mousePosition.current.x / (staticity / 100) - circle.translateX) / ease);
+      circle.translateY += ((mousePosition.current.y / (staticity / 100) - circle.translateY) / ease);
+      
+      // Screen wrap
+      if (circle.x < -50) circle.x = canvas.width + 50;
+      if (circle.x > canvas.width + 50) circle.x = -50;
+      if (circle.y < -50) circle.y = canvas.height + 50;
+      if (circle.y > canvas.height + 50) circle.y = -50;
+
+      // Fade in
+      circle.alpha += (circle.targetAlpha - circle.alpha) * 0.05;
+
+      // Draw particle
+      if (ctx && circle.alpha > 0) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(circle.x + circle.translateX, circle.y + circle.translateY, circle.size, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    });
+
+    window.requestAnimationFrame(animate);
+  }, [staticity, ease, color, vx, vy]);
+  
+  // This effect hook handles all client-side setup and cleanup.
+  useEffect(() => {
+    if (!canvasRef.current || !canvasContainerRef.current) return;
+    
+    context.current = canvasRef.current.getContext('2d');
+    const canvas = canvasRef.current;
+    const container = canvasContainerRef.current;
+    let animationFrameId: number;
+
+    const makeCircles = () => {
+      // Use client-side APIs and Math.random safely inside this function
       const DENSITY = Math.pow(quantity, 0.8) * window.innerHeight * window.innerWidth / 2000000;
-      circles.current = []; // Clear existing circles before creating new ones
+      circles.current = [];
       for (let i = 0; i < DENSITY; i++) {
         circles.current.push({
-          x: Math.random() * canvasRef.current.width,
-          y: Math.random() * canvasRef.current.height,
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
           translateX: 0,
           translateY: 0,
           size: Math.random() * 2 + size,
@@ -72,99 +136,43 @@ export const Particles: React.FC<ParticlesProps> = ({
           magnetism: 0,
         });
       }
-    }
-  }, [quantity, size]);
+    };
+    
+    const resizeCanvas = () => {
+      canvas.width = container.offsetWidth;
+      canvas.height = container.offsetHeight;
+      if (context.current) {
+         context.current.fillStyle = color;
+      }
+      makeCircles();
+    };
 
-  const resizeCanvas = useCallback(() => {
-    if (canvasContainerRef.current && canvasRef.current && context.current && typeof window !== 'undefined') {
-      canvasRef.current.width = canvasContainerRef.current.offsetWidth;
-      canvasRef.current.height = canvasContainerRef.current.offsetHeight;
-      context.current.fillStyle = color;
-      makeCircles(); // Remake circles on resize
-    }
-  }, [color, makeCircles]);
-
-
-  const animate = useCallback(() => {
-    if (context.current && canvasRef.current && typeof window !== 'undefined') {
-      context.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      circles.current.forEach((circle) => {
-        const AB = mouse.current.x - circle.x;
-        const AC = mouse.current.y - circle.y;
-        const distance = Math.sqrt(AB * AB + AC * AC);
-        const alpha = Math.atan2(AC, AB);
-        const delta = Math.min(1 / (distance || 1) * mouse.current.magnetism, 10); // Avoid division by zero
-        
-        circle.magnetism += (delta - circle.magnetism) * 0.05;
-
-        if (distance < mouse.current.staticity) {
-          const magnetismForce = Math.sin(alpha) * circle.magnetism; // Renamed to avoid conflict
-          circle.x += Math.cos(alpha) * circle.magnetism;
-          circle.y += magnetismForce;
-        }
-
-        circle.x += circle.dx + vx;
-        circle.y += circle.dy + vy;
-        circle.translateX += ((mousePosition.current.x / (staticity / 100) - circle.translateX) / ease);
-        circle.translateY += ((mousePosition.current.y / (staticity / 100) - circle.translateY) / ease);
-        
-        if (circle.x < -50) circle.x = canvasRef.current.width + 50;
-        if (circle.x > canvasRef.current.width + 50) circle.x = -50;
-        if (circle.y < -50) circle.y = canvasRef.current.height + 50;
-        if (circle.y > canvasRef.current.height + 50) circle.y = -50;
-
-        circle.alpha += (circle.targetAlpha - circle.alpha) * 0.05;
-
-        if (context.current && circle.alpha > 0) {
-            context.current.fillStyle = color;
-            context.current.beginPath();
-            context.current.arc(circle.x + circle.translateX, circle.y + circle.translateY, circle.size, 0, 2 * Math.PI);
-            context.current.fill();
-        }
-      });
-    }
-    if (typeof window !== 'undefined') {
-        window.requestAnimationFrame(animate);
-    }
-  }, [staticity, ease, color, vx, vy]);
-
-  useEffect(() => {
-    if (canvasRef.current && typeof window !== 'undefined') {
-      context.current = canvasRef.current.getContext('2d');
-      resizeCanvas(); // Initial setup
-      const animationFrameId = window.requestAnimationFrame(animate);
-      window.addEventListener('resize', resizeCanvas);
-      
-      return () => {
-        window.removeEventListener('resize', resizeCanvas);
-        window.cancelAnimationFrame(animationFrameId);
-      };
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resizeCanvas, animate, refresh]); // refresh dependency will re-trigger setup
-
-  useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
-      if (canvasRef.current && typeof window !== 'undefined') {
-        const rect = canvasRef.current.getBoundingClientRect();
-        const { width: w, height: h } = { w: canvasRef.current.width, h: canvasRef.current.height }; // Renamed to avoid conflict
-        const x = e.clientX - rect.left - w / 2;
-        const y = e.clientY - rect.top - h / 2;
-        const inside = x < w / 2 && x > -w / 2 && y < h / 2 && y > -h / 2;
-        if (inside) {
-          mousePosition.current = { x, y };
-        }
+      const rect = canvas.getBoundingClientRect();
+      const { width: w, height: h } = canvas;
+      const x = e.clientX - rect.left - w / 2;
+      const y = e.clientY - rect.top - h / 2;
+      const inside = x < w / 2 && x > -w / 2 && y < h / 2 && y > -h / 2;
+      if (inside) {
+        mousePosition.current = { x, y };
       }
     };
-    if (typeof window !== 'undefined') {
-        window.addEventListener('mousemove', onMouseMove);
-        return () => window.removeEventListener('mousemove', onMouseMove);
-    }
-  }, []);
+    
+    // Initial setup
+    resizeCanvas();
+    animationFrameId = window.requestAnimationFrame(animate);
+    
+    // Add event listeners
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('mousemove', onMouseMove);
 
-   useEffect(() => {
-    mouse.current.staticity = staticity;
-  }, [staticity]);
+    // Cleanup function to remove listeners and cancel animation
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [animate, color, quantity, size, refresh]);
 
   return (
     <div className={className} ref={canvasContainerRef} aria-hidden="true">

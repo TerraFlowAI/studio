@@ -1,42 +1,38 @@
+// next.config.js
 
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+
+  // This is configured correctly and should be kept.
+  // It allows Next.js to optimize images from these specific domains.
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'www.google.com',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
-        port: '',
-        pathname: '/**',
       },
+      // You can add your Firebase Storage URL here later if needed
+      // e.g., { protocol: 'https', hostname: 'firebasestorage.googleapis.com' }
     ],
   },
+
+  // The 'devServer' option is not a valid Next.js config property and should be removed.
+  // The options to ignore TypeScript and ESLint errors have been removed
+  // as it is a best practice to fix these errors rather than ignore them during a build.
 };
 
 export default nextConfig;

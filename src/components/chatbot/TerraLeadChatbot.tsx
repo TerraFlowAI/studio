@@ -17,6 +17,8 @@ interface Message {
   timestamp: Date;
 }
 
+let messageIdCounter = 0; // Initialize a counter for message IDs
+
 export function TerraLeadChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -25,7 +27,7 @@ export function TerraLeadChatbot() {
   const { toast } = useToast();
 
   const addMessage = (text: string, sender: 'user' | 'bot') => {
-    setMessages(prev => [...prev, { id: Date.now().toString(), text, sender, timestamp: new Date() }]);
+    setMessages(prev => [...prev, { id: `msg-${messageIdCounter++}`, text, sender, timestamp: new Date() }]);
   };
 
   useEffect(() => {
