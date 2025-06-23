@@ -4,7 +4,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { Loader2 } from 'lucide-react';
 
 // Define the shape of the context data
 interface AuthContextType {
@@ -31,15 +30,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  // Show a loading screen while Firebase checks the auth state
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-      </div>
-    );
-  }
-
+  // A provider's role is to provide state, not to render UI conditionally.
+  // The components that consume this context (like AppLayout) are responsible
+  // for showing loading states based on the `isLoading` value.
   return (
     <AuthContext.Provider value={{ user, isLoading }}>
       {children}
