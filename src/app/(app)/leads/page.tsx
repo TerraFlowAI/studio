@@ -15,17 +15,24 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/app/context/AuthContext";
-import { firestore } from "@/lib/firebase";
-import { addDoc, collection, serverTimestamp, query, where, onSnapshot, orderBy, Timestamp } from "firebase/firestore";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+
+const mockLeads: Lead[] = [
+    { id: '1', name: 'Aarav Sharma', email: 'aarav.sharma@example.com', phone: '+91 9876543210', aiScore: 92, aiScoreFactors: "Budget match, High engagement, Viewed luxury properties", source: 'Website Chatbot', dateAdded: '2024-07-28', status: 'Hot Lead', propertyOfInterest: 'Sea View Penthouse' },
+    { id: '2', name: 'Priya Singh', email: 'priya.s@example.com', phone: '+91 9123456789', aiScore: 78, aiScoreFactors: "Good budget, Quick response time", source: 'Referral', dateAdded: '2024-07-27', status: 'Contacted', propertyOfInterest: '3BHK in Bandra' },
+    { id: '3', name: 'Rohan Mehta', email: 'rohan.mehta@work.com', phone: '+91 8765432109', aiScore: 65, aiScoreFactors: "Looking for investment, Flexible timeline", source: 'Google Ads', dateAdded: '2024-07-25', status: 'New' },
+    { id: '4', name: 'Anika Desai', email: 'anika.d@example.com', phone: '+91 7654321098', aiScore: 45, aiScoreFactors: "Low budget, Slow to respond", source: 'Social Media', dateAdded: '2024-07-22', status: 'Qualified' },
+];
 
 export default function LeadsPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { user } = useAuth();
-
-  const { leads, loading: isLoading, error } = useLeads();
+  
+  const [leads, setLeads] = React.useState<Lead[]>(mockLeads);
+  const isLoading = false;
+  const error = null;
 
   const [filters, setFilters] = React.useState<Filters>({
     searchTerm: "",
@@ -78,30 +85,21 @@ export default function LeadsPage() {
       });
       return;
     }
+    
+    // This is now a mock function since we removed Firebase.
+    const newLead: Lead = {
+      ...leadData,
+      id: (Math.random() * 10000).toString(),
+      aiScore: Math.floor(Math.random() * 100),
+      aiScoreFactors: "Manually added",
+      dateAdded: new Date().toISOString().split('T')[0],
+    };
+    setLeads(prev => [newLead, ...prev]);
 
-    try {
-      await addDoc(collection(firestore, "leads"), {
-        ...leadData,
-        ownerId: user.uid,
-        createdAt: serverTimestamp(),
-        aiScore: 0,
-        aiScoreFactors: "Lead manually created",
-        status: leadData.status || "New",
-      });
-
-      toast({
-        title: "Lead Created!",
-        description: `${leadData.name} has been successfully added.`,
-      });
-      
-    } catch (error) {
-      console.error("Error adding lead to Firestore: ", error);
-      toast({
-        variant: "destructive",
-        title: "Save Failed",
-        description: "Could not save the lead to the database. Please try again.",
-      });
-    }
+    toast({
+      title: "Lead Created (Mock)!",
+      description: `${leadData.name} has been added to the local list.`,
+    });
   };
 
 

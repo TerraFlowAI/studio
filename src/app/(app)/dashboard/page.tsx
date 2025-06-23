@@ -10,12 +10,13 @@ import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCar
 import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
 import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
 import { ListingBoard } from "@/components/dashboard/ListingBoard";
-import { useDashboardData } from "@/hooks/useDashboardData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp, FileSignature, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import dynamic from 'next/dynamic';
+import type { Property } from "@/hooks/useDashboardData";
+
 
 const SalesStatisticsCard = dynamic(
   () => import('@/components/dashboard/SalesStatisticsCard').then(mod => mod.SalesStatisticsCard),
@@ -98,7 +99,63 @@ const DashboardSkeleton = () => (
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { loading, kpiData, salesStats, aiMessage, recentProperties, growthStats } = useDashboardData();
+  
+  // Mock data to replace the removed useDashboardData hook
+  const loading = false;
+  const kpiData = {
+    activeLeads: 74,
+    propertiesSold: 12,
+    totalRevenue: "₹2.1 Cr",
+    avgDealTime: 54,
+  };
+  const salesStats = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    datasets: [
+      {
+        name: "Sales",
+        data: [1200000, 1800000, 1500000, 2100000, 1900000, 2400000],
+        color: "hsl(var(--primary))",
+      },
+       {
+        name: "Profit",
+        data: [400000, 550000, 450000, 700000, 600000, 800000],
+        color: "hsl(var(--chart-2))",
+      },
+    ],
+  };
+  const aiMessage =
+    "I've identified 3 new leads that match the profile for the 'Sea View Penthouse' listing. It would be a good idea to reach out to them today.";
+  const recentProperties: Property[] = [
+    {
+      id: "prop1",
+      title: "Luxury Beachfront Villa",
+      locality: "Juhu, Mumbai",
+      price: "₹5.2 Cr",
+      imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxraXRjaGVuJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzUwOTg5ODY0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      aiHint: "luxury villa",
+    },
+    {
+      id: "prop2",
+      title: "Modern 3BHK Apartment",
+      locality: "Koregaon Park, Pune",
+      price: "₹1.8 Cr",
+      imageUrl: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxsaXZpbmclMjByb29tJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzUwOTg5ODQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      aiHint: "modern apartment",
+    },
+    {
+      id: "prop3",
+      title: "Spacious Garden Flat",
+      locality: "Indiranagar, Bangalore",
+      price: "₹2.5 Cr",
+      imageUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxleHRlcmlvciUyMGhvdXNlfGVufDB8fHx8MTc1MDk4OTkzNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      aiHint: "house exterior",
+    },
+  ];
+  const growthStats = {
+    totalSales: "₹12.5 Cr",
+    totalProfit: "₹2.8 Cr",
+    totalCost: "₹9.7 Cr",
+  };
 
   if (loading) {
     return <DashboardSkeleton />;
