@@ -6,7 +6,6 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { KpiCard } from "@/components/dashboard/KpiCard";
-import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard";
 import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCard";
 import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
 import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
@@ -16,6 +15,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp, FileSignature, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import dynamic from 'next/dynamic';
+
+const SalesStatisticsCard = dynamic(
+  () => import('@/components/dashboard/SalesStatisticsCard').then(mod => mod.SalesStatisticsCard),
+  { 
+    ssr: false,
+    loading: () => <Skeleton className="h-[450px] w-full" />
+  }
+);
 
 
 const SecureDocumentsBanner = () => (
