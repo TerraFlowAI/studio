@@ -1,10 +1,9 @@
-
+// src/components/leads/detail/ActivityTimelineItem.tsx
 "use client";
 
 import { cn } from "@/lib/utils";
 import { StickyNote, Phone, Mail, Users, Brain, Briefcase, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState, useEffect } from 'react';
 
 export type ActivityType = "Note" | "Call" | "Email" | "Meeting" | "System Update" | "AI Update" | "Task" | "Other";
 
@@ -76,12 +75,6 @@ function getActivityTitle(activity: ActivityEvent): string {
 export const ActivityTimelineItem: React.FC<ActivityTimelineItemProps> = ({ activity, isLastItem }) => {
   const Icon = activityIcons[activity.type] || StickyNote;
   const iconBgColor = activityColors[activity.type] || "bg-gray-400";
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
 
   return (
     <div className="flex gap-4 relative">
@@ -100,8 +93,11 @@ export const ActivityTimelineItem: React.FC<ActivityTimelineItemProps> = ({ acti
             <CardTitle className="text-sm font-semibold text-foreground">
               {getActivityTitle(activity)}
             </CardTitle>
-            <CardDescription className="text-xs text-muted-foreground">
-              {isClient ? formatTimestamp(activity.timestamp) : '...'} by {activity.user}
+            <CardDescription 
+                className="text-xs text-muted-foreground"
+                suppressHydrationWarning={true}
+            >
+              {formatTimestamp(activity.timestamp)} by {activity.user}
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 pb-3">
