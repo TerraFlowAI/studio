@@ -45,15 +45,20 @@ const Navbar = () => {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-4xl"
     >
-      <div className="container mx-auto flex items-center justify-between rounded-lg border border-white/10 bg-black/30 p-2 pl-4 pr-2 backdrop-blur-md">
+      <div className="container relative mx-auto flex items-center justify-between rounded-lg border border-white/10 bg-black/30 p-2 pl-4 pr-2 backdrop-blur-md">
+        {/* Left: Logo */}
         <Logo className="[&>span]:text-white" />
-        <div className="hidden md:flex items-center gap-2">
+        
+        {/* Center: Main Nav Links (absolutely positioned) */}
+        <div className="hidden md:flex items-center gap-2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           {navLinks.slice(0, 2).map((link) => (
             <Button key={link.name} variant="ghost" asChild className="text-gray-300 hover:text-white hover:bg-white/10">
               <Link href={link.href}>{link.name}</Link>
             </Button>
           ))}
         </div>
+
+        {/* Right: CTAs */}
         <div className="hidden md:flex items-center gap-2">
            <Button variant="ghost" asChild className="text-gray-300 hover:text-white hover:bg-white/10">
               <Link href="/login">Login</Link>
@@ -62,6 +67,8 @@ const Navbar = () => {
             Request a Demo
           </Button>
         </div>
+
+        {/* Mobile Toggle */}
         <div className="md:hidden">
           <Button onClick={() => setIsOpen(!isOpen)} variant="ghost" size="icon" className="text-white">
             {isOpen ? <X/> : <Menu />}
