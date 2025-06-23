@@ -2,8 +2,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { StickyNote, Phone, Mail, Users, Brain, Briefcase, CheckCircle } from "lucide-react"; // Added Users for Meeting, Brain for AI, Briefcase for system
+import { StickyNote, Phone, Mail, Users, Brain, Briefcase, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from 'react';
 
 export type ActivityType = "Note" | "Call" | "Email" | "Meeting" | "System Update" | "AI Update" | "Task" | "Other";
 
@@ -47,14 +48,14 @@ function formatTimestamp(date: Date): string {
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-  if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
+  if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
   const diffInMinutes = Math.floor(diffInSeconds / 60);
-  if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
   const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  if (diffInHours < 24) return `${diffInHours}h ago`;
   const diffInDays = Math.floor(diffInHours / 24);
   if (diffInDays === 1) return `Yesterday`;
-  if (diffInDays < 7) return `${diffInDays} days ago`;
+  if (diffInDays < 7) return `${diffInDays}d ago`;
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
@@ -75,6 +76,12 @@ function getActivityTitle(activity: ActivityEvent): string {
 export const ActivityTimelineItem: React.FC<ActivityTimelineItemProps> = ({ activity, isLastItem }) => {
   const Icon = activityIcons[activity.type] || StickyNote;
   const iconBgColor = activityColors[activity.type] || "bg-gray-400";
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   return (
     <div className="flex gap-4 relative">
@@ -94,7 +101,7 @@ export const ActivityTimelineItem: React.FC<ActivityTimelineItemProps> = ({ acti
               {getActivityTitle(activity)}
             </CardTitle>
             <CardDescription className="text-xs text-muted-foreground">
-              {formatTimestamp(activity.timestamp)} by {activity.user}
+              {isClient ? formatTimestamp(activity.timestamp) : '...'} by {activity.user}
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 pb-3">
