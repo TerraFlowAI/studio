@@ -1,5 +1,6 @@
 
 import type {Config} from 'tailwindcss';
+const { fontFamily } = require("tailwindcss/defaultTheme")
 
 export default {
   darkMode: ['class'],
@@ -11,9 +12,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['PT Sans', 'sans-serif'],
-        headline: ['Poppins', 'sans-serif'],
-        code: ['monospace', 'monospace'],
+        sans: ["var(--font-inter)", ...fontFamily.sans],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -69,8 +68,8 @@ export default {
       },
       borderRadius: {
         lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        md: 'calc(var(--radius) - 4px)',
+        sm: 'calc(var(--radius) - 8px)',
       },
       keyframes: {
         'accordion-down': {
@@ -89,56 +88,31 @@ export default {
             height: '0',
           },
         },
-        shimmer: { 
-          '0%': { transform: 'rotate(0deg)' },
-          '100%': { transform: 'rotate(360deg)' },
+        'textShimmer': {
+          from: { backgroundPosition: '200% 0' },
+          to: { backgroundPosition: '-200% 0' },
         },
-        textShimmer: {
-          '0%': { backgroundPosition: '200% center' },
-          '100%': { backgroundPosition: '-200% center' },
-        },
-        movingBorder: { 
+        'movingBorder': { 
           '0%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
           '100%': { backgroundPosition: '0% 50%' },
         },
-        scrollCompanies: {
+        'scroll-companies': {
           '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(-100%)' },
         },
-        'pulse-custom': {
-          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
-          '50%': { opacity: '0.7', transform: 'scale(1.05)' },
-        },
-        'ripple-custom': {
-          '0%': { transform: 'scale(.8)', opacity: '1' },
-          '100%': { transform: 'scale(2.4)', opacity: '0' },
-        },
-        'data-flow-custom': {
-          '0%': { backgroundPosition: '200% 0' },
-          '100%': { backgroundPosition: '-200% 0' },
-        },
-        textShimmerStrong: {
-          '0%': { backgroundPosition: '200% center' },
-          '100%': { backgroundPosition: '-200% center' },
-        },
-        fadeInAnimation: {
-          from: { opacity: '0', transform: 'translateY(10px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
-        },
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'shimmer': 'shimmer 4s linear infinite',
-        'text-shimmer': 'textShimmer 3s linear infinite alternate',
+        'text-shimmer': 'textShimmer 3s linear infinite',
         'moving-dashboard-border': 'movingBorder 6s linear infinite',
-        'scroll-companies': 'scrollCompanies 30s linear infinite',
-        'pulse-custom': 'pulse-custom 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'ripple-custom': 'ripple-custom 1.5s cubic-bezier(0, 0, 0.2, 1) infinite',
-        'data-flow-custom': 'data-flow-custom 2s linear infinite',
-        'text-shimmer-strong': 'textShimmerStrong 3.5s linear infinite',
-        'fade-in': 'fadeInAnimation 0.5s ease-out forwards',
+        'scroll-companies': 'scroll-companies 40s linear infinite',
+        'fade-in': 'fadeIn 0.6s ease-out forwards',
       },
     },
   },

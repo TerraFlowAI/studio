@@ -5,100 +5,84 @@
 
 @layer base {
   :root {
-    /* Light Theme (as per image) */
-    --background: 220 20% 97%; /* Very light gray, almost white */
-    --foreground: 220 10% 25%; /* Darker gray for text */
+    /* Light Theme (New Design Language) */
+    --background: 220 20% 97%; /* #F5F7FA - Light Gray */
+    --foreground: 220 10% 25%; /* #333F54 - Dark Slate Blue */
     
-    --card: 0 0% 100%; /* White cards */
+    --card: 0 0% 100%; /* #FFFFFF - White */
     --card-foreground: 220 10% 25%;
     
     --popover: 0 0% 100%;
     --popover-foreground: 220 10% 25%;
     
-    --primary: 165 72% 51%; /* #2DD4BF - Teal/Turquoise accent */
-    --primary-foreground: 0 0% 100%; /* White for text on primary */
+    --primary: 173 80% 40%; /* #14998D - Teal-600 */
+    --primary-foreground: 0 0% 100%; /* White */
     
-    --secondary: 210 30% 95%; /* Lighter gray for secondary elements */
-    --secondary-foreground: 165 72% 41%; /* Darker teal */
+    --secondary: 220 13% 91%; /* #E2E8F0 - Slate-200 */
+    --secondary-foreground: 220 10% 25%;
     
-    --muted: 210 30% 92%; /* Slightly darker muted gray */
-    --muted-foreground: 220 10% 45%; /* Muted text color */
+    --muted: 220 14% 96%; /* #F1F5F9 - Slate-100 */
+    --muted-foreground: 220 10% 45%; /* #64748B - Slate-500 */
     
-    --accent: 165 72% 51%; /* Using primary as accent for simplicity */
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 13% 91%; /* #E2E8F0 - Slate-200 (for subtle hover) */
+    --accent-foreground: 220 10% 25%;
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 220 15% 90%; /* Lighter border for subtle separation */
-    --input: 0 0% 100%; /* White input background */
-    --ring: 165 72% 51%; /* Ring color matches primary */
+    --border: 220 13% 88%; /* #DDE3EC - Slate-200/300 */
+    --input: 0 0% 100%; 
+    --ring: 173 80% 40%; 
 
-    --chart-1: 165 72% 51%; /* Teal */
-    --chart-2: 220 60% 65%; /* Soft Blue */
-    --chart-3: 30 90% 60%;  /* Orange/Yellow */
-    --chart-4: 0 70% 65%;   /* Soft Red */
-    --chart-5: 260 60% 70%; /* Soft Purple */
+    --chart-1: 173 80% 40%; /* Teal */
+    --chart-2: 221 83% 53%; /* Blue */
+    --chart-3: 262 83% 58%; /* Purple */
+    --chart-4: 343 91% 69%; /* Pink */
+    --chart-5: 24 95% 53%;  /* Orange */
     
-    --radius: 0.5rem; /* Rounded corners */
+    --radius: 0.75rem; /* Slightly larger radius for softer feel */
 
     /* Sidebar specific colors (Light Theme) */
     --sidebar-background: 0 0% 100%; /* White sidebar */
-    --sidebar-foreground: 50 10% 30%; /* #374151 Dark gray for inactive icons/text */
-    --sidebar-primary: 165 72% 51%; /* Teal for active item background */
+    --sidebar-foreground: 220 10% 35%; /* Dark gray for inactive icons/text */
+    --sidebar-primary: 173 80% 36%; /* Darker Teal for active item background */
     --sidebar-primary-foreground: 0 0% 100%; /* White for active item text/icon */
-    --sidebar-accent: 220 20% 95%; /* Light gray for hover on inactive #F3F4F6 */
-    --sidebar-accent-foreground: 50 10% 30%; /* Dark gray for hover text */
-    --sidebar-border: 220 15% 90%; /* Border for sidebar (if needed, image shows no border but shadow) */
-    --sidebar-ring: 165 72% 51%;
-
-    /* Gradients for AIDemoVisual */
-    --gradient-teal-start: hsl(174, 72%, 56%);
-    --gradient-teal-end: hsl(165, 72%, 51%); /* Adjusted to primary */
-    --gradient-purple-blue-start: hsl(250, 60%, 60%);
-    --gradient-purple-blue-end: hsl(220, 70%, 65%);
+    --sidebar-accent: 220 14% 96%; /* Light gray for hover on inactive */
+    --sidebar-accent-foreground: 173 80% 36%; /* Darker Teal for hover text */
+    --sidebar-border: 220 13% 91%; /* Border for sidebar */
+    --sidebar-ring: 173 80% 40%;
   }
 
   .dark {
-    /* Dark Theme (adjust if needed, but prompt focuses on light mode) */
-    --background: 220 10% 10%; 
-    --foreground: 210 20% 95%; 
-    --card: 220 10% 15%;
+    /* Dark Theme (a sophisticated dark variant) */
+    --background: 224 71% 4%; /* #020409 - Near Black */
+    --foreground: 210 20% 95%; /* #EFF3F8 - Light Gray */
+    --card: 222 47% 11%; /* #111827 - Dark Slate */
     --card-foreground: 210 20% 95%;
-    --popover: 220 10% 15%;
+    --popover: 224 71% 4%;
     --popover-foreground: 210 20% 95%;
-    --primary: 165 72% 51%; 
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 10% 25%;
+    --primary: 173 75% 55%; /* #4FD1C5 - Brighter Teal */
+    --primary-foreground: 224 71% 4%;
+    --secondary: 222 47% 11%;
     --secondary-foreground: 210 20% 95%;
-    --muted: 220 10% 25%;
+    --muted: 222 47% 11%;
     --muted-foreground: 210 20% 70%;
-    --accent: 165 72% 51%; 
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 70% 50%;
+    --accent: 222 47% 18%; /* Darker hover */
+    --accent-foreground: 173 75% 55%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 10% 20%;
-    --input: 220 10% 25%;
-    --ring: 165 72% 51%;
-    --chart-1: 165 72% 51%;
-    --chart-2: 220 60% 65%;
-    --chart-3: 30 90% 60%;
-    --chart-4: 0 70% 65%;
-    --chart-5: 260 60% 70%;
+    --border: 222 47% 18%;
+    --input: 222 47% 11%;
+    --ring: 173 75% 55%;
 
-    --sidebar-background: 220 10% 12%;
+    --sidebar-background: 224 71% 4%;
     --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 165 72% 51%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 10% 20%;
-    --sidebar-accent-foreground: 165 72% 51%;
-    --sidebar-border: 220 10% 25%;
-    --sidebar-ring: 165 72% 51%;
-
-    --gradient-teal-start: hsl(174, 65%, 45%);
-    --gradient-teal-end: hsl(165, 65%, 42%);
-    --gradient-purple-blue-start: hsl(250, 50%, 50%);
-    --gradient-purple-blue-end: hsl(220, 60%, 55%);
+    --sidebar-primary: 173 75% 55%;
+    --sidebar-primary-foreground: 224 71% 4%;
+    --sidebar-accent: 222 47% 11%;
+    --sidebar-accent-foreground: 173 75% 55%;
+    --sidebar-border: 222 47% 11%;
+    --sidebar-ring: 173 75% 55%;
   }
 }
 
@@ -108,66 +92,25 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Default body font is PT Sans as per tailwind.config.ts */
+    font-family: 'Inter', sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-headline; /* Poppins for headlines */
+    @apply font-bold;
   }
 }
 
 @layer utilities {
-  .text-shimmer {
-    @apply bg-gradient-to-r from-primary via-sky-500 to-purple-500 bg-no-repeat;
-    background-size: 150% auto; 
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -moz-text-fill-color: transparent;
-    text-fill-color: transparent;
-    @apply animate-text-shimmer;
-  }
-   .animate-text-shimmer-strong { /* For BeforeAfterAI section */
-    @apply bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-no-repeat;
-    background-size: 150% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-fill-color: transparent;
-    /* Removed: @apply animate-text-shimmer-strong; */
-  }
-
-  .shimmering-border {
+  .animate-shimmering-border {
     position: relative;
-    overflow: hidden; 
+    border: 1px solid transparent;
   }
-  .shimmering-border::before {
-    content: '';
-    position: absolute;
-    top: -150%; 
-    left: -150%;
-    width: 400%; 
-    height: 400%;
-    background: conic-gradient(transparent, theme('colors.primary/40'), theme('colors.blue.500/30'), theme('colors.purple.500/40'), transparent 40%);
-    @apply animate-shimmer; 
-    z-index: 1; 
-  }
-   .shimmering-border > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  .moving-dashboard-border {
-    position: relative; 
-    border: 2px solid transparent; 
-  }
-  .moving-dashboard-border::before {
+  .animate-shimmering-border::before {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit; 
-    padding: 2px; 
-    background: linear-gradient(90deg, theme('colors.primary'), theme('colors.blue.500'), theme('colors.purple.500'), theme('colors.primary'));
+    padding: 1px; 
+    background: linear-gradient(90deg, theme('colors.teal.300'), theme('colors.blue.300'), theme('colors.purple.300'), theme('colors.teal.300'));
     background-size: 200% 100%;
     -webkit-mask: 
       linear-gradient(#fff 0 0) content-box, 
@@ -177,8 +120,39 @@
       linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    @apply animate-moving-dashboard-border;
-    pointer-events: none; 
+    animation: movingBorder 4s linear infinite;
+  }
+  
+  .animate-text-shimmer {
+    background: linear-gradient(110deg, theme('colors.teal.600') -10%, theme('colors.blue.600') 50%, theme('colors.purple.600') 110%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textShimmer 3s linear infinite;
+  }
+
+  .animate-moving-dashboard-border {
+    position: relative; 
+    border: 2px solid transparent; 
+  }
+  .animate-moving-dashboard-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit; 
+    padding: 2px; 
+    background: linear-gradient(90deg, theme('colors.teal.500'), theme('colors.blue.500'), theme('colors.purple.500'), theme('colors.teal.500'));
+    background-size: 200% 100%;
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: movingBorder 6s linear infinite;
   }
 
   .animation-delay-200 { animation-delay: 0.2s; }
@@ -191,33 +165,4 @@
   .animation-delay-1500 { animation-delay: 1.5s; }
   .animation-delay-2000 { animation-delay: 2s; }
   .animation-delay-2500 { animation-delay: 2.5s; }
-
-  /* Custom animation for AI Assistant waveform placeholder */
-  .waveform-dot {
-    @apply w-1.5 h-1.5 bg-current rounded-full;
-    animation: waveform-pulse 1.5s infinite ease-in-out;
-  }
-  .waveform-dot:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-  .waveform-dot:nth-child(3) {
-    animation-delay: 0.4s;
-  }
-  .neumorphic-button::after {
-    content: '';
-    @apply absolute inset-0 opacity-0 transition-opacity duration-300 bg-gradient-to-br from-[#9b87f5]/20 to-transparent rounded-full;
-  }
-    
-  .neumorphic-button:hover::after {
-    @apply opacity-100;
-  }
 }
-
-@keyframes waveform-pulse {
-  0%, 100% { transform: scaleY(0.5); opacity: 0.7; }
-  50% { transform: scaleY(1); opacity: 1; }
-}
-
-
-    
-

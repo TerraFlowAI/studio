@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
@@ -15,11 +15,22 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
-import { StarBorder } from '@/components/ui/star-border';
 import { Logo } from '@/components/shared/Logo';
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 
 export const LandingPageNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious();
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
 
   const solutionsLinks = [
     { title: "For Agents", href: "/solutions/agents", description: "Tailored AI tools for individual real estate agents." },
@@ -41,10 +52,18 @@ export const LandingPageNavigation = () => {
     { title: "Webinars", href: "/webinars", description: "Join our live sessions and learn more." },
   ];
 
-  const navItemBaseClass = "bg-transparent hover:bg-accent/50 focus:bg-accent/50 text-foreground hover:text-accent-foreground data-[active]:bg-accent/50 data-[state=open]:bg-accent/50";
+  const navItemBaseClass = "bg-transparent hover:bg-slate-100 focus:bg-slate-100 text-foreground data-[active]:bg-slate-100/50 data-[state=open]:bg-slate-100/50";
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
+    <motion.nav
+      variants={{
+        visible: { y: 0 },
+        hidden: { y: "-100%" },
+      }}
+      animate={hidden ? "hidden" : "visible"}
+      transition={{ duration: 0.35, ease: "easeInOut" }}
+      className="fixed top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border/60"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
@@ -68,21 +87,6 @@ export const LandingPageNavigation = () => {
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className={navItemBaseClass}>
-                    Platform
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                      {platformLinks.map((component) => (
-                        <ListItem key={component.title} title={component.title} href={component.href}>
-                          {component.description}
-                        </ListItem>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
                 
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), navItemBaseClass)}>
@@ -92,35 +96,24 @@ export const LandingPageNavigation = () => {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className={navItemBaseClass}>
-                    Resources
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[300px] gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                       {resourcesLinks.map((component) => (
-                        <ListItem key={component.title} title={component.title} href={component.href}>
-                          {component.description}
-                        </ListItem>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
+                 <NavigationMenuItem>
+                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), navItemBaseClass)}>
+                    <Link href="/company">
+                      Company
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>
 
-          <div className="hidden lg:flex items-center space-x-2">            
-            <Button asChild variant="ghost" className="text-foreground hover:bg-accent/50 hover:text-accent-foreground">
+          <div className="hidden lg:flex items-center space-x-4">            
+            <Button asChild variant="ghost" className="text-foreground hover:bg-slate-100">
               <Link href="/login">Login</Link>
             </Button>
-            <StarBorder
-              as="button" 
-              className="font-semibold" 
-              data-cta-click="nav-demo-request"
-            >
-              <span className="animate-text-shimmer text-sm">Request Free Demo</span>
-            </StarBorder>
+            <Button className="bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md hover:shadow-lg transition-shadow">
+                Request a Demo
+            </Button>
           </div>
 
           <div className="lg:hidden flex items-center">
@@ -140,28 +133,19 @@ export const LandingPageNavigation = () => {
           <div className="lg:hidden py-4 border-t border-border">
             <div className="space-y-2 px-2">
               <Link href="#solutions" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Solutions</Link>
-              <Link href="#platform" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Platform</Link>
               <Link href="/pricing" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Pricing</Link>
-              <Link href="#resources" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Resources</Link>
+              <Link href="/company" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Company</Link>
               <Button asChild variant="ghost" className="w-full justify-start px-3 py-2 text-foreground hover:bg-accent hover:text-accent-foreground">
                   <Link href="/login" onClick={() => setIsOpen(false)}>Login</Link>
               </Button>
-              <StarBorder
-                as="button" 
-                className="w-full mt-2 font-semibold"
-                onClick={() => {
-                  setIsOpen(false);
-                  // Potentially trigger demo request action here
-                }}
-                data-cta-click="nav-mobile-demo-request"
-              >
-                <span className="animate-text-shimmer text-sm">Request Free Demo</span>
-              </StarBorder>
+              <Button className="w-full mt-2 bg-gradient-to-r from-teal-500 to-blue-500 text-white">
+                Request a Demo
+              </Button>
             </div>
           </div>
         )}
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 
@@ -180,7 +164,7 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
+          <div className="text-sm font-bold leading-none">{title}</div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>
