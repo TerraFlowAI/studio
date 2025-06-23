@@ -3,9 +3,10 @@
 
 import { Button } from '@/components/ui/button';
 import { ArrowDown, Sparkles, Zap, TrendingUp, Brain, BarChart3, Users, Target, Activity, Loader2, Home, Settings, PieChart, MapPin, Camera, FileText, Calendar, Bell, User, Menu, Search, Filter, ShieldCheck } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 const STATIC_HEADLINE_PART = "AI-Powered Real Estate is Here. ";
 const TYPING_PHRASES = ["Business on Auto-pilot with AI", "Start Closing More Deals", "Reclaim Your Time", "Automate- Analyze- Accelerate"];
@@ -35,6 +36,12 @@ export const Hero = () => {
   const [displayedAnimatedText, setDisplayedAnimatedText] = useState('');
   const [isTypingAnimationPaused, setIsTypingAnimationPaused] = useState(false);
 
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const rotateX = useTransform(y, [-100, 100], [5, -5]); // Reduced rotation for subtlety
+  const rotateY = useTransform(x, [-100, 100], [-5, 5]);
+
 
   const features = [
     { icon: Sparkles, text: "AI-Powered Lead Generation" },
@@ -59,6 +66,24 @@ export const Hero = () => {
     "Massive Dynamics",
     "Umbrella Estates"
   ];
+  
+  const handleMouseMove = (event: React.MouseEvent) => {
+    const { currentTarget } = event;
+    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    const xPos = event.clientX - left;
+    const yPos = event.clientY - top;
+    const xPct = xPos / width - 0.5;
+    const yPct = yPos / height - 0.5;
+    
+    x.set(xPct * 100); 
+    y.set(yPct * 100);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
 
   useEffect(() => {
     setIsVisible(true);
@@ -206,6 +231,8 @@ export const Hero = () => {
 
   return (
     <section
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-white to-teal-50 overflow-hidden pt-16"
       data-section-view="hero"
     >
@@ -232,7 +259,7 @@ export const Hero = () => {
         <div className="absolute -bottom-70 right-1/4 w-[90rem] h-80 bg-gradient-to-r from-blue-400 to-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse animation-delay-2500 z-0"></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center" style={{ perspective: '1000px' }}>
         <div className="max-w-6xl mx-auto">
           <div className={`mt-8 inline-flex items-center gap-2 bg-transparent backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-teal-700 dark:text-teal-300 mb-8 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'} animate-shimmering-border`}>
  <Sparkles className="w-4 h-4 animate-pulse text-teal-700 dark:text-teal-300 z-10" />
@@ -287,7 +314,12 @@ export const Hero = () => {
           </div>
 
           {/* Dashboard Visual - Neomorphism Theme */}
-          <div 
+          <motion.div
+            style={{
+              rotateX,
+              rotateY,
+              transformStyle: "preserve-3d",
+            }}
             className={`relative transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-1200`}
           >
             <div className="bg-slate-800 rounded-2xl shadow-2xl max-w-7xl mx-auto hover:shadow-3xl transition-all duration-500 group overflow-hidden animate-moving-dashboard-border">
@@ -545,7 +577,7 @@ export const Hero = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Trusted By Section - Modified for infinite slider and integrated into Hero background */}
           <div className="mt-20 w-full max-w-5xl mx-auto z-10 relative"> {/* Added z-10 to ensure it's above background glows */}
