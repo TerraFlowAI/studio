@@ -62,6 +62,12 @@ export default function LoginPage() {
         router.push('/dashboard');
     } catch (error: any) {
         console.error("Error with Google Sign-In:", error);
+
+        // Don't show an error toast if the user intentionally closed the popup.
+        if (error.code === 'auth/popup-closed-by-user') {
+            return; // Simply exit without showing an error. The loading state will be handled in finally.
+        }
+
         let friendlyError = "Could not sign in with Google. Please try again.";
         if (error.code === 'auth/unauthorized-domain') {
           friendlyError = "This app's domain is not authorized for sign-in. Please check your Firebase project configuration.";
