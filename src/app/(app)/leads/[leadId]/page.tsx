@@ -42,10 +42,11 @@ const getMatchedProperties = (leadId: string) => {
 
 
 export default function LeadDetailPage({ params }: { params: { leadId: string } }) {
-    const leadData = getLeadData(params.leadId);
+    const { leadId } = params;
+    const leadData = getLeadData(leadId);
     
     // Get initial data before the state hooks
-    const initialActivities = getLeadActivities(params.leadId);
+    const initialActivities = getLeadActivities(leadId);
 
     const [status, setStatus] = useState(leadData?.status || 'New');
     const [activities, setActivities] = useState(initialActivities);
@@ -74,7 +75,7 @@ export default function LeadDetailPage({ params }: { params: { leadId: string } 
         setActivities(prev => [newEvent, ...prev]);
     };
 
-    const matchedProperties = getMatchedProperties(params.leadId);
+    const matchedProperties = getMatchedProperties(leadId);
     
     return (
         <div className="container mx-auto">

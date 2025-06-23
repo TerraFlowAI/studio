@@ -65,7 +65,8 @@ const mockPropertyData = {
 };
 
 export default function PropertyDetailPage({ params }: { params: { propertyId: string } }) {
-    const propertyData = getPropertyData(params.propertyId);
+    const { propertyId } = params;
+    const propertyData = getPropertyData(propertyId);
     
     if (!propertyData) {
         notFound();
@@ -135,4 +136,3 @@ export default function PropertyDetailPage({ params }: { params: { propertyId: s
         </div>
     );
 }
-
