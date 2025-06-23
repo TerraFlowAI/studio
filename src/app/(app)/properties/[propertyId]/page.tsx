@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { PropertyPageHeader } from '@/components/properties/detail/PropertyPageHeader';
 import { MediaGallery } from '@/components/properties/detail/MediaGallery';
 import { KeyDetailsBar } from '@/components/properties/detail/KeyDetailsBar';
@@ -64,8 +64,10 @@ const mockPropertyData = {
   ]
 };
 
-export default function PropertyDetailPage({ params }: { params: { propertyId: string } }) {
-    const { propertyId } = params;
+export default function PropertyDetailPage() {
+    const params = useParams();
+    const propertyId = params.propertyId as string;
+    
     const propertyData = getPropertyData(propertyId);
     
     if (!propertyData) {

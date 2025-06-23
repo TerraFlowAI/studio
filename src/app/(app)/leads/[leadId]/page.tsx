@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { LeadDetailHeader } from '@/components/leads/detail/LeadDetailHeader';
 import { LeadContactInfoCard } from '@/components/leads/detail/LeadContactInfoCard';
 import { AiInsightsCard } from '@/components/leads/detail/AiInsightsCard';
@@ -41,8 +41,10 @@ const getMatchedProperties = (leadId: string) => {
 };
 
 
-export default function LeadDetailPage({ params }: { params: { leadId: string } }) {
-    const { leadId } = params;
+export default function LeadDetailPage() {
+    const params = useParams();
+    const leadId = params.leadId as string;
+
     const leadData = getLeadData(leadId);
     
     // Get initial data before the state hooks
