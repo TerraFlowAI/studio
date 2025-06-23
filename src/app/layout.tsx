@@ -1,3 +1,4 @@
+
 // src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
@@ -7,13 +8,18 @@ import { ThemeProvider } from "@/components/shared/theme-provider";
 
 export const metadata: Metadata = { 
   title: "TerraFlowAI", 
-  description: "The AI Operating System for Modern Real Estate" 
+  description: "The AI Operating System for Modern Real Estate",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
