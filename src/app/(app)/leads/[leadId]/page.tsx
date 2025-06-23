@@ -44,8 +44,11 @@ const getMatchedProperties = (leadId: string) => {
 export default function LeadDetailPage({ params }: { params: { leadId: string } }) {
     const leadData = getLeadData(params.leadId);
     
+    // Get initial data before the state hooks
+    const initialActivities = getLeadActivities(params.leadId);
+
     const [status, setStatus] = useState(leadData?.status || 'New');
-    const [activities, setActivities] = useState(() => getLeadActivities(params.leadId));
+    const [activities, setActivities] = useState(initialActivities);
 
     if (!leadData) {
         notFound();
