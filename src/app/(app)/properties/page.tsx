@@ -38,64 +38,12 @@ export default function PropertiesPage() {
   const itemsPerPage = viewMode === 'grid' ? 9 : 10;
   
   // Real-time data fetching from Firestore
+  const { properties: fetchedProperties, loading } = useProperties(); // This line will now cause an error
+  
   React.useEffect(() => {
-    if (!user) {
-        setIsLoading(false);
-        return;
-    }
-
-    setIsLoading(true);
-    const propertiesCollectionRef = collection(firestore, "properties");
-    
-    // Base query for the current user's properties
-    const q = query(
-      propertiesCollectionRef, 
-      where("ownerId", "==", user.uid),
-      orderBy("dateAdded", "desc")
-    );
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const fetchedProperties: Property[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const dateAdded = data.dateAdded instanceof Timestamp 
-          ? data.dateAdded.toDate().toISOString().split('T')[0] 
-          : typeof data.dateAdded === 'string' ? data.dateAdded : new Date().toISOString().split('T')[0];
-          
-        fetchedProperties.push({
-          id: doc.id,
-          title: data.title || "Untitled Property",
-          address: data.address || "No Address",
-          locality: data.locality || "Unknown",
-          imageUrl: data.imageUrl || "https://placehold.co/600x400.png",
-          aiHint: data.aiHint || "property exterior",
-          status: data.status || "Draft",
-          hasVrTour: data.hasVrTour || false,
-          price: data.price || "N/A",
-          beds: data.bedrooms || 0, // Mapped from bedrooms
-          baths: data.bathrooms || 0, // Mapped from bathrooms
-          sqft: data.areaSqft || 0, // Mapped from areaSqft
-          views: data.views || 0,
-          leadsGenerated: data.leadsGenerated || 0,
-          dateAdded: dateAdded,
-          propertyType: data.propertyType || "Other",
-          listingFor: data.listingFor || "Sale",
-        });
-      });
       setProperties(fetchedProperties);
-      setIsLoading(false);
-    }, (error) => {
-      console.error("Error fetching properties: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Could not fetch properties from the database. Check permissions.",
-      });
-      setIsLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [user, toast]);
+      setIsLoading(loading);
+  }, [fetchedProperties, loading]);
 
 
   const handleFiltersChange = (newFilters: PropertyFilters) => {
