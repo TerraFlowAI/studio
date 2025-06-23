@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Button } from '@/components/ui/button';
@@ -262,7 +261,7 @@ export const Hero = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center" style={{ perspective: '1000px' }}>
         <div className="max-w-6xl mx-auto">
           <div className={`mt-8 inline-flex items-center gap-2 bg-transparent backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-teal-700 dark:text-teal-300 mb-8 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'} animate-shimmering-border`}>
- <Sparkles className="w-4 h-4 animate-pulse text-teal-700 dark:text-teal-300 z-10" />
+            <Sparkles className="w-4 h-4 animate-pulse text-teal-700 dark:text-teal-300 z-10" />
             <span className="animate-text-shimmer">Powered by TerraFlow AI-Suit</span>
            <span className="relative flex w-3 h-3 ml-2"><span className="absolute inset-0 inline-flex w-full h-full bg-green-400 rounded-full opacity-75 animate-pulse"></span><span className="relative inline-flex w-3 h-3 bg-green-500 rounded-full"></span></span>
           </div>
@@ -306,8 +305,8 @@ export const Hero = () => {
             <Button
               size="lg"
               variant="outline"
- className="border-primary text-primary dark:text-white hover:bg-primary hover:text-primary-foreground px-8 py-4 text-lg font-semibold rounded-lg"
- data-cta-click="hero-strategic-call"
+              className="border-primary text-primary dark:text-white hover:bg-primary hover:text-primary-foreground px-8 py-4 text-lg font-semibold rounded-lg"
+              data-cta-click="hero-strategic-call"
             >
               Book Free Strategic Call
             </Button>
@@ -577,8 +576,7 @@ export const Hero = () => {
                 </div>
               </div>
             </div>
-          </div>
-
+          </motion.div>
           {/* Trusted By Section - Modified for infinite slider and integrated into Hero background */}
           <div className="mt-20 w-full max-w-5xl mx-auto z-10 relative"> {/* Added z-10 to ensure it's above background glows */}
               <h3 className="text-center text-gray-600 text-sm font-medium mb-6 flex items-center justify-center gap-2">
