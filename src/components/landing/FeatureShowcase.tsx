@@ -1,3 +1,4 @@
+
 "use client";
 
 import { motion } from "framer-motion";
@@ -168,7 +169,10 @@ export function FeatureShowcase() {
           className="text-center mb-12 md:mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800">
-            A Complete Real Estate Operating System
+            A Complete Real Estate{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">
+              Operating System
+            </span>
           </h2>
           <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mt-4">
             Explore how each component of TerraFlowAI works together to automate your workflow, from initial lead to final closing.
