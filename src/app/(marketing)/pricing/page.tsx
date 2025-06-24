@@ -136,7 +136,7 @@ const includedFeatures = [
 ];
 
 export default function PricingPage() {
-  const [isAnnual, setIsAnnual] = useState(false);
+  const [isAnnual, setIsAnnual] = useState(true);
   const plansToDisplay = isAnnual ? annualPlans : monthlyPlans;
 
   const sectionVariants = {
