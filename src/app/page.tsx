@@ -9,6 +9,7 @@ import { Inter } from 'next/font/google';
 import { cn } from "@/lib/utils";
 import RoiCalculator from "@/components/landing/RoiCalculator";
 import { TrustAndSocialProof } from "@/components/landing/TrustAndSocialProof";
+import { ThreeStepProcess } from "@/components/landing/ThreeStepProcess";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,6 +24,7 @@ export default function LandingPage() {
         <Hero />
         <TrustAndSocialProof />
         <FeatureShowcase />
+        <ThreeStepProcess />
         <CoreServicesGrid />
         <RoiCalculator />
         <TestimonialsSection />
