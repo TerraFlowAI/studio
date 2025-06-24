@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import { PageHeader } from "@/components/shared/PageHeader";
 import { PricingCard, type PricingPlan } from "@/components/pricing/PricingCard";
 import { ContactFormPricing } from "@/components/pricing/ContactFormPricing";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -154,10 +153,15 @@ export default function PricingPage() {
           viewport={{ once: true, amount: 0.3 }}
           variants={sectionVariants}
         >
-          <PageHeader
-            title="Flexible Pricing for Every Real Estate Professional"
-            description="Choose the plan that fits your business needs and scales as you grow. All plans are backed by our powerful AI engine, designed to deliver a clear return on investment."
-          />
+          <div className="mb-12 text-center">
+            <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl font-headline">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Flexible Pricing</span>
+              <span className="text-foreground"> for Every Real Estate Professional</span>
+            </h1>
+            <p className="mt-6 text-lg text-muted-foreground max-w-3xl mx-auto">
+              Choose the plan that fits your business needs and scales as you grow. All plans are backed by our powerful AI engine, designed to deliver a clear return on investment.
+            </p>
+          </div>
         </motion.div>
 
         <motion.div
