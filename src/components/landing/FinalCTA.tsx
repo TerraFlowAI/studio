@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -89,7 +88,7 @@ export function FinalCTA() {
           <div className="text-center lg:text-left">
             <Logo href="/" className="justify-center lg:justify-start mb-6" />
             <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 mb-4">
-              Ready to Redefine Your Real Estate Business?
+              Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Redefine</span> Your Real Estate Business?
             </h2>
             <p className="text-lg text-slate-600 mb-8">
               You've seen the features, now see the impact. Schedule a personalized, no-obligation demo with one of our AI specialists. We'll walk you through the platform and build a custom ROI projection for your specific business needs.
@@ -153,7 +152,9 @@ export function FinalCTA() {
                       )} />
                       <Button type="submit" className="w-full text-lg py-6 bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md hover:shadow-lg transition-shadow" disabled={isLoading}>
                         {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
-                        {isLoading ? "Submitting..." : "Submit Request"}
+                        <span className="animate-text-shimmer">
+                          {isLoading ? "Submitting..." : "Schedule Your Demo"}
+                        </span>
                       </Button>
                     </form>
                   </Form>
