@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,7 +32,7 @@ export default function RegisterForm() {
     defaultValues: { firstName: "", lastName: "", email: "", password: "" },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>>) {
     setIsLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
@@ -59,7 +58,7 @@ export default function RegisterForm() {
   return (
     <>
       <div className="mb-8 text-center">
-        <Logo href="/" className="justify-center mb-2" />
+        <Logo href="/" className="justify-center mb-2" size={44} />
         <h1 className="text-2xl font-bold">Create Your Account</h1>
         <p className="text-muted-foreground">Start your journey with TerraFlowAI.</p>
       </div>

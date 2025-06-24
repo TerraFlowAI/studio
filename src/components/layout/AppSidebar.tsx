@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -83,6 +82,7 @@ export function AppSidebar() {
       <SidebarHeader className="p-4 h-20 flex items-center justify-center group-data-[collapsible=icon]:justify-center group-data-[state=expanded]:justify-start border-b border-sidebar-border">
         <Logo 
             href="/dashboard" 
+            size={40}
             hideText={state !== 'expanded' && !isMobile}
             onClick={() => { if (isMobile) setOpenMobile(false); }} 
         />

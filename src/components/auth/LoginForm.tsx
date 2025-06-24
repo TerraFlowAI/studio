@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -93,7 +92,7 @@ export default function LoginForm() {
   return (
     <>
       <div className="mb-8 text-center">
-        <Logo href="/" className="justify-center mb-2" />
+        <Logo href="/" className="justify-center mb-2" size={44} />
         <h1 className="text-2xl font-bold font-headline">Welcome Back</h1>
         <p className="text-muted-foreground">Enter your credentials to access your account.</p>
       </div>
