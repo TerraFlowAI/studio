@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, Loader2, Send } from "lucide-react";
-import { Logo } from "../shared/Logo";
+import { Logo } from "@/components/ui/Logo";
 
 // Form Validation Schema
 const formSchema = z.object({
@@ -87,7 +87,7 @@ export function FinalCTA() {
         >
           {/* Left Column: CTA */}
           <div className="text-center lg:text-left">
-            <Logo size="lg" className="justify-center lg:justify-start mb-6" />
+            <Logo href="/" className="justify-center lg:justify-start mb-6" />
             <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 mb-4">
               Ready to Redefine Your Real Estate Business?
             </h2>

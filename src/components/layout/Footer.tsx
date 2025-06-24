@@ -1,7 +1,8 @@
+
 "use client";
 
 import Link from "next/link";
-import { Logo } from "@/components/shared/Logo";
+import { Logo } from "@/components/ui/Logo";
 import { Linkedin, Twitter, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Link href="/" className="inline-block mb-4">
               {/* Apply classes to make logo visible on dark background */}
-              <Logo size="md" className="[&>span]:text-white" />
+              <Logo href="/" className="[&>span]:text-white" />
             </Link>
             <p className="text-sm max-w-xs">
               The AI Operating System for Real Estate.

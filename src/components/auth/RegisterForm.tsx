@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Logo } from "@/components/shared/Logo";
+import { Logo } from "@/components/ui/Logo";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required." }),
@@ -58,7 +59,7 @@ export default function RegisterForm() {
   return (
     <>
       <div className="mb-8 text-center">
-        <Logo size="lg" className="justify-center mb-2" />
+        <Logo href="/" className="justify-center mb-2" />
         <h1 className="text-2xl font-bold">Create Your Account</h1>
         <p className="text-muted-foreground">Start your journey with TerraFlowAI.</p>
       </div>

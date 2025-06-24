@@ -15,7 +15,7 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
-import { Logo } from '@/components/shared/Logo';
+import { Logo } from '@/components/ui/Logo';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 
 export const LandingPageNavigation = () => {
@@ -66,9 +66,7 @@ export const LandingPageNavigation = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center">
-            <Logo size="md" />
-          </Link>
+          <Logo />
 
           <div className="hidden lg:flex items-center space-x-1">
             <NavigationMenu>

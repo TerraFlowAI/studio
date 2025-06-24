@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Logo } from '@/components/shared/Logo';
+import { Logo } from '@/components/ui/Logo';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/app/context/AuthContext';
 import { signOut } from 'firebase/auth';
@@ -81,9 +81,11 @@ export function AppSidebar() {
         style={ isMobile ? {} : {width: state === 'expanded' ? '250px' : 'var(--sidebar-width-icon, 3rem)'}}
     >
       <SidebarHeader className="p-4 h-20 flex items-center justify-center group-data-[collapsible=icon]:justify-center group-data-[state=expanded]:justify-start border-b border-sidebar-border">
-        <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setOpenMobile(false)}>
-          <Logo size={state === 'expanded' || isMobile ? 'md' : 'sm'} hideText={state !== 'expanded' && !isMobile} />
-        </Link>
+        <Logo 
+            href="/dashboard" 
+            hideText={state !== 'expanded' && !isMobile}
+            onClick={() => { if (isMobile) setOpenMobile(false); }} 
+        />
       </SidebarHeader>
       <SidebarContent className="flex-1 p-3 mt-2 overflow-y-auto">
         <SidebarMenu>

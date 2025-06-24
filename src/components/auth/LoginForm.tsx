@@ -14,7 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Logo } from "@/components/shared/Logo";
+import { Logo } from "@/components/ui/Logo";
 import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
@@ -93,7 +93,7 @@ export default function LoginForm() {
   return (
     <>
       <div className="mb-8 text-center">
-        <Logo size="lg" className="justify-center mb-2" />
+        <Logo href="/" className="justify-center mb-2" />
         <h1 className="text-2xl font-bold font-headline">Welcome Back</h1>
         <p className="text-muted-foreground">Enter your credentials to access your account.</p>
       </div>
