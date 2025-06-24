@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from '@/components/ui/button';
@@ -485,7 +486,7 @@ export const Hero = () => {
                             width={400}
                             height={250}
                             className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-lg" 
-                            data-ai-hint="modern house"
+                            data-ai-hint="luxury villa"
                           />
                           <div className="absolute top-2 left-2 bg-slate-600 rounded px-2 py-1 shadow-[-2px_-2px_4px_rgba(100,116,139,0.2),_2px_2px_4px_rgba(15,23,42,0.3)]"> 
                             <span className="text-xs font-bold text-white/90">Premium</span>
