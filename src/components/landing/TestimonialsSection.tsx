@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion } from "framer-motion";
@@ -50,7 +49,7 @@ export function TestimonialsSection() {
           className="text-center mb-12 md:mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
-            Why Industry Leaders are Choosing TerraFlow
+            Why Industry <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Leaders</span> are Choosing TerraFlow
           </h2>
           <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
             See how professionals and developers are leveraging TerraFlowAI to grow their business.
