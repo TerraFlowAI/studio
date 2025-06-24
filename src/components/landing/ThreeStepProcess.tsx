@@ -92,9 +92,7 @@ export function ThreeStepProcess() {
               <div
                 key={index}
                 className={cn(
-                  "relative flex justify-center items-start min-h-[280px]",
-                  // Add spacing after the last card to push the button down
-                  index === steps.length - 1 && "mb-16"
+                  "relative flex justify-center items-start min-h-[280px]"
                 )}
               >
                 {/* Node on the line */}
@@ -131,11 +129,14 @@ export function ThreeStepProcess() {
             );
           })}
           
+          {/* Spacer div to push the button down */}
+          <div className="h-16" />
+
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            transition={{ duration: 0.8 }}
             className="text-center"
           >
             <Button asChild size="lg" className="group bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95">
