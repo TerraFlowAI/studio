@@ -1,10 +1,12 @@
+
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Brain, Database, Plug, TrendingUp, Zap } from "lucide-react";
+import { ArrowRight, Plug, Zap, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRef } from "react";
 
 const steps = [
     {
@@ -56,6 +58,14 @@ const itemVariants = {
 
 
 export function ThreeStepProcess() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start center", "end center"],
+  });
+
+  const lineScaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
   return (
     <section className="py-16 md:py-24 bg-slate-50/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,14 +85,21 @@ export function ThreeStepProcess() {
             </motion.div>
 
             <motion.div 
+                ref={ref}
                 className="relative max-w-3xl mx-auto"
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, amount: 0.2 }}
             >
-                {/* Connecting Line */}
-                <div className="absolute left-10 top-10 bottom-10 w-0.5 bg-slate-200/80 -z-10 md:left-1/2 md:-translate-x-1/2"></div>
+                {/* Animated Connecting Line */}
+                <motion.div 
+                    className="absolute left-10 top-0 bottom-0 w-0.5 bg-slate-300 -z-10 md:left-1/2 md:-translate-x-1/2"
+                    style={{
+                        scaleY: lineScaleY,
+                        transformOrigin: 'top',
+                    }}
+                />
                 
                 {steps.map((step, index) => {
                     const isTextLeft = step.alignment === 'left';
@@ -112,16 +129,23 @@ export function ThreeStepProcess() {
                                 {/* Number and Icon */}
                                 <div className="hidden md:flex relative justify-center items-center w-20 h-20">
                                      <span className="text-7xl font-bold text-slate-200/90">{step.stepNumber}</span>
-                                     <div className="absolute p-3 bg-primary rounded-full shadow-lg text-white">
+                                     <motion.div 
+                                        className="absolute p-3 bg-primary rounded-full shadow-lg text-white"
+                                        whileHover={{ scale: 1.15, rotate: 5 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                                      >
                                         <Icon className="h-6 w-6"/>
-                                     </div>
+                                     </motion.div>
                                 </div>
 
                                 {/* Placeholder for Mobile Number/Icon */}
                                 <div className="md:hidden flex-shrink-0 relative flex justify-center items-center w-20 h-20 -ml-20">
-                                    <div className="absolute p-3 bg-primary rounded-full shadow-lg text-white">
+                                    <motion.div 
+                                        className="absolute p-3 bg-primary rounded-full shadow-lg text-white"
+                                        whileHover={{ scale: 1.1 }}
+                                     >
                                         <Icon className="h-6 w-6" />
-                                    </div>
+                                    </motion.div>
                                 </div>
 
                             </div>
