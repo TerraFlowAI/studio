@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { Logo } from "@/components/shared/Logo";
-import { Linkedin, Twitter } from "lucide-react";
+import { Linkedin, Twitter, Send } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 // Updated footer links structure
 const footerLinks = {
@@ -37,11 +40,27 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const { toast } = useToast();
+
+  const handleSubscription = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email');
+    if (email) {
+      console.log("Newsletter subscription for:", email);
+      toast({
+        title: "Subscribed!",
+        description: "Thanks for joining our newsletter. You'll hear from us soon.",
+      });
+      e.currentTarget.reset();
+    }
+  };
+
   return (
     <footer className="bg-slate-900 text-gray-400">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-          {/* Column 1: Brand */}
+          {/* Column 1: Brand & Newsletter */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Link href="/" className="inline-block mb-4">
               {/* Apply classes to make logo visible on dark background */}
@@ -50,6 +69,25 @@ export function Footer() {
             <p className="text-sm max-w-xs">
               The AI Operating System for Real Estate.
             </p>
+            <form className="mt-6 space-y-2" onSubmit={handleSubscription}>
+              <label htmlFor="footer-newsletter-email" className="text-sm font-medium text-gray-300">
+                Join our newsletter
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  id="footer-newsletter-email"
+                  name="email"
+                  type="email"
+                  placeholder="Your email"
+                  className="bg-slate-800 border-gray-700 text-white placeholder:text-gray-500 focus:ring-primary focus:border-primary"
+                  required
+                />
+                <Button type="submit" size="icon" className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0">
+                  <Send className="h-4 w-4" />
+                  <span className="sr-only">Subscribe</span>
+                </Button>
+              </div>
+            </form>
           </div>
 
           {/* Column 2: Product */}
