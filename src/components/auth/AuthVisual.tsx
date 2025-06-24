@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Logo } from '@/components/shared/Logo';
+import { Logo } from '@/components/ui/Logo';
 
 const Wave = () => (
     <svg 
@@ -26,7 +26,7 @@ export function AuthVisual() {
               priority
             />
             <div className="absolute bottom-8 right-8 z-20">
-                <Logo size="lg" className="[&>span]:text-white [&>svg]:text-white/80" />
+                <Logo className="[&>span]:text-white" />
             </div>
             <Wave />
         </div>
