@@ -1,35 +1,42 @@
 
+"use client";
+
+import { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PricingCard, type PricingPlan } from "@/components/pricing/PricingCard";
 import { ContactFormPricing } from "@/components/pricing/ContactFormPricing";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { CheckCircle } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 
-const pricingPlans: PricingPlan[] = [
+const monthlyPlans: PricingPlan[] = [
   {
     name: "Professional",
-    price: "₹7,999",
-    priceFrequency: "/month per user",
+    price: "₹9,999",
+    priceFrequency: "/month/user",
     description: "For individual agents and small teams looking to supercharge their productivity.",
     features: [
-      "TerraLead™ AI Suite (Up to 500 leads)",
+      "TerraLead™ AI Suite (Inc. 500 leads)",
       "TerraScribe™ Content Generation",
       "Basic SmartFlow™ Automation",
       "Standard Analytics & Reporting",
       "Email & Chat Support",
     ],
     ctaText: "Get Started",
-    ctaLink: "/signup?plan=professional",
+    ctaLink: "/signup?plan=professional-monthly",
+    variant: 'outline'
   },
   {
     name: "Business",
-    price: "₹14,999",
-    priceFrequency: "/month per user",
-    description: "For growing brokerages and development firms needing advanced tools and collaboration.",
+    price: "₹24,999",
+    priceFrequency: "/month (inc. 5 users)",
+    description: "For growing brokerages and development teams needing advanced tools and collaboration.",
     features: [
       "Everything in Professional, plus:",
-      "TerraLead™ AI Suite (Up to 2,500 leads)",
+      "TerraLead™ AI Suite (Inc. 2,000 leads)",
       "TerraValuate™ Pro CMA Reports",
       "Advanced SmartFlow™ Automation",
       "Predictive MarketIntel™ Analytics",
@@ -37,18 +44,20 @@ const pricingPlans: PricingPlan[] = [
       "Priority Support",
     ],
     ctaText: "Choose Business",
-    ctaLink: "/signup?plan=business",
+    ctaLink: "/signup?plan=business-monthly",
     isPopular: true,
+    variant: 'default'
   },
   {
     name: "Enterprise",
     price: "Custom",
-    priceFrequency: "yıllık faturalandırma",
+    priceFrequency: "Annual Billing",
     description: "Tailor-made solutions for large-scale operations with specific needs.",
     features: [
       "Everything in Business, plus:",
       "Unlimited Leads & Users",
       "TerraSecure™ Document Analysis",
+      "TerraVision™ VR Tour Hosting",
       "Custom Workflow Automation",
       "White-labeling & Custom Branding",
       "Dedicated Account Manager",
@@ -57,8 +66,67 @@ const pricingPlans: PricingPlan[] = [
     ctaText: "Contact Sales",
     ctaLink: "#contact",
     isEnterprise: true,
+    variant: 'dark'
   },
 ];
+
+const annualPlans: PricingPlan[] = [
+    {
+    name: "Professional",
+    price: "₹8,333",
+    priceFrequency: "/month/user, billed annually",
+    description: "For individual agents and small teams looking to supercharge their productivity.",
+    features: [
+      "TerraLead™ AI Suite (Inc. 500 leads)",
+      "TerraScribe™ Content Generation",
+      "Basic SmartFlow™ Automation",
+      "Standard Analytics & Reporting",
+      "Email & Chat Support",
+    ],
+    ctaText: "Get Started Annually",
+    ctaLink: "/signup?plan=professional-annual",
+    variant: 'outline'
+  },
+  {
+    name: "Business",
+    price: "₹20,833",
+    priceFrequency: "/month (inc. 5 users), billed annually",
+    description: "For growing brokerages and development teams needing advanced tools and collaboration.",
+    features: [
+      "Everything in Professional, plus:",
+      "TerraLead™ AI Suite (Inc. 2,000 leads)",
+      "TerraValuate™ Pro CMA Reports",
+      "Advanced SmartFlow™ Automation",
+      "Predictive MarketIntel™ Analytics",
+      "API Access & Basic Integrations",
+      "Priority Support",
+    ],
+    ctaText: "Choose Business Annually",
+    ctaLink: "/signup?plan=business-annual",
+    isPopular: true,
+    variant: 'default'
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    priceFrequency: "Annual Billing",
+    description: "Tailor-made solutions for large-scale operations with specific needs.",
+    features: [
+      "Everything in Business, plus:",
+      "Unlimited Leads & Users",
+      "TerraSecure™ Document Analysis",
+      "TerraVision™ VR Tour Hosting",
+      "Custom Workflow Automation",
+      "White-labeling & Custom Branding",
+      "Dedicated Account Manager",
+      "On-site/Virtual Training",
+    ],
+    ctaText: "Contact Sales",
+    ctaLink: "#contact",
+    isEnterprise: true,
+    variant: 'dark'
+  },
+]
 
 const includedFeatures = [
     "AI-Powered Lead Scoring", "Automated Follow-ups", "AI Content Generation",
@@ -68,16 +136,31 @@ const includedFeatures = [
 ];
 
 export default function PricingPage() {
+  const [isAnnual, setIsAnnual] = useState(false);
+  const plansToDisplay = isAnnual ? annualPlans : monthlyPlans;
+
   return (
     <div className="bg-background">
       <div className="container mx-auto py-12 md:py-24">
         <PageHeader
           title="Flexible Pricing for Every Real Estate Professional"
-          description="Choose the plan that fits your business needs and scale as you grow. All plans are backed by our powerful AI engine."
+          description="Choose the plan that fits your business needs and scale as you grow. All plans are backed by our powerful AI engine, designed to deliver a clear return on investment."
         />
 
-        <div className="grid lg:grid-cols-3 gap-8 mt-12">
-          {pricingPlans.map((plan) => (
+        <div className="flex items-center justify-center gap-4 my-8">
+            <Label htmlFor="pricing-toggle" className={cn("font-medium", !isAnnual && "text-primary")}>Monthly</Label>
+            <Switch 
+                id="pricing-toggle" 
+                checked={isAnnual}
+                onCheckedChange={setIsAnnual}
+                aria-label="Toggle between monthly and annual pricing"
+            />
+            <Label htmlFor="pricing-toggle" className={cn("font-medium", isAnnual && "text-primary")}>Annually</Label>
+            <span className="text-sm font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full">Save ~17%</span>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8 mt-12 items-start">
+          {plansToDisplay.map((plan) => (
             <PricingCard key={plan.name} plan={plan} />
           ))}
         </div>
@@ -102,7 +185,7 @@ export default function PricingPage() {
         <div id="contact" className="mt-24">
            <PageHeader
             title="Have Custom Requirements?"
-            description="Our team is ready to design a bespoke package for your enterprise needs. Let's discuss your goals."
+            description="Our team is ready to design a bespoke package for your unique business needs. Let's discuss your goals."
           />
           <ContactFormPricing />
         </div>
