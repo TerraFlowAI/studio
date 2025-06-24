@@ -89,7 +89,14 @@ export function ThreeStepProcess() {
             const Icon = step.icon;
 
             return (
-              <div key={index} className="relative flex justify-center items-start min-h-[280px]">
+              <div
+                key={index}
+                className={cn(
+                  "relative flex justify-center items-start min-h-[280px]",
+                  // Add spacing after the last card to push the button down
+                  index === steps.length - 1 && "mb-16"
+                )}
+              >
                 {/* Node on the line */}
                 <motion.div 
                     className="sticky top-1/2 -translate-y-1/2 z-10"
@@ -129,7 +136,7 @@ export function ThreeStepProcess() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-center pt-16"
+            className="text-center"
           >
             <Button asChild size="lg" className="group bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95">
               <Link href="/pricing">
