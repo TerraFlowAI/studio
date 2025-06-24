@@ -160,6 +160,21 @@ export function FeatureShowcase() {
   return (
     <section className="bg-white py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12 md:mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800">
+            A Complete Real Estate Operating System
+          </h2>
+          <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mt-4">
+            Explore how each component of TerraFlowAI works together to automate your workflow, from initial lead to final closing.
+          </p>
+        </motion.div>
+        
         <div className="divide-y divide-slate-200">
           {featureBlocks.map((block, index) => (
             <FeatureBlock key={index} block={block} />
