@@ -210,7 +210,9 @@ export default function PricingPage() {
         >
             <Card className="shadow-lg">
                 <CardHeader className="text-center">
-                    <CardTitle className="text-3xl font-headline">Full Feature Comparison</CardTitle>
+                    <CardTitle className="text-3xl font-headline">
+                        Full <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Feature</span> Comparison
+                    </CardTitle>
                     <CardDescription>All our plans come packed with industry-leading features.</CardDescription>
                 </CardHeader>
                 <CardContent>
