@@ -32,7 +32,7 @@ export function PricingCard({ plan }: PricingCardProps) {
     )}>
       {plan.isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <div className="bg-primary text-primary-foreground px-4 py-1 text-sm font-semibold rounded-full shadow-md flex items-center gap-1">
+          <div className="bg-primary text-primary-foreground px-4 py-1 text-sm font-semibold rounded-full shadow-md flex items-center gap-1 animate-pulse-subtle">
             <Zap className="w-4 h-4"/> Most Popular
           </div>
         </div>
