@@ -175,7 +175,9 @@ export default function PricingPage() {
                 aria-label="Toggle between monthly and annual pricing"
             />
             <Label htmlFor="pricing-toggle" className={cn("font-medium", isAnnual && "text-primary")}>Annually</Label>
-            <span className="text-sm font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full">Save ~17%</span>
+            {isAnnual && (
+              <span className="text-sm font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full">2 months free!</span>
+            )}
         </motion.div>
 
         <motion.div
