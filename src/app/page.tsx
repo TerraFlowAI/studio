@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Inter } from 'next/font/google';
 import { cn } from "@/lib/utils";
 import RoiCalculator from "@/components/landing/RoiCalculator";
+import { TrustAndSocialProof } from "@/components/landing/TrustAndSocialProof";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -20,6 +21,7 @@ export default function LandingPage() {
       <LandingPageNavigation />
       <main>
         <Hero />
+        <TrustAndSocialProof />
         <FeatureShowcase />
         <CoreServicesGrid />
         <RoiCalculator />
