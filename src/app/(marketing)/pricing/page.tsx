@@ -93,7 +93,7 @@ const annualPlans: PricingPlan[] = [
     priceFrequency: "/month (inc. 5 users), billed annually",
     description: "For growing brokerages and development teams needing advanced tools and collaboration.",
     features: [
-      "Everything in Professional, plus:",
+      "Everything in Business, plus:",
       "TerraLead™ AI Suite (Inc. 2,000 leads)",
       "TerraValuate™ Pro CMA Reports",
       "Advanced SmartFlow™ Automation",
@@ -144,7 +144,7 @@ export default function PricingPage() {
       <div className="container mx-auto py-12 md:py-24">
         <PageHeader
           title="Flexible Pricing for Every Real Estate Professional"
-          description="Choose the plan that fits your business needs and scale as you grow. All plans are backed by our powerful AI engine, designed to deliver a clear return on investment."
+          description="Choose the plan that fits your business needs and scales as you grow. All plans are backed by our powerful AI engine, designed to deliver a clear return on investment."
         />
 
         <div className="flex items-center justify-center gap-4 my-8">
@@ -183,11 +183,15 @@ export default function PricingPage() {
         </Card>
         
         <div id="contact" className="mt-24">
-           <PageHeader
-            title="Have Custom Requirements?"
-            description="Our team is ready to design a bespoke package for your unique business needs. Let's discuss your goals."
-          />
-          <ContactFormPricing />
+           <div className="grid lg:grid-cols-2 gap-12 items-center">
+             <div className="text-center lg:text-left">
+                <h2 className="text-3xl md:text-4xl font-bold font-headline">Have Custom Requirements?</h2>
+                <p className="text-lg text-muted-foreground mt-2">Our team is ready to design a bespoke package for your unique business needs. Let's discuss your goals.</p>
+             </div>
+             <div>
+                <ContactFormPricing />
+             </div>
+           </div>
         </div>
       </div>
       
