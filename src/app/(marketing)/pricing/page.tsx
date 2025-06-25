@@ -5,7 +5,6 @@ import { useState } from "react";
 import { PricingCard, type PricingPlan } from "@/components/pricing/PricingCard";
 import { ContactFormPricing } from "@/components/pricing/ContactFormPricing";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { CheckCircle } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -248,15 +247,6 @@ export default function PricingPage() {
         </motion.div>
       </div>
       
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={sectionVariants}
-      >
-        <TestimonialsSection />
-      </motion.div>
-
     </div>
   );
 }
