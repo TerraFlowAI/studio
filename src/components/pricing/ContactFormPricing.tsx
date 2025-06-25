@@ -177,7 +177,7 @@ export function ContactFormPricing() {
                   disabled={isLoading}
                 >
                   {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
-                  {isLoading ? "Scheduling..." : "Schedule Your Demo"}
+                  {isLoading ? "Submitting..." : "Submit Request"}
                 </Button>
               </form>
             </Form>
