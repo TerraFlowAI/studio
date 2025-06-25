@@ -3,6 +3,7 @@
 
 import * as React from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { MoreVertical, Eye, Mail, Activity, Edit3, Phone, MessageSquare, Zap, UserPlus, Loader2, UserX } from "lucide-react";
+import { MoreVertical, Eye, Mail, Activity, Edit3, Phone, MessageSquare, Zap, UserPlus, Loader2, UserX, Calendar, TrendingUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LEAD_STATUSES } from "@/lib/constants";
@@ -76,9 +77,75 @@ export function LeadsTable({ leads, isLoading, selectedLeads, onSelectLead, onSe
     }
   };
 
+  const MobileLeadCard = ({ lead }: { lead: Lead }) => (
+    <Card className="mb-4" onClick={() => handleNavigateToDetail(lead.id)}>
+      <CardHeader>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="text-base">{lead.name}</CardTitle>
+            <p className="text-xs text-muted-foreground">{lead.email}</p>
+          </div>
+          <Checkbox
+            checked={selectedLeads.has(lead.id)}
+            onCheckedChange={(checked) => onSelectLead(lead.id, Boolean(checked))}
+            aria-label={`Select lead ${lead.name}`}
+            onClick={(e) => e.stopPropagation()}
+            className="mt-1"
+          />
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3 text-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Status</span>
+          <Badge className={cn("px-2.5 py-1 text-xs font-medium rounded-full border whitespace-nowrap", getStatusPillStyle(lead.status))}>
+            {lead.status}
+          </Badge>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground flex items-center gap-1"><TrendingUp className="h-4 w-4" /> AI Score</span>
+           <Tooltip delayDuration={100}>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-2">
+                <div className="w-20 h-1.5 rounded-full bg-muted overflow-hidden">
+                  <Progress value={lead.aiScore} className="h-full w-full" indicatorClassName={cn(getAIScoreColorClasses(lead.aiScore))}/>
+                </div>
+                <span className={cn("font-semibold", getAIScoreTextClasses(lead.aiScore))}>{lead.aiScore}</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent><p className="text-xs">{lead.aiScoreFactors}</p></TooltipContent>
+          </Tooltip>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground flex items-center gap-1"><Calendar className="h-4 w-4" /> Date Added</span>
+          <span>{new Date(lead.dateAdded).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button variant="outline" size="sm" className="w-full" onClick={(e) => handleAction(e, `View Details for ${lead.name}`, lead.id)}>
+          <Eye className="mr-2 h-4 w-4" /> View Details
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+
   return (
     <TooltipProvider>
-      <div className="overflow-x-auto">
+      {/* Mobile Card View */}
+      <div className="md:hidden">
+        {isLoading ? (
+          <div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
+        ) : leads.length === 0 ? (
+          <div className="text-center p-8 text-muted-foreground">
+            <UserX className="h-12 w-12 mx-auto mb-2 text-primary/30" />
+            <p>No leads found.</p>
+          </div>
+        ) : (
+          leads.map(lead => <MobileLeadCard key={lead.id} lead={lead} />)
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="overflow-x-auto hidden md:block">
         <Table className="min-w-full whitespace-nowrap">
           <TableHeader>
             <TableRow className="hover:bg-transparent border-b border-border">

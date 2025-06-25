@@ -57,7 +57,7 @@ export default function DashboardPage() {
                 </Button>
             </PageHeader>
             
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <KpiCard title="Active Listings" value={kpiData.activeListings.value} trend={kpiData.activeListings.trend} icon={Briefcase} />
                 <KpiCard title="New Leads" value={kpiData.leadsGenerated.value} trend={kpiData.leadsGenerated.trend} icon={Users} />
                 <KpiCard title="Contracts Signed" value={kpiData.contractsSigned.value} trend={kpiData.contractsSigned.trend} trendDirection="down" icon={FileSignature} />
@@ -86,7 +86,7 @@ function DashboardSkeleton() {
                 <Skeleton className="h-9 w-64" />
                 <Skeleton className="h-5 w-80 mt-2" />
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <Skeleton className="h-28 rounded-lg" />
                 <Skeleton className="h-28 rounded-lg" />
                 <Skeleton className="h-28 rounded-lg" />

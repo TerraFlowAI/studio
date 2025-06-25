@@ -9,6 +9,7 @@ import { AppHeader } from '@/components/layout/AppHeader';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BottomNavBar } from '@/components/layout/BottomNavBar';
 
 const AppSidebar = dynamic(() => 
   import('@/components/layout/AppSidebar').then(mod => mod.AppSidebar), 
@@ -46,9 +47,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <AppSidebar />
             <div className="flex flex-1 flex-col overflow-hidden">
                 <AppHeader />
-                <main className={cn("flex-1 overflow-y-auto", !isBuilderPage && "p-4 md:p-6 lg:p-8")}>
+                <main className={cn(
+                  "flex-1 overflow-y-auto pb-20 md:pb-0", // Padding bottom for mobile bottom nav
+                  !isBuilderPage && "p-4 md:p-6 lg:p-8"
+                )}>
                     {children}
                 </main>
+                <BottomNavBar />
             </div>
         </div>
     </SidebarProvider>

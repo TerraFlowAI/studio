@@ -8,13 +8,14 @@ import { Input } from '@/components/ui/input';
 import { useSidebar } from '../ui/sidebar';
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
 import { useMounted } from '@/hooks/useMounted';
+import { Logo } from "../ui/Logo";
 
 export function AppHeader() {
   const { toggleSidebar, isMobile } = useSidebar();
   const mounted = useMounted();
 
   return (
-    <header className="flex h-20 items-center gap-4 border-b bg-card px-6 md:px-8 sticky top-0 z-30 shadow-sm">
+    <header className="flex h-16 md:h-20 items-center gap-4 border-b bg-card px-4 md:px-8 sticky top-0 z-30 shadow-sm">
       {mounted && isMobile && (
         <Button
             variant="ghost"
@@ -27,8 +28,10 @@ export function AppHeader() {
         </Button>
       )}
       
-      <div className="flex-1">
-        {/* Page title can be managed here via context or state in a future step */}
+      <div className="flex-1 flex justify-center md:justify-start">
+        <div className="md:hidden">
+          <Logo href="/dashboard" />
+        </div>
       </div>
       
       <div className="flex items-center gap-2 md:gap-4">

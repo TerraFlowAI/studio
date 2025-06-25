@@ -274,7 +274,7 @@ export default function AddNewPropertyPage() {
 const Step1Location = ({ form }: { form: any }) => (
   <div className="space-y-4">
     <h3 className="text-lg font-semibold text-foreground">Location & Type</h3>
-    <div className="grid md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField control={form.control} name="propertyType" render={({ field }) => (
             <FormItem><FormLabel>Property Type *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -301,7 +301,7 @@ const Step1Location = ({ form }: { form: any }) => (
     <div>
         <FormLabel>Full Address *</FormLabel>
         <p className="text-xs text-muted-foreground mb-2">Google Maps Autocomplete coming soon.</p>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
              <FormField control={form.control} name="addressBuilding" render={({ field }) => (<FormItem><FormControl><Input placeholder="Building, Apartment, or Plot No." {...field} /></FormControl><FormMessage /></FormItem>)} />
              <FormField control={form.control} name="addressStreet" render={({ field }) => (<FormItem><FormControl><Input placeholder="Street Address" {...field} /></FormControl><FormMessage /></FormItem>)} />
              <FormField control={form.control} name="addressLocality" render={({ field }) => (<FormItem><FormControl><Input placeholder="Locality / Area" {...field} /></FormControl><FormMessage /></FormItem>)} />
@@ -314,12 +314,12 @@ const Step1Location = ({ form }: { form: any }) => (
 const Step2Details = ({ form }: { form: any }) => (
   <div className="space-y-4">
     <h3 className="text-lg font-semibold text-foreground">Details & Pricing</h3>
-    <div className="grid md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <FormField control={form.control} name="bedrooms" render={({ field }) => (<FormItem><FormLabel>Bedrooms</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
         <FormField control={form.control} name="bathrooms" render={({ field }) => (<FormItem><FormLabel>Bathrooms</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
         <FormField control={form.control} name="areaSqft" render={({ field }) => (<FormItem><FormLabel>Area (sqft) *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
     </div>
-    <div className="grid md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField control={form.control} name="furnishingStatus" render={({ field }) => (
             <FormItem><FormLabel>Furnishing</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -346,7 +346,7 @@ const Step2Details = ({ form }: { form: any }) => (
 const Step3AIContent = ({ form, onGenerate, isLoading }: { form: any, onGenerate: () => void, isLoading: boolean }) => (
     <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground">AI Generated Content (TerraScribe™)</h3>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
                  <FormField control={form.control} name="keyHighlights" render={({ field }) => (
                     <FormItem><FormLabel>Key Highlights *</FormLabel>

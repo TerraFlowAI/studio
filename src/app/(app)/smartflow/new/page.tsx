@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import * as React from "react";
@@ -10,9 +9,11 @@ import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ChevronLeft, Save, Play, Settings2, PlusCircle, Zap, Mail, CalendarCheck, Database, Filter, GitFork, Clock, MessageSquare, Users, BarChart3, Briefcase, PenSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast"; // Import useToast
+import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Placeholder components for the builder UI
 const WorkflowBuilderHeader: React.FC<{ 
@@ -80,7 +81,7 @@ const NodePalette: React.FC = () => {
   );
 
   return (
-    <Card className="w-64 lg:w-72 h-full flex flex-col shadow-md border-r">
+    <Card className="w-64 lg:w-72 h-full flex-col shadow-md border-r hidden md:flex">
       <CardHeader className="pb-2 pt-3 px-3 border-b">
         <CardTitle className="text-base font-semibold text-primary">Add Triggers & Actions</CardTitle>
       </CardHeader>
@@ -105,7 +106,7 @@ const NodePalette: React.FC = () => {
 };
 
 const WorkflowCanvasPlaceholder: React.FC = () => (
-  <div className="flex-1 bg-background p-8 relative overflow-hidden">
+  <div className="flex-1 bg-background p-4 md:p-8 relative overflow-hidden">
     {/* Grid background */}
     <svg width="100%" height="100%" className="absolute inset-0 opacity-50">
       <defs>
@@ -117,7 +118,7 @@ const WorkflowCanvasPlaceholder: React.FC = () => (
     </svg>
     
     {/* Placeholder flow representation */}
-    <div className="relative z-10 flex flex-col items-center justify-center h-full text-muted-foreground">
+    <div className="relative z-10 flex flex-col items-center justify-start h-full text-muted-foreground pt-10">
       <div className="space-y-8 flex flex-col items-center">
         {/* Trigger Node */}
         <div className="flex items-center p-4 bg-card border border-primary rounded-lg shadow-lg w-64 cursor-pointer hover:shadow-xl" onClick={() => alert("Configure Trigger Node (placeholder)")}>
@@ -150,45 +151,67 @@ const WorkflowCanvasPlaceholder: React.FC = () => (
           </div>
         </div>
       </div>
-       <p className="mt-12 text-center text-sm">Drag nodes from the left panel to build your workflow. <br />Click a node to configure it. (Drag & Drop Coming Soon)</p>
+       <p className="mt-12 text-center text-sm">Drag nodes from the panel to build your workflow. <br />Click a node to configure it. (Drag & Drop Coming Soon)</p>
     </div>
   </div>
 );
 
 
-const NodeConfigurationPanelPlaceholder: React.FC<{ selectedNodeName?: string; onSaveNodeSettings: () => void; }> = ({ selectedNodeName, onSaveNodeSettings }) => (
-  <Card className="w-72 lg:w-80 h-full flex flex-col shadow-md border-l">
-    <CardHeader className="pb-2 pt-3 px-3 border-b">
-      <CardTitle className="text-base font-semibold text-primary">
-        {selectedNodeName ? `Configure: ${selectedNodeName}` : "Node Settings"}
-      </CardTitle>
-    </CardHeader>
-    <ScrollArea className="flex-grow">
-      <CardContent className="p-4">
-        {!selectedNodeName && (
-          <div className="text-center text-muted-foreground py-10">
-            <Settings2 className="h-10 w-10 mx-auto mb-2 opacity-30" />
-            <p className="text-sm">Select a node on the canvas to configure its properties here.</p>
-          </div>
-        )}
-        {selectedNodeName && (
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Configuration options for <span className="font-semibold text-foreground">{selectedNodeName}</span> will appear here.</p>
-            {/* Example: if selectedNodeName === 'Send Email' */}
-            {selectedNodeName === 'Send Email' && (
-              <div className="space-y-3">
-                <div><label htmlFor="email-to" className="text-xs font-medium">To:</label><Input id="email-to" defaultValue="{{lead.email}}" /></div>
-                <div><label htmlFor="email-subject" className="text-xs font-medium">Subject:</label><Input id="email-subject" defaultValue="Welcome to TerraFlow!" /></div>
-                <div><label htmlFor="email-body" className="text-xs font-medium">Body:</label><Textarea id="email-body" rows={5} defaultValue="Hi {{lead.name}},\n\nWelcome aboard..." /></div>
-              </div>
-            )}
-            <Button variant="outline" className="w-full" onClick={onSaveNodeSettings}>Save Node Settings</Button>
-          </div>
-        )}
-      </CardContent>
-    </ScrollArea>
-  </Card>
-);
+const NodeConfigurationPanel: React.FC<{ selectedNodeName?: string; onSaveNodeSettings: () => void; isMobile?: boolean }> = ({ selectedNodeName, onSaveNodeSettings, isMobile }) => {
+  const content = (
+    <>
+      <SheetHeader className={cn(isMobile ? "p-4 border-b" : "pb-2 pt-3 px-3 border-b")}>
+        <SheetTitle className={cn(isMobile ? "" : "text-base font-semibold text-primary")}>
+          {selectedNodeName ? `Configure: ${selectedNodeName}` : "Node Settings"}
+        </SheetTitle>
+      </SheetHeader>
+      <ScrollArea className="flex-grow">
+        <CardContent className="p-4">
+          {!selectedNodeName && (
+            <div className="text-center text-muted-foreground py-10">
+              <Settings2 className="h-10 w-10 mx-auto mb-2 opacity-30" />
+              <p className="text-sm">Select a node on the canvas to configure its properties here.</p>
+            </div>
+          )}
+          {selectedNodeName && (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">Configuration options for <span className="font-semibold text-foreground">{selectedNodeName}</span> will appear here.</p>
+              {selectedNodeName === 'Send Email' && (
+                <div className="space-y-3">
+                  <div><label htmlFor="email-to" className="text-xs font-medium">To:</label><Input id="email-to" defaultValue="{{lead.email}}" /></div>
+                  <div><label htmlFor="email-subject" className="text-xs font-medium">Subject:</label><Input id="email-subject" defaultValue="Welcome to TerraFlow!" /></div>
+                  <div><label htmlFor="email-body" className="text-xs font-medium">Body:</label><Textarea id="email-body" rows={5} defaultValue="Hi {{lead.name}},\n\nWelcome aboard..." /></div>
+                </div>
+              )}
+              <Button variant="outline" className="w-full" onClick={onSaveNodeSettings}>Save Node Settings</Button>
+            </div>
+          )}
+        </CardContent>
+      </ScrollArea>
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" className="fixed bottom-24 right-4 z-20 shadow-lg md:hidden">
+            <Settings2 className="mr-2 h-4 w-4"/> Configure Node
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="bottom" className="h-[60%] flex flex-col p-0">
+          {content}
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  return (
+    <Card className="w-72 lg:w-80 h-full flex-col shadow-md border-l hidden md:flex">
+      {content}
+    </Card>
+  );
+};
 
 
 export default function NewWorkflowPage() {
@@ -196,6 +219,7 @@ export default function NewWorkflowPage() {
   const [isWorkflowActive, setIsWorkflowActive] = React.useState(false);
   const [selectedNodeForConfig, setSelectedNodeForConfig] = React.useState<string | undefined>(undefined); 
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
 
   const handleTestWorkflow = () => {
@@ -215,10 +239,7 @@ export default function NewWorkflowPage() {
     toast({ title: "Node Settings Saved", description: `Configuration for "${selectedNodeForConfig}" saved. (Placeholder)`});
   };
 
-  // Simulate selecting a node by clicking on a placeholder node (for demo of panel)
-  // In a real app, this would be set by interacting with the canvas library
   React.useEffect(() => {
-      // Example: Simulate selecting "Send Email" node after a short delay
       const timer = setTimeout(() => {
           setSelectedNodeForConfig("Send Email");
       }, 1000);
@@ -239,13 +260,12 @@ export default function NewWorkflowPage() {
       <div className="flex flex-1 overflow-hidden">
         <NodePalette />
         <WorkflowCanvasPlaceholder />
-        <NodeConfigurationPanelPlaceholder 
+        <NodeConfigurationPanel 
             selectedNodeName={selectedNodeForConfig}
             onSaveNodeSettings={handleSaveNodeSettings}
+            isMobile={isMobile}
         /> 
       </div>
     </div>
   );
 }
-
-    
