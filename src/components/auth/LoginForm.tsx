@@ -43,7 +43,7 @@ export default function LoginForm() {
     defaultValues: { email: "", password: "" },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
