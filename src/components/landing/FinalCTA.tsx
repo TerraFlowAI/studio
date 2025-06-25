@@ -61,19 +61,24 @@ export function FinalCTA() {
 
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
+    setIsSubmitted(false); // Allow for re-submission attempts after an error
 
     const dataToSend = {
         firstName: values.firstName,
         lastName: values.lastName,
-        email: values.workEmail, // Map workEmail to email for the backend
+        email: values.workEmail,
         companyName: values.companyName,
         companySize: values.companySize,
         message: values.message,
     };
 
     try {
-      // Note: Ensure NEXT_PUBLIC_SUPABASE_CONTACT_FORM_URL is set in your .env.local file
-      const response = await fetch(process.env.NEXT_PUBLIC_SUPABASE_CONTACT_FORM_URL!, {
+      const functionUrl = process.env.NEXT_PUBLIC_SUPABASE_CONTACT_FORM_URL;
+      if (!functionUrl) {
+          throw new Error("The contact form URL is not configured. Please contact support.");
+      }
+      
+      const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +87,10 @@ export function FinalCTA() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit form. Please try again.');
+        // Try to parse a more specific error from the function's response body
+        const errorData = await response.json().catch(() => null);
+        const errorMessage = errorData?.error || `Request failed with status ${response.status}.`;
+        throw new Error(errorMessage);
       }
 
       toast({
@@ -97,7 +105,7 @@ export function FinalCTA() {
       toast({
         variant: "destructive",
         title: "Submission Failed",
-        description: "There was an error sending your request. Please try again later.",
+        description: error instanceof Error ? error.message : "An unknown error occurred. Please try again.",
       });
     } finally {
       setIsLoading(false);
