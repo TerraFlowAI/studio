@@ -62,8 +62,7 @@ export function FinalCTA() {
 
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
-    setIsSubmitted(false);
-
+    
     const dataToSend = {
         firstName: values.firstName,
         lastName: values.lastName,
