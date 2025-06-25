@@ -61,7 +61,7 @@ export function FinalCTA() {
 
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
-    setIsSubmitted(false); // Allow for re-submission attempts after an error
+    setIsSubmitted(false);
 
     const dataToSend = {
         firstName: values.firstName,
@@ -75,7 +75,7 @@ export function FinalCTA() {
     try {
       const functionUrl = process.env.NEXT_PUBLIC_SUPABASE_CONTACT_FORM_URL;
       if (!functionUrl) {
-          throw new Error("The contact form URL is not configured. Please contact support.");
+        throw new Error("The contact form URL is not configured. Please contact support.");
       }
       
       const response = await fetch(functionUrl, {
@@ -87,7 +87,6 @@ export function FinalCTA() {
       });
 
       if (!response.ok) {
-        // Try to parse a more specific error from the function's response body
         const errorData = await response.json().catch(() => null);
         let errorMessage = errorData?.error || `Request failed with status ${response.status}.`;
         
@@ -95,7 +94,12 @@ export function FinalCTA() {
             errorMessage = "Submission endpoint not found (404). Please ensure the Supabase function is deployed and the URL in your environment variables is correct.";
         }
         
-        throw new Error(errorMessage);
+        toast({
+          variant: "destructive",
+          title: "Submission Failed",
+          description: errorMessage,
+        });
+        return; // Exit gracefully instead of throwing
       }
 
       toast({
@@ -193,7 +197,7 @@ export function FinalCTA() {
                       <FormField control={form.control} name="message" render={({ field }) => (
                         <FormItem><FormLabel>Message (Optional)</FormLabel><FormControl><Textarea placeholder="Tell us a bit about your business and what you're hoping to achieve..." {...field} /></FormControl><FormMessage /></FormItem>
                       )} />
-                      <Button type="submit" className="w-full text-lg py-6 bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md hover:shadow-lg transition-shadow" disabled={isLoading}>
+                      <Button type="submit" className="w-full text-lg py-6 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isLoading}>
                         {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
                         {isLoading ? "Submitting..." : "Submit Request"}
                       </Button>
