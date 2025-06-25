@@ -51,16 +51,67 @@ export function ContactFormPricing() {
 
   async function onSubmit(values: ContactFormValues) {
     setIsLoading(true);
-    // Simulate API call
-    console.log("Contact form submitted:", values);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll be in touch shortly.",
-    });
-    form.reset();
-    setIsLoading(false);
+
+    const dataToSend = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.workEmail,
+        companyName: values.companyName,
+        companySize: values.companySize,
+        message: values.message,
+    };
+
+    try {
+      const functionUrl = process.env.NEXT_PUBLIC_SUPABASE_CONTACT_FORM_URL;
+      if (!functionUrl) {
+        throw new Error("The contact form URL is not configured. Please contact support.");
+      }
+      
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (!response.ok) {
+        let errorMessage = `Request failed with status ${response.status}.`;
+        if (response.status === 404) {
+            errorMessage = "Submission endpoint not found (404). Please ensure the Supabase function is deployed and the URL in your environment variables is correct.";
+        } else {
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorMessage;
+            } catch (e) {
+                // Ignore if response is not JSON
+            }
+        }
+        
+        toast({
+          variant: "destructive",
+          title: "Submission Failed",
+          description: errorMessage,
+        });
+        return; 
+      }
+
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll be in touch shortly.",
+      });
+      form.reset();
+
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+      toast({
+        variant: "destructive",
+        title: "Submission Failed",
+        description: error instanceof Error ? error.message : "An unknown error occurred. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
