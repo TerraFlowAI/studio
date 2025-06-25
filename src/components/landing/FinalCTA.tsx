@@ -89,7 +89,12 @@ export function FinalCTA() {
       if (!response.ok) {
         // Try to parse a more specific error from the function's response body
         const errorData = await response.json().catch(() => null);
-        const errorMessage = errorData?.error || `Request failed with status ${response.status}.`;
+        let errorMessage = errorData?.error || `Request failed with status ${response.status}.`;
+        
+        if (response.status === 404) {
+            errorMessage = "Submission endpoint not found (404). Please ensure the Supabase function is deployed and the URL in your environment variables is correct.";
+        }
+        
         throw new Error(errorMessage);
       }
 
