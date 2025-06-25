@@ -324,12 +324,8 @@ export default function PricingPage() {
             viewport={{ once: true, amount: 0.2 }}
             variants={sectionVariants}
         >
-           <div className="grid lg:grid-cols-2 gap-12 items-center">
-             <div className="text-center lg:text-left">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline">Have <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Custom</span> Requirements?</h2>
-                <p className="text-lg text-muted-foreground mt-2">Our team is ready to design a bespoke package for your unique business needs. Let's discuss your goals.</p>
-             </div>
-             <div>
+           <div className="flex justify-center">
+             <div className="w-full max-w-2xl">
                 <ContactFormPricing />
              </div>
            </div>

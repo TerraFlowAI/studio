@@ -15,17 +15,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Loader2, Send } from "lucide-react";
 import { motion } from "framer-motion";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const formSchema = z.object({
-  fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
-  email: z.string().email({ message: "Invalid email address." }),
+  firstName: z.string().min(1, { message: "First name is required." }),
+  lastName: z.string().min(1, { message: "Last name is required." }),
+  workEmail: z.string().email({ message: "A valid work email is required." }),
   companyName: z.string().optional(),
-  message: z.string().min(10, { message: "Message must be at least 10 characters." }),
+  companySize: z.string().min(1, { message: "Please select a company size." }),
+  message: z.string().optional(),
 });
 
 type ContactFormValues = z.infer<typeof formSchema>;
@@ -37,9 +40,11 @@ export function ContactFormPricing() {
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "",
-      email: "",
+      firstName: "",
+      lastName: "",
+      workEmail: "",
       companyName: "",
+      companySize: "",
       message: "",
     },
   });
@@ -66,18 +71,23 @@ export function ContactFormPricing() {
         transition={{ duration: 0.6 }}
        >
         <Card className="max-w-2xl mx-auto shadow-xl border-primary/20">
-          <CardContent className="p-6 md:p-8">
+            <CardHeader>
+                <CardTitle className="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">
+                    Schedule Your Demo
+                </CardTitle>
+            </CardHeader>
+          <CardContent className="p-6 md:p-8 pt-2">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
-                    name="fullName"
+                    name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>First Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g., Aman Sharma" {...field} />
+                          <Input placeholder="John" {...field} className="bg-slate-50"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -85,27 +95,60 @@ export function ContactFormPricing() {
                   />
                   <FormField
                     control={form.control}
-                    name="email"
+                    name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email Address</FormLabel>
+                        <FormLabel>Last Name</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="e.g., aman@example.com" {...field} />
+                          <Input placeholder="Doe" {...field} className="bg-slate-50"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+                 <FormField
+                  control={form.control}
+                  name="workEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Work Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="john.doe@realty.com" {...field} className="bg-slate-50"/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="companyName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Company Name (Optional)</FormLabel>
+                      <FormLabel>Company Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., TerraFlow Solutions Inc." {...field} />
+                        <Input placeholder="e.g. ACME Realty" {...field} className="bg-slate-50"/>
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="companySize"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Size</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl><SelectTrigger className="bg-slate-50"><SelectValue placeholder="Select an option" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="myself">Just Myself</SelectItem>
+                            <SelectItem value="2-10">2-10 Agents</SelectItem>
+                            <SelectItem value="11-50">11-50 Agents</SelectItem>
+                            <SelectItem value="51+">51+ Agents</SelectItem>
+                            <SelectItem value="developer">Developer</SelectItem>
+                          </SelectContent>
+                        </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -115,12 +158,13 @@ export function ContactFormPricing() {
                   name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>How can we help you?</FormLabel>
+                      <FormLabel>Message (Optional)</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Please describe your requirements or questions..."
-                          rows={5}
+                          placeholder="Tell us a bit about your business and what you're hoping to achieve..."
+                          rows={4}
                           {...field}
+                          className="bg-slate-50"
                         />
                       </FormControl>
                       <FormMessage />
@@ -129,11 +173,11 @@ export function ContactFormPricing() {
                 />
                 <Button 
                   type="submit" 
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6"
+                  className="w-full text-white text-lg py-6 bg-gradient-to-r from-teal-500 to-blue-500"
                   disabled={isLoading}
                 >
                   {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
-                  {isLoading ? "Sending..." : "Send Message"}
+                  {isLoading ? "Scheduling..." : "Schedule Your Demo"}
                 </Button>
               </form>
             </Form>
