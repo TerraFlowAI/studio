@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,18 +61,47 @@ export function FinalCTA() {
 
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
-    // Simulate API call
-    console.log("Demo request submitted:", values);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    toast({
-      title: "Request Sent!",
-      description: "We've received your demo request and will be in touch shortly.",
-    });
-    
-    setIsLoading(false);
-    setIsSubmitted(true);
-    form.reset();
+
+    const dataToSend = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.workEmail, // Map workEmail to email for the backend
+        companyName: values.companyName,
+        companySize: values.companySize,
+        message: values.message,
+    };
+
+    try {
+      // Note: Ensure NEXT_PUBLIC_SUPABASE_CONTACT_FORM_URL is set in your .env.local file
+      const response = await fetch(process.env.NEXT_PUBLIC_SUPABASE_CONTACT_FORM_URL!, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form. Please try again.');
+      }
+
+      toast({
+        title: "Request Sent!",
+        description: "We've received your demo request and will be in touch shortly.",
+      });
+
+      setIsSubmitted(true);
+      form.reset();
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+      toast({
+        variant: "destructive",
+        title: "Submission Failed",
+        description: "There was an error sending your request. Please try again later.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
