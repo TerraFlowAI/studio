@@ -1,41 +1,35 @@
+/// <reference types="https://esm.sh/@supabase/functions-js@2.4.1/src/edge-runtime.d.ts" />
+
 // /supabase/functions/contact-form-handler/index.ts
 
-import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
-// FIX: Using the correct URL-based import for Deno
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// This function will be triggered by a POST request from the landing page form.
-serve(async (req) => {
-  // 1. Handle CORS Preflight request
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: { 
-      'Access-Control-Allow-Origin': '*', // Or your specific website domain
-      'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-    } })
+// --- Define CORS Headers ---
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    // 2. Create a Supabase admin client to securely insert data
     const supabaseAdmin = createClient(
-      // These are Environment Variables that must be set in your Supabase project's Function settings
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
-    // 3. Get the data from the request body
-    const { firstName, lastName, email, companyName, companySize, message } = await req.json()
+    const { firstName, lastName, email, companyName, companySize, message } = await req.json();
 
-    // 4. Validate the incoming data (basic validation)
     if (!email || !firstName || !lastName) {
-      return new Response(JSON.stringify({ error: 'Missing required fields: firstName, lastName, and email.' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      })
+      throw new Error("Missing required fields: firstName, lastName, and email.");
     }
 
-    // 5. Insert the data into the 'WebsiteLeads' table
     const { data, error } = await supabaseAdmin
-      .from('WebsiteLeads')
+      .from("WebsiteLeads")
       .insert({
         first_name: firstName,
         last_name: lastName,
@@ -43,25 +37,24 @@ serve(async (req) => {
         company_name: companyName,
         company_size: companySize,
         message: message,
-        status: 'New' // Set the initial status
+        status: "New",
       })
       .select()
-      .single()
+      .single();
 
     if (error) {
-      throw error
+      throw new Error(error.message);
     }
 
-    // 6. Return a success response
     return new Response(JSON.stringify({ success: true, leadId: data.id }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
-    })
-  } catch (error) {
-    // 7. Return an error response
+    });
+  } catch (e: unknown) {
+    const error = e instanceof Error ? e : new Error("An unknown error occurred");
     return new Response(JSON.stringify({ error: error.message }), {
-      headers: { 'Content-Type': 'application/json' },
-      status: 500,
-    })
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 400,
+    });
   }
-})
+});

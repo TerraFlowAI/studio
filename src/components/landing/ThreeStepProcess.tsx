@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -52,7 +51,7 @@ export function ThreeStepProcess() {
           className="text-center mb-12 md:mb-20"
         >
           <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800">
-            Get Started in 3 Simple Steps
+            Get Started in <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">3 Simple Steps</span>
           </h2>
           <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mt-4">
             Launch your journey to higher conversions and streamlined operations. TerraFlow is designed for a seamless onboarding experience, delivering value from day one.

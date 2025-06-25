@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts"]
+  },
+  "include": ["./**/*.ts"]
+}
