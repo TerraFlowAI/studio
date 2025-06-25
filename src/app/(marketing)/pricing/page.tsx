@@ -324,10 +324,36 @@ export default function PricingPage() {
             viewport={{ once: true, amount: 0.2 }}
             variants={sectionVariants}
         >
-           <div className="flex justify-center">
-             <div className="w-full max-w-2xl">
-                <ContactFormPricing />
-             </div>
+           <div className="grid lg:grid-cols-2 gap-12 items-center">
+               <div className="text-center lg:text-left">
+                    <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 mb-4">
+                        Ready for a <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Custom Solution</span>?
+                    </h2>
+                    <p className="text-lg text-slate-600 mb-8">
+                        Let's build a plan tailored to your brokerage or development team. Get a personalized demo and a custom ROI analysis to see how TerraFlowAI can transform your business at scale.
+                    </p>
+                    <ul className="space-y-3 text-left max-w-md mx-auto lg:mx-0">
+                        <li className="flex items-center gap-3">
+                            <CheckCircle className="h-6 w-6 text-green-500 shrink-0" />
+                            <span className="text-slate-700 font-medium">Unlimited Users & Properties</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                            <CheckCircle className="h-6 w-6 text-green-500 shrink-0" />
+                            <span className="text-slate-700 font-medium">Dedicated Account Manager</span>
+                        </li>
+                         <li className="flex items-center gap-3">
+                            <CheckCircle className="h-6 w-6 text-green-500 shrink-0" />
+                            <span className="text-slate-700 font-medium">Custom Workflows & Integrations</span>
+                        </li>
+                         <li className="flex items-center gap-3">
+                            <CheckCircle className="h-6 w-6 text-green-500 shrink-0" />
+                            <span className="text-slate-700 font-medium">On-site & Virtual Team Training</span>
+                        </li>
+                    </ul>
+               </div>
+               <div>
+                  <ContactFormPricing />
+               </div>
            </div>
         </motion.div>
       </div>
