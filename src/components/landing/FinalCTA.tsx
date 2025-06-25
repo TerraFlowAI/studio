@@ -152,9 +152,7 @@ export function FinalCTA() {
                       )} />
                       <Button type="submit" className="w-full text-lg py-6 bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md hover:shadow-lg transition-shadow" disabled={isLoading}>
                         {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
-                        <span className="animate-text-shimmer">
-                          {isLoading ? "Submitting..." : "Schedule Your Demo"}
-                        </span>
+                        {isLoading ? "Submitting..." : "Submit Request"}
                       </Button>
                     </form>
                   </Form>
