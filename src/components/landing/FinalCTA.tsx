@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, Loader2, Send } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import Confetti from 'react-confetti';
 
 // Form Validation Schema
 const formSchema = z.object({
@@ -75,7 +76,12 @@ export function FinalCTA() {
     try {
       const functionUrl = process.env.NEXT_PUBLIC_SUPABASE_CONTACT_FORM_URL;
       if (!functionUrl) {
-        throw new Error("The contact form URL is not configured. Please contact support.");
+        toast({
+          variant: "destructive",
+          title: "Configuration Error",
+          description: "The contact form URL is not configured. Please contact support.",
+        });
+        return;
       }
       
       const response = await fetch(functionUrl, {
@@ -87,11 +93,16 @@ export function FinalCTA() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        let errorMessage = errorData?.error || `Request failed with status ${response.status}.`;
-        
+        let errorMessage = `Request failed with status ${response.status}.`;
         if (response.status === 404) {
             errorMessage = "Submission endpoint not found (404). Please ensure the Supabase function is deployed and the URL in your environment variables is correct.";
+        } else {
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorMessage;
+            } catch (e) {
+                // Ignore if response is not JSON
+            }
         }
         
         toast({
@@ -99,7 +110,7 @@ export function FinalCTA() {
           title: "Submission Failed",
           description: errorMessage,
         });
-        return; // Exit gracefully instead of throwing
+        return; 
       }
 
       toast({
@@ -158,11 +169,20 @@ export function FinalCTA() {
               </CardHeader>
               <CardContent>
                 {isSubmitted ? (
-                  <div className="flex flex-col items-center justify-center text-center h-96">
-                    <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
-                    <h3 className="text-2xl font-bold text-slate-800">Thank You!</h3>
-                    <p className="text-slate-600 mt-2">We've received your request and will be in touch shortly to schedule your demo.</p>
-                  </div>
+                  <>
+                    <Confetti recycle={false} numberOfPieces={250} />
+                    <div className="flex flex-col items-center justify-center text-center h-96">
+                      <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
+                      <h3 className="text-2xl font-bold text-slate-800">Thank You!</h3>
+                      <p className="text-slate-600 mt-2 mb-6">We've received your request and will be in touch shortly.</p>
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsSubmitted(false)}
+                      >
+                        Submit Another Request
+                      </Button>
+                    </div>
+                  </>
                 ) : (
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
