@@ -104,13 +104,13 @@ export function CoreServicesGrid() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 md:mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
-            Stop Drowning in Tasks.{" "}
+            AI-Powered Real Estate,{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">
-              Start Dominating Your Market.
+              Built for the Indian Market.
             </span>
           </h2>
           <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
-            Transform your real estate business with our end-to-end AI automation platform, designed specifically for the Indian market. Experience the future of PropTech with tools that streamline every step, from lead generation to RERA-compliant closing.
+            From AI lead scoring to RERA-compliant documentation, our end-to-end platform automates your workflow, saving you time and helping you close more deals.
           </p>
         </div>
         <motion.div
