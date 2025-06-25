@@ -1,81 +1,67 @@
-// supabase/functions/contact-form-handler/index.ts
+// /supabase/functions/contact-form-handler/index.ts
 
-import { createClient } from '@supabase/supabase-js'
+import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
+// FIX: Using the correct URL-based import for Deno
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// CORS headers to allow requests from your website.
-// It's recommended to replace '*' with your actual website domain for production.
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
-
-// Define the expected shape of the incoming data from the contact form
-interface Lead {
-  firstName: string;
-  lastName: string;
-  email: string;
-  companyName?: string;
-  companySize?: string;
-  message?: string;
-}
-
-console.log(`Function "contact-form-handler" is ready to receive requests.`);
-
-Deno.serve(async (req) => {
-  // This is needed to handle CORS preflight requests.
+// This function will be triggered by a POST request from the landing page form.
+serve(async (req) => {
+  // 1. Handle CORS Preflight request
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: { 
+      'Access-Control-Allow-Origin': '*', // Or your specific website domain
+      'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    } })
   }
 
   try {
-    // Create a Supabase client with the service_role key to bypass RLS
-    const supabaseClient = createClient(
+    // 2. Create a Supabase admin client to securely insert data
+    const supabaseAdmin = createClient(
+      // These are Environment Variables that must be set in your Supabase project's Function settings
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // Parse the request body as JSON
-    const leadData: Lead = await req.json();
+    // 3. Get the data from the request body
+    const { firstName, lastName, email, companyName, companySize, message } = await req.json()
 
-    // Basic validation: ensure the email field is present.
-    if (!leadData.email) {
-        return new Response(JSON.stringify({ error: 'Email is a required field.' }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 400, // Bad Request
-        });
+    // 4. Validate the incoming data (basic validation)
+    if (!email || !firstName || !lastName) {
+      return new Response(JSON.stringify({ error: 'Missing required fields: firstName, lastName, and email.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
 
-    // Insert the validated data into the 'WebsiteLeads' table.
-    // Note: Supabase column names are snake_case.
-    const { data, error } = await supabaseClient
+    // 5. Insert the data into the 'WebsiteLeads' table
+    const { data, error } = await supabaseAdmin
       .from('WebsiteLeads')
       .insert({
-        first_name: leadData.firstName,
-        last_name: leadData.lastName,
-        email: leadData.email,
-        company_name: leadData.companyName,
-        company_size: leadData.companySize,
-        message: leadData.message,
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        company_name: companyName,
+        company_size: companySize,
+        message: message,
+        status: 'New' // Set the initial status
       })
       .select()
-      .single(); // Use .single() to get the inserted row back.
+      .single()
 
-    // Handle any potential database errors during insertion.
     if (error) {
-      console.error('Supabase Database Error:', error.message);
-      throw new Error(error.message); // This will be caught by the outer catch block.
+      throw error
     }
-    
-    // Return a success response with the inserted data.
-    return new Response(JSON.stringify({ data }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200, // OK
+
+    // 6. Return a success response
+    return new Response(JSON.stringify({ success: true, leadId: data.id }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 200,
     })
-  } catch (err) {
-    // Return a generic error response if anything goes wrong.
-    return new Response(JSON.stringify({ error: err.message }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500, // Internal Server Error
+  } catch (error) {
+    // 7. Return an error response
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 500,
     })
   }
 })

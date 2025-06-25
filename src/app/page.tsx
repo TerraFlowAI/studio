@@ -1,5 +1,5 @@
+
 import { Hero } from "@/components/landing/Hero";
-import { LandingPageNavigation } from "@/components/layout/LandingPageNavigation";
 import { FeatureShowcase } from "@/components/landing/FeatureShowcase";
 import { CoreServicesGrid } from "@/components/landing/CoreServicesGrid";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
@@ -10,6 +10,11 @@ import { cn } from "@/lib/utils";
 import RoiCalculator from "@/components/landing/RoiCalculator";
 import { TrustAndSocialProof } from "@/components/landing/TrustAndSocialProof";
 import { ThreeStepProcess } from "@/components/landing/ThreeStepProcess";
+import dynamic from 'next/dynamic';
+
+const LandingPageNavigation = dynamic(() =>
+  import('@/components/layout/LandingPageNavigation').then(mod => mod.LandingPageNavigation)
+);
 
 const inter = Inter({
   subsets: ['latin'],
