@@ -209,12 +209,13 @@ export const Hero = () => {
   ];
 
   const headlineJsx = (
-    <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-800 mb-2 leading-tight">
+    // Responsive headline size
+    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-800 mb-2 leading-tight">
       <span className="block">
         {STATIC_HEADLINE_PART}
       </span>
       <span
-        className={`block text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-200 min-h-[5rem] md:min-h-[6rem] lg:min-h-[7rem]`}
+        className={`block text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-200 min-h-[4rem] sm:min-h-[5rem] md:min-h-[6rem] lg:min-h-[7rem]`}
       >
         {displayedAnimatedText}
         {((isTypingAnimationPaused && TYPING_PHRASES[currentPhraseIndex] && subIndex === TYPING_PHRASES[currentPhraseIndex].length && !isDeleting) ||
@@ -233,7 +234,7 @@ export const Hero = () => {
     <section
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-white to-teal-50 overflow-hidden pt-16"
+      className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-white to-teal-50 overflow-hidden pt-24 pb-12 sm:pt-16"
       data-section-view="hero"
     >
       <Particles
@@ -269,7 +270,7 @@ export const Hero = () => {
 
           {headlineJsx}
 
-          <p className={`text-xl md:text-2xl text-gray-600 mb-10 max-w-4xl mx-auto leading-relaxed transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-600`}>
+          <p className={`text-base sm:text-lg md:text-xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-600`}>
             Elevate your real estate business with TerraFlow's AI automation. Engage leads 24/7, streamline marketing, and close more deals.
           </p>
 
@@ -279,14 +280,14 @@ export const Hero = () => {
               return (
                 <div
                   key={index}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-500 ${
+                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border transition-all duration-500 ${
                     index === currentFeature
                       ? 'bg-teal-100 border-teal-300 text-teal-700 scale-105'
                       : 'bg-white/50 border-gray-200 text-gray-500 scale-95'
                   }`}
                 >
                   <Icon className={`w-4 h-4 ${index === currentFeature ? 'animate-pulse' : ''}`} />
-                  <span className="text-sm font-medium hidden sm:block">{feature.text}</span>
+                  <span className="text-xs sm:text-sm font-medium hidden sm:block">{feature.text}</span>
                 </div>
               );
             })}
@@ -295,7 +296,7 @@ export const Hero = () => {
           <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-1000`}>
             <Button
               size="lg"
-              className="group bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95"
+              className="group bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95"
               data-cta-click="hero-demo-request"
             >
               <span className="flex items-center gap-2">
@@ -306,7 +307,7 @@ export const Hero = () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-primary text-primary dark:text-white hover:bg-primary hover:text-primary-foreground px-8 py-4 text-lg font-semibold rounded-lg"
+              className="border-primary text-primary dark:text-white hover:bg-primary hover:text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-lg"
               data-cta-click="hero-strategic-call"
             >
               Book Free Strategic Call
@@ -322,29 +323,29 @@ export const Hero = () => {
             }}
             className={`relative transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-1200`}
           >
-            <div className="bg-slate-800 rounded-2xl shadow-2xl max-w-7xl mx-auto hover:shadow-3xl transition-all duration-500 group overflow-hidden animate-moving-dashboard-border">
+            <div className="bg-slate-800 rounded-xl sm:rounded-2xl shadow-2xl max-w-full sm:max-w-7xl mx-auto hover:shadow-3xl transition-all duration-500 group overflow-hidden animate-moving-dashboard-border">
 
-              <div className="bg-slate-800 rounded-t-2xl overflow-hidden relative"> {/* Main container background */}
-                <div className="flex items-center justify-between p-4 border-b border-slate-700">
-                  <div className="flex items-center gap-3">
-                    <div className="flex gap-2">
-                      <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                      <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                      <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+              <div className="bg-slate-800 rounded-t-xl sm:rounded-t-2xl overflow-hidden relative"> {/* Main container background */}
+                <div className="flex items-center justify-between p-2 sm:p-4 border-b border-slate-700">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex gap-1.5 sm:gap-2">
+                      <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-400 rounded-full"></div>
+                      <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-yellow-400 rounded-full"></div>
+                      <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 rounded-full"></div>
                     </div>
-                    <div className="text-white font-bold text-lg flex items-center gap-2">
-                      <div className="w-8 h-8 bg-gradient-to-r from-teal-500 to-blue-500 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">TF</span>
+                    <div className="text-white font-bold text-sm sm:text-lg flex items-center gap-2">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-teal-500 to-blue-500 rounded-md sm:rounded-lg flex items-center justify-center">
+                        <span className="text-white font-bold text-xs sm:text-sm">TF</span>
                       </div>
-                      TerraFlow
+                      <span className="hidden sm:inline">TerraFlow</span>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-400 font-mono">dashboard.terraflow.ai</div>
-                  <div className="flex items-center gap-4">
+                  <div className="text-xs text-gray-400 font-mono hidden md:block">dashboard.terraflow.ai</div>
+                  <div className="flex items-center gap-2 sm:gap-4">
                     <div className="flex items-center gap-2">
                       <Bell className="w-4 h-4 text-gray-400" />
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-white" />
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                        <User className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                       </div>
                     </div>
                     {aiProcessing ? (
@@ -352,14 +353,14 @@ export const Hero = () => {
                     ) : (
                       <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     )}
-                    <span className="text-xs text-green-400">AI Active</span>
+                    <span className="text-xs text-green-400 hidden sm:inline">AI Active</span>
                   </div>
                 </div>
 
-                <div className="flex h-[650px]"> {/* Increased height */}
+                <div className="flex h-[450px] sm:h-[550px] md:h-[650px]"> {/* Responsive height */}
 
-                  {/* Sidebar - Neomorphism */}
-                  <div className="w-64 bg-slate-800 border-r border-slate-700 p-4"> 
+                  {/* Sidebar - Neomorphism - Hidden on mobile */}
+                  <div className="w-64 bg-slate-800 border-r border-slate-700 p-4 hidden sm:flex flex-col"> 
                     <div className="space-y-2">
                       {sidebarItems.map((item) => {
                         const Icon = item.icon;
@@ -391,19 +392,19 @@ export const Hero = () => {
                   </div>
 
                   {/* Main Dashboard Content Area - Neomorphism */}
-                  <div className="flex-1 p-6 space-y-6 bg-slate-700"> 
+                  <div className="flex-1 p-2 sm:p-6 space-y-4 sm:space-y-6 bg-slate-700"> 
 
                     {/* KPI Cards - Neomorphism */}
-                    <div className="grid grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
                       {currentKpiData.map((kpi, index) => (
                         <div
                           key={index}
-                          className={`bg-slate-700 rounded-lg p-4 shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)] transition-all duration-500 ${ 
+                          className={`bg-slate-700 rounded-lg p-2 sm:p-4 shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)] transition-all duration-500 ${ 
                             clickedItem === 'kpi-card' ? 'shadow-[-2px_-2px_5px_rgba(100,116,139,0.25),_2px_2px_5px_rgba(15,23,42,0.35)] scale-95' : 'hover:shadow-[-3px_-3px_7px_rgba(100,116,139,0.25),_3px_3px_7px_rgba(15,23,42,0.35)]' 
                           }`}
                         >
-                          <div className="text-xs text-gray-300 mb-1">{kpi.label}</div>
-                          <div className="text-xl font-bold text-white mb-1">{kpi.value}</div>
+                          <div className="text-xs text-gray-300 mb-1 truncate">{kpi.label}</div>
+                          <div className="text-lg sm:text-xl font-bold text-white mb-1">{kpi.value}</div>
                           <div className="flex items-center gap-1">
                             <TrendingUp className="w-3 h-3 text-green-300" />
                             <span className="text-xs text-green-300">{kpi.change}</span>
@@ -412,17 +413,17 @@ export const Hero = () => {
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
 
-                      <div className="col-span-2">
+                      <div className="lg:col-span-2">
                         {/* Market Analysis Panel - Neomorphism */}
-                        <div className={`bg-slate-700 rounded-lg p-4 h-48 shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)] transition-all duration-500 ${ 
+                        <div className={`bg-slate-700 rounded-lg p-2 sm:p-4 h-48 shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)] transition-all duration-500 ${ 
                           clickedItem === 'chart-area' ? 'shadow-[-2px_-2px_5px_rgba(100,116,139,0.25),_2px_2px_5px_rgba(15,23,42,0.35)] scale-95' : ''
                         }`}>
-                          <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center justify-between mb-2 sm:mb-4">
                             <div className="flex items-center gap-2">
-                              <PieChart className="w-5 h-5 text-blue-300" />
-                              <span className="text-white font-semibold">Market Trends</span>
+                              <PieChart className="w-4 sm:w-5 h-4 sm:h-5 text-blue-300" />
+                              <span className="text-white font-semibold text-sm sm:text-base">Market Trends</span>
                             </div>
                             <div className={`flex items-center gap-1 text-sm ${marketTrend >= 0 ? 'text-green-300' : 'text-red-300'}`}>
                               <TrendingUp className={`w-4 h-4 ${marketTrend < 0 ? 'rotate-180' : ''} transition-transform duration-500`} />
@@ -452,12 +453,12 @@ export const Hero = () => {
                       </div>
 
                       {/* AI Insights Panel - Neomorphism */}
-                      <div className="bg-slate-700 rounded-lg p-4 shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)]"> 
+                      <div className="bg-slate-700 rounded-lg p-2 sm:p-4 shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)]"> 
                         <div className="flex items-center gap-2 mb-3">
                           <Target className="w-5 h-5 text-orange-300" />
-                          <span className="text-white font-semibold">AI Insights</span>
+                          <span className="text-white font-semibold text-sm sm:text-base">AI Insights</span>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-2 sm:space-y-3">
                           <div className="bg-teal-600/30 rounded p-2 shadow-[-3px_-3px_6px_rgba(100,116,139,0.15),_3px_3px_6px_rgba(15,23,42,0.25)]"> 
                             <div className="text-xs text-teal-200 font-semibold">High Priority</div>
                             <div className="text-xs text-gray-300">Bandra West showing 15% price surge</div>
@@ -475,75 +476,32 @@ export const Hero = () => {
                     </div>
 
                     {/* Property Showcase - Neomorphism */}
-                    <div className="grid grid-cols-3 gap-4">
-                        {/* Property Card 1 */}
-                        <div className={`bg-slate-700 rounded-lg overflow-hidden shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)] transition-all duration-500 relative group ${ 
-                          clickedItem === 'property-card' ? 'shadow-[-2px_-2px_5px_rgba(100,116,139,0.25),_2px_2px_5px_rgba(15,23,42,0.35)] scale-95' : ''
-                        }`}>
-                          <Image 
-                            src="https://placehold.co/400x250.png"
-                            alt="Luxury Villa"
-                            width={400}
-                            height={250}
-                            className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-lg" 
-                            data-ai-hint="luxury villa"
-                          />
-                          <div className="absolute top-2 left-2 bg-slate-600 rounded px-2 py-1 shadow-[-2px_-2px_4px_rgba(100,116,139,0.2),_2px_2px_4px_rgba(15,23,42,0.3)]"> 
-                            <span className="text-xs font-bold text-white/90">Premium</span>
-                          </div>
-                          <div className="p-3">
-                            <h4 className="text-sm font-semibold text-white truncate">Luxury Villa, Juhu</h4>
-                            <p className="text-xs text-gray-300">₹8.5 Cr • 4 BHK</p>
-                            <div className="flex items-center justify-between mt-1">
-                              <span className="text-xs text-green-300">AI Score: 92%</span>
-                              <Camera className="w-3 h-3 text-gray-400" />
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
+                        {/* Property Cards - Simplified for mobile */}
+                        {[
+                          { title: "Luxury Villa, Juhu", price: "₹8.5 Cr • 4 BHK", score: 92, scoreColor: "text-green-300", hint: "luxury villa" },
+                          { title: "Modern Apartment", price: "₹3.2 Cr • 3 BHK", score: 87, scoreColor: "text-blue-300", hint: "apartment building" },
+                          { title: "Commercial Space", price: "₹12 Cr • Office", score: 95, scoreColor: "text-purple-300", hint: "commercial building" }
+                        ].map((prop, index) => (
+                          <div key={index} className={`bg-slate-700 rounded-lg overflow-hidden shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)] transition-all duration-500 relative group ${clickedItem === 'property-card' ? 'shadow-[-2px_-2px_5px_rgba(100,116,139,0.25),_2px_2px_5px_rgba(15,23,42,0.35)] scale-95' : ''} ${index === 2 ? 'hidden sm:block' : ''}`}>
+                            <Image 
+                              src={`https://placehold.co/400x250.png`}
+                              alt={prop.title}
+                              width={400}
+                              height={250}
+                              className="w-full h-24 sm:h-36 object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-lg" 
+                              data-ai-hint={prop.hint}
+                            />
+                            <div className="p-2 sm:p-3">
+                              <h4 className="text-xs sm:text-sm font-semibold text-white truncate">{prop.title}</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-300">{prop.price}</p>
+                              <div className="flex items-center justify-between mt-1">
+                                <span className={`text-[10px] sm:text-xs ${prop.scoreColor}`}>AI: {prop.score}%</span>
+                                <Camera className="w-3 h-3 text-gray-400" />
+                              </div>
                             </div>
                           </div>
-                        </div>
-                         {/* Property Card 2 */}
-                        <div className="bg-slate-700 rounded-lg overflow-hidden shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)] relative group">
-                           <Image 
-                            src="https://placehold.co/400x250.png"
-                            alt="Modern Apartment"
-                            width={400}
-                            height={250}
-                            className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-lg"
-                            data-ai-hint="apartment building"
-                          />
-                          <div className="absolute top-2 left-2 bg-slate-600 rounded px-2 py-1 shadow-[-2px_-2px_4px_rgba(100,116,139,0.2),_2px_2px_4px_rgba(15,23,42,0.3)]">
-                            <span className="text-xs font-bold text-white/90">Featured</span>
-                          </div>
-                          <div className="p-3">
-                            <h4 className="text-sm font-semibold text-white truncate">Modern Apartment</h4>
-                            <p className="text-xs text-gray-300">₹3.2 Cr • 3 BHK</p>
-                            <div className="flex items-center justify-between mt-1">
-                              <span className="text-xs text-blue-300">AI Score: 87%</span>
-                               <Camera className="w-3 h-3 text-gray-400" />
-                            </div>
-                          </div>
-                        </div>
-                        {/* Property Card 3 */}
-                        <div className="bg-slate-700 rounded-lg overflow-hidden shadow-[-5px_-5px_10px_rgba(100,116,139,0.25),_5px_5px_10px_rgba(15,23,42,0.35)] relative group">
-                           <Image 
-                            src="https://placehold.co/400x250.png"
-                            alt="Commercial Space"
-                            width={400}
-                            height={250}
-                            className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-lg"
-                            data-ai-hint="commercial building"
-                          />
-                           <div className="absolute top-2 left-2 bg-slate-600 rounded px-2 py-1 shadow-[-2px_-2px_4px_rgba(100,116,139,0.2),_2px_2px_4px_rgba(15,23,42,0.3)]">
-                            <span className="text-xs font-bold text-white/90">New</span>
-                          </div>
-                          <div className="p-3">
-                            <h4 className="text-sm font-semibold text-white truncate">Commercial Space</h4>
-                            <p className="text-xs text-gray-300">₹12 Cr • Office</p>
-                            <div className="flex items-center justify-between mt-1">
-                              <span className="text-xs text-purple-300">AI Score: 95%</span>
-                               <Camera className="w-3 h-3 text-gray-400" />
-                            </div>
-                          </div>
-                        </div>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -559,29 +517,28 @@ export const Hero = () => {
                   <div className={`absolute inset-0 bg-teal-400 rounded-full ${clickedItem ? 'animate-ping' : ''}`}></div>
                 </div>
 
-                <div className="border-t border-slate-700 px-6 py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-xs text-gray-400">
-                    <span>AI Processing: {aiProcessing ? 'Active' : 'Standby'}</span>
-                    <span>•</span>
-                    <span>Last Updated: Just now</span>
-                    <span>•</span>
-                    <span>{activeLeads} Active Leads</span>
+                <div className="border-t border-slate-700 px-2 sm:px-6 py-2 sm:py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-gray-400">
+                    <span>AI: {aiProcessing ? 'Active' : 'Standby'}</span>
+                    <span className="hidden sm:inline">•</span>
+                    <span className="hidden sm:inline">Last Updated: Just now</span>
+                    <span className="hidden md:inline">•</span>
+                    <span className="hidden md:inline">{activeLeads} Active Leads</span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 sm:gap-4">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                      <span className="text-xs text-green-400">Real-time sync</span>
+                      <span className="text-[10px] sm:text-xs text-green-400">Real-time sync</span>
                     </div>
-                    <div className="text-xs text-gray-400">TerraFlow v2.1</div>
                   </div>
                 </div>
               </div>
             </div>
           </motion.div>
           {/* Trusted By Section - Modified for infinite slider and integrated into Hero background */}
-          <div className="mt-20 w-full max-w-5xl mx-auto z-10 relative"> {/* Added z-10 to ensure it's above background glows */}
-              <h3 className="text-center text-gray-600 text-sm font-medium mb-6 flex items-center justify-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-teal-600" /> {/* Changed primary to a specific teal shade */}
+          <div className="mt-12 sm:mt-20 w-full max-w-5xl mx-auto z-10 relative"> {/* Added z-10 to ensure it's above background glows */}
+              <h3 className="text-center text-gray-600 text-xs sm:text-sm font-medium mb-4 sm:mb-6 flex items-center justify-center gap-2">
+                <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" /> {/* Changed primary to a specific teal shade */}
                 Trusted by AI-forward real estate leaders
               </h3>
               {/* Infinite Slider Container */}
@@ -589,7 +546,7 @@ export const Hero = () => {
                 <div className="flex animate-scroll-companies whitespace-nowrap">
                   {/* Duplicate the list to create the infinite loop */}
                   {[...trustedByCompanies, ...trustedByCompanies].map((company, index) => (
-                    <span key={index} className="text-gray-500 text-lg font-semibold hover:text-gray-700 transition-colors flex-shrink-0 mx-4 md:mx-8 lg:mx-12">
+                    <span key={index} className="text-gray-500 text-base sm:text-lg font-semibold hover:text-gray-700 transition-colors flex-shrink-0 mx-4 md:mx-8 lg:mx-12">
                       {company}
                     </span>
                   ))}
