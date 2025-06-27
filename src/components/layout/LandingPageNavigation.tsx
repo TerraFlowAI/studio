@@ -104,14 +104,14 @@ export function LandingPageNavigation() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                  <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
+                   <NavigationMenuLink asChild>
                     <Link href="/pricing" className={navigationMenuTriggerStyle()}>
                       Pricing
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
+                   <NavigationMenuLink asChild>
                     <Link href="/about" className={navigationMenuTriggerStyle()}>
                       Company
                     </Link>
@@ -149,17 +149,19 @@ export function LandingPageNavigation() {
 }
 
 const DropdownListItem: React.FC<{ href: string; title: string; children?: React.ReactNode; icon: React.ElementType }> = ({ href, title, children, icon: Icon }) => (
-  <Link href={href} className="group block rounded-lg p-3 text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-800">
-    <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white shrink-0">
-            <Icon className="h-5 w-5" />
-        </div>
-        <div>
-            <p className="font-semibold text-slate-900 dark:text-white">{title}</p>
-            {children && <p className="text-slate-500 dark:text-slate-400 text-xs leading-snug">{children}</p>}
-        </div>
-    </div>
-  </Link>
+  <NavigationMenuLink asChild>
+    <Link href={href} className="group block rounded-lg p-3 text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-800">
+      <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white shrink-0">
+              <Icon className="h-5 w-5" />
+          </div>
+          <div>
+              <p className="font-semibold text-slate-900 dark:text-white">{title}</p>
+              {children && <p className="text-slate-500 dark:text-slate-400 text-xs leading-snug">{children}</p>}
+          </div>
+      </div>
+    </Link>
+  </NavigationMenuLink>
 );
 
 
