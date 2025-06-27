@@ -68,10 +68,10 @@ export function TrustAndSocialProof() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">
-            Trusted by the Best, Built for the Bold
+            Built on a Foundation of <span className="animate-text-shimmer bg-gradient-to-r from-teal-500 to-blue-600">Trust & Security</span>
           </h2>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-            Our commitment to excellence and security is reflected in our certifications and the trust our partners place in us.
+            Our commitment to excellence is reflected in our certifications, ensuring your business operates on a secure and compliant platform.
           </p>
         </motion.div>
         
