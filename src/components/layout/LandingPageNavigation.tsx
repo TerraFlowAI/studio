@@ -1,174 +1,199 @@
-
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
-import { cn } from '@/lib/utils';
-import { Logo } from '@/components/ui/Logo';
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/Logo";
+import { Menu, X, Users, Code, Building, Zap, BarChart3, PenSquare } from "lucide-react";
 
-export const LandingPageNavigation = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [hidden, setHidden] = useState(false);
+const navLinks = [
+  { name: "Features", href: "#features" },
+  { name: "Solutions", href: "#solutions", dropdown: true },
+  { name: "Pricing", href: "/pricing" },
+  { name: "Company", href: "/about" },
+];
+
+const solutionsDropdownLinks = {
+  byRole: [
+    { name: "For Agents", description: "AI tools to boost individual agent productivity.", href: "#", icon: Users },
+    { name: "For Developers", description: "Streamline project management and sales cycles.", href: "#", icon: Building },
+    { name: "For Brokerages", description: "Scale your business with an end-to-end OS.", href: "#", icon: Code },
+  ],
+  byService: [
+    { name: "TerraLead™", href: "#", icon: Zap },
+    { name: "TerraValuate™", href: "#", icon: BarChart3 },
+    { name: "TerraScribe™", href: "#", icon: PenSquare },
+  ],
+};
+
+
+export function LandingPageNavigation() {
   const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hoveredSolution, setHoveredSolution] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious();
-    if (latest > previous && latest > 150) {
-      setHidden(true);
-    } else {
-      setHidden(false);
-    }
+    const previous = scrollY.getPrevious() ?? 0;
+    setHidden(latest > previous && latest > 150);
+    setScrolled(latest > 50);
   });
-
-  const solutionsLinks = [
-    { title: "For Agents", href: "/solutions/agents", description: "Tailored AI tools for individual real estate agents." },
-    { title: "For Developers", href: "/solutions/developers", description: "Solutions for property developers and builders." },
-    { title: "For Brokerages", href: "/solutions/brokerages", description: "Platform features for real estate brokerage firms." },
-  ];
-
-  const platformLinks = [
-    { title: "TerraLead™ AI Suite", href: "/platform/terralead", description: "Advanced AI for lead scoring and nurturing." },
-    { title: "TerraValuate™ Pro", href: "/platform/terravaluate", description: "Precision property valuation with AI." },
-    { title: "TerraScribe™", href: "/platform/terrascribe", description: "AI-powered content generation for listings." },
-    { title: "MarketIntel™", href: "/platform/marketintel", description: "Real-time market analysis and insights." },
-    { title: "SmartFlow™", href: "/platform/smartflow", description: "Automate your real estate workflows." },
-  ];
-
-  const resourcesLinks = [
-    { title: "Blog", href: "/blog", description: "Latest articles and insights from TerraFlow." },
-    { title: "Case Studies", href: "/case-studies", description: "Success stories from our clients." },
-    { title: "Webinars", href: "/webinars", description: "Join our live sessions and learn more." },
-  ];
-
-  const navItemBaseClass = "bg-transparent hover:bg-slate-100 focus:bg-slate-100 text-foreground data-[active]:bg-slate-100/50 data-[state=open]:bg-slate-100/50";
+  
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
-    <motion.nav
-      variants={{
-        visible: { y: 0 },
-        hidden: { y: "-100%" },
-      }}
-      animate={hidden ? "hidden" : "visible"}
-      transition={{ duration: 0.35, ease: "easeInOut" }}
-      className="fixed top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border/60"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Logo />
-
-          <div className="hidden lg:flex items-center space-x-1">
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className={navItemBaseClass}>
-                    Solutions
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                      {solutionsLinks.map((component) => (
-                        <ListItem key={component.title} title={component.title} href={component.href}>
-                          {component.description}
-                        </ListItem>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), navItemBaseClass)}>
-                    <Link href="/pricing">
-                      Pricing
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-
-                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), navItemBaseClass)}>
-                    <Link href="/company">
-                      Company
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+    <>
+      <motion.header
+        variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
+        animate={hidden ? "hidden" : "visible"}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className={cn(
+          "fixed top-0 z-50 w-full transition-all duration-300",
+          scrolled ? "border-b border-slate-200/50 bg-background/80 backdrop-blur-lg" : "bg-transparent"
+        )}
+      >
+        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Left: Logo */}
+          <div className="flex-shrink-0">
+            <Logo href="/" />
           </div>
 
-          <div className="hidden lg:flex items-center space-x-4">            
-            <Button asChild variant="ghost" className="text-foreground hover:bg-slate-100">
+          {/* Center: Desktop Nav */}
+          <nav className="hidden md:flex items-center space-x-2">
+            {navLinks.map((link) => (
+              <div
+                key={link.name}
+                onMouseEnter={() => link.dropdown && setHoveredSolution(true)}
+                onMouseLeave={() => link.dropdown && setHoveredSolution(false)}
+                className="relative"
+              >
+                <Link href={link.href} className="group relative px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                    {link.name}
+                    <span className="absolute bottom-0 left-0 h-0.5 w-full origin-center scale-x-0 bg-primary transition-transform group-hover:scale-x-100"></span>
+                </Link>
+                {link.dropdown && (
+                  <AnimatePresence>
+                    {hoveredSolution && <SolutionsDropdown />}
+                  </AnimatePresence>
+                )}
+              </div>
+            ))}
+          </nav>
+
+          {/* Right: CTAs */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Button asChild variant="ghost" className="text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white">
               <Link href="/login">Login</Link>
             </Button>
-            <Button className="bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md hover:shadow-lg transition-shadow">
-                Request a Demo
+            <Button asChild className="group relative overflow-hidden bg-slate-900 text-white shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl dark:bg-slate-800">
+               <Link href="#contact">
+                    <div className="absolute inset-0 w-0 bg-primary transition-all duration-[250ms] ease-out group-hover:w-full"></div>
+                    <span className="relative">Request a Demo</span>
+                </Link>
             </Button>
           </div>
 
-          <div className="lg:hidden flex items-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-foreground hover:text-primary ml-2"
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {/* Mobile: Hamburger Menu */}
+          <div className="md:hidden">
+            <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
+              <Menu className="h-6 w-6" />
             </Button>
           </div>
         </div>
+      </motion.header>
 
-        {isOpen && (
-          <div className="lg:hidden py-4 border-t border-border">
-            <div className="space-y-2 px-2">
-              <Link href="#solutions" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Solutions</Link>
-              <Link href="/pricing" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Pricing</Link>
-              <Link href="/company" className={cn("block px-3 py-2 rounded-md", navItemBaseClass)} onClick={() => setIsOpen(false)}>Company</Link>
-              <Button asChild variant="ghost" className="w-full justify-start px-3 py-2 text-foreground hover:bg-accent hover:text-accent-foreground">
-                  <Link href="/login" onClick={() => setIsOpen(false)}>Login</Link>
-              </Button>
-              <Button className="w-full mt-2 bg-gradient-to-r from-teal-500 to-blue-500 text-white">
-                Request a Demo
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-    </motion.nav>
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && <MobileMenu onDismiss={toggleMobileMenu} />}
+      </AnimatePresence>
+    </>
   );
+}
+
+const SolutionsDropdown = () => (
+    <motion.div 
+        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-screen max-w-md"
+    >
+        <div className="overflow-hidden rounded-xl bg-white/80 shadow-lg ring-1 ring-slate-900/5 backdrop-blur-lg dark:bg-slate-900/80 dark:ring-white/10">
+            <div className="grid grid-cols-2 gap-4 p-4">
+                <div className="space-y-1">
+                    <h3 className="font-semibold text-sm text-primary">By Role</h3>
+                    {solutionsDropdownLinks.byRole.map(({ name, description, href, icon: Icon }) => (
+                       <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
+                    ))}
+                </div>
+                 <div className="space-y-1">
+                    <h3 className="font-semibold text-sm text-primary">By Service</h3>
+                    {solutionsDropdownLinks.byService.map(({ name, href, icon: Icon }) => (
+                       <DropdownListItem key={name} href={href} title={name} icon={Icon} />
+                    ))}
+                </div>
+            </div>
+        </div>
+    </motion.div>
+);
+
+const DropdownListItem: React.FC<{ href: string; title: string; children?: React.ReactNode; icon: React.ElementType }> = ({ href, title, children, icon: Icon }) => (
+  <Link href={href} className="group block rounded-lg p-3 text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-800">
+    <div className="flex items-center gap-3">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+            <Icon className="h-5 w-5" />
+        </div>
+        <div>
+            <p className="font-semibold text-slate-900 dark:text-white">{title}</p>
+            {children && <p className="text-slate-500 dark:text-slate-400">{children}</p>}
+        </div>
+    </div>
+  </Link>
+);
+
+
+const mobileMenuVariants = {
+  hidden: { opacity: 0, y: "-20%" },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+  exit: { opacity: 0, y: "-20%", transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } },
 };
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
+const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
+  <motion.div
+    initial="hidden"
+    animate="visible"
+    exit="exit"
+    variants={mobileMenuVariants}
+    className="fixed inset-0 z-40 h-screen w-screen bg-background/95 backdrop-blur-xl p-4 md:hidden"
+  >
+    <div className="flex h-20 items-center justify-between">
+      <Logo />
+      <Button variant="ghost" size="icon" onClick={onDismiss}>
+        <X className="h-6 w-6" />
+      </Button>
+    </div>
+    <nav className="mt-8 flex flex-col space-y-2">
+      {navLinks.map((link) => (
+        <Link 
+          key={link.name} 
+          href={link.href}
+          onClick={onDismiss}
+          className="rounded-lg px-4 py-3 text-lg font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
         >
-          <div className="text-sm font-bold leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  )
-});
-ListItem.displayName = "ListItem";
+          {link.name}
+        </Link>
+      ))}
+    </nav>
+    <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
+        <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
+            <Link href="/login" onClick={onDismiss}>Login</Link>
+        </Button>
+        <Button asChild className="w-full py-3 text-lg bg-primary text-primary-foreground hover:bg-primary/90">
+            <Link href="#contact" onClick={onDismiss}>Request a Demo</Link>
+        </Button>
+    </div>
+  </motion.div>
+);
