@@ -11,6 +11,7 @@ import RoiCalculator from "@/components/landing/RoiCalculator";
 import { TrustAndSocialProof } from "@/components/landing/TrustAndSocialProof";
 import { ThreeStepProcess } from "@/components/landing/ThreeStepProcess";
 import dynamic from 'next/dynamic';
+import { TerraChatBubble } from "@/components/chatbot/TerraChatBubble";
 
 const LandingPageNavigation = dynamic(() =>
   import('@/components/layout/LandingPageNavigation').then(mod => mod.LandingPageNavigation)
@@ -35,6 +36,7 @@ export default function LandingPage() {
         <TestimonialsSection />
         <FinalCTA />
       </main>
+      <TerraChatBubble />
       <Footer />
     </div>
   );
