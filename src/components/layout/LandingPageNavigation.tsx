@@ -78,11 +78,11 @@ export function LandingPageNavigation() {
              <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <Link href="#features" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink asChild>
+                    <Link href="#features" className={navigationMenuTriggerStyle()}>
                       Features
-                    </NavigationMenuLink>
-                  </Link>
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Solutions</NavigationMenuTrigger>
@@ -104,18 +104,18 @@ export function LandingPageNavigation() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                  <NavigationMenuItem>
-                  <Link href="/pricing" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink asChild>
+                    <Link href="/pricing" className={navigationMenuTriggerStyle()}>
                       Pricing
-                    </NavigationMenuLink>
-                  </Link>
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="/about" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink asChild>
+                    <Link href="/about" className={navigationMenuTriggerStyle()}>
                       Company
-                    </NavigationMenuLink>
-                  </Link>
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
