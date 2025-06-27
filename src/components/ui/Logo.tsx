@@ -18,7 +18,7 @@ export const Logo = ({ className, href = '/', size = 40, hideText = false, onCli
         href={href} 
         className={cn(
             "flex items-center group", 
-            layout === 'horizontal' ? 'flex-row gap-3' : 'flex-col gap-2',
+            layout === 'horizontal' ? 'flex-row gap-3' : 'flex-col gap-1',
             className
         )} 
         onClick={onClick}
