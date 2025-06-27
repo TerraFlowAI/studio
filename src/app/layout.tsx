@@ -1,4 +1,3 @@
-
 // src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
@@ -7,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 
 export const metadata: Metadata = { 
-  title: "TerraFlowAI", 
+  title: "TerraFlow", 
   description: "The AI Operating System for Modern Real Estate",
   formatDetection: {
     email: false,

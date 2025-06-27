@@ -58,7 +58,7 @@ export const Logo = ({ className, href = '/', size = 36, hideText = false, onCli
       />
       {!hideText && (
         <span className="font-bold text-xl lg:text-2xl text-foreground group-hover:text-primary/90 transition-colors">
-          TerraFlowAI
+          TerraFlow
         </span>
       )}
     </Link>
