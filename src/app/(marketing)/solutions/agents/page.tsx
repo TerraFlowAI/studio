@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 
 // --- PAGE-SPECIFIC DATA ---
@@ -66,7 +68,7 @@ const agentFeatureBlocks = [
   },
 ];
 
-const agentPricingPlans: PricingPlan[] = [
+const monthlyPlans: PricingPlan[] = [
   {
     name: "Professional",
     price: "₹9,999",
@@ -103,6 +105,45 @@ const agentPricingPlans: PricingPlan[] = [
     variant: 'default'
   },
 ];
+
+const annualPlans: PricingPlan[] = [
+    {
+    name: "Professional",
+    price: "₹8,333",
+    priceFrequency: "/month/user, billed annually",
+    description: "For individual agents and small teams looking to supercharge their productivity.",
+    features: [
+      "TerraLead™ AI Suite (Inc. 500 leads)",
+      "TerraScribe™ Content Generation",
+      "Basic SmartFlow™ Automation",
+      "Standard Analytics & Reporting",
+      "Email & Chat Support",
+    ],
+    ctaText: "Start Free Trial Annually",
+    ctaLink: "/signup?plan=professional-annual",
+    variant: 'outline'
+  },
+  {
+    name: "Business",
+    price: "₹20,833",
+    priceFrequency: "/month (inc. 5 users), billed annually",
+    description: "For growing brokerages and development teams needing advanced tools and collaboration.",
+    features: [
+      "Everything in Professional, plus:",
+      "TerraLead™ AI Suite (Inc. 2,000 leads)",
+      "TerraValuate™ Pro CMA Reports",
+      "Advanced SmartFlow™ Automation",
+      "Predictive MarketIntel™ Analytics",
+      "API Access & Basic Integrations",
+      "Priority Support",
+    ],
+    ctaText: "Start Free Trial Annually",
+    ctaLink: "/signup?plan=business-annual",
+    isPopular: true,
+    variant: 'default'
+  },
+];
+
 
 const agentTestimonials = [
     {
@@ -179,6 +220,8 @@ export default function AgentsSolutionPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isAnnual, setIsAnnual] = useState(true);
+  const plansToDisplay = isAnnual ? annualPlans : monthlyPlans;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -279,11 +322,30 @@ export default function AgentsSolutionPage() {
       <section id="pricing" className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">Pricing That Grows With You</h2>
+                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">Pricing That <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Grows With You</span></h2>
                 <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">Simple, transparent plans designed for the individual agent.</p>
              </div>
+             <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
+                className="flex items-center justify-center gap-4 my-8"
+              >
+                  <Label htmlFor="pricing-toggle" className={cn("font-medium", !isAnnual && "text-primary")}>Monthly</Label>
+                  <Switch 
+                      id="pricing-toggle" 
+                      checked={isAnnual}
+                      onCheckedChange={setIsAnnual}
+                      aria-label="Toggle between monthly and annual pricing"
+                  />
+                  <Label htmlFor="pricing-toggle" className={cn("font-medium", isAnnual && "text-primary")}>Annually</Label>
+                  {isAnnual && (
+                    <span className="text-sm font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full">2 months free!</span>
+                  )}
+              </motion.div>
              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.15 } }, }} className="grid md:grid-cols-2 gap-8 mt-12 items-start max-w-4xl mx-auto">
-              {agentPricingPlans.map((plan) => (
+              {plansToDisplay.map((plan) => (
                  <motion.div key={plan.name} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
                      <PricingCard plan={plan} />
                  </motion.div>
