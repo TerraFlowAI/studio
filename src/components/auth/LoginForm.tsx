@@ -92,7 +92,7 @@ export default function LoginForm() {
   return (
     <>
       <div className="mb-8 text-center">
-        <Logo href="/" className="justify-center mb-4" size={80} layout="vertical" />
+        <Logo href="/" className="justify-center mb-4" size={100} layout="vertical" />
         <h1 className="text-2xl font-bold font-headline">Welcome Back</h1>
         <p className="text-muted-foreground">Enter your credentials to access your account.</p>
       </div>

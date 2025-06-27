@@ -37,7 +37,7 @@ export const Logo = ({ className, href = '/', size = 40, hideText = false, onCli
         />
       </div>
       {!hideText && (
-        <span className="font-bold text-xl lg:text-2xl text-foreground group-hover:text-primary/90 transition-colors">
+        <span className="font-bold text-2xl lg:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-purple-600 group-hover:opacity-90 transition-opacity">
           TerraFlow
         </span>
       )}

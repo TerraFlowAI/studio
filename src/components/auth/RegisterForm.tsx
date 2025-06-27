@@ -58,7 +58,7 @@ export default function RegisterForm() {
   return (
     <>
       <div className="mb-8 text-center">
-        <Logo href="/" className="justify-center mb-4" size={80} layout="vertical" />
+        <Logo href="/" className="justify-center mb-4" size={100} layout="vertical" />
         <h1 className="text-2xl font-bold">Create Your Account</h1>
         <p className="text-muted-foreground">Start your journey with TerraFlow.</p>
       </div>
