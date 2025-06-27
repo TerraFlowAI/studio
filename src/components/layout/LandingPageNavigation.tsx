@@ -79,13 +79,13 @@ export function LandingPageNavigation() {
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="#features" className={navigationMenuTriggerStyle()}>
+                    <Link href="#features" className={cn(navigationMenuTriggerStyle(), "rounded-full")}>
                       Features
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>Solutions</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="rounded-full">Solutions</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="grid grid-cols-2 gap-4 p-4 w-[600px]">
                       <div className="space-y-1">
@@ -105,14 +105,14 @@ export function LandingPageNavigation() {
                 </NavigationMenuItem>
                  <NavigationMenuItem>
                    <NavigationMenuLink asChild>
-                    <Link href="/pricing" className={navigationMenuTriggerStyle()}>
+                    <Link href="/pricing" className={cn(navigationMenuTriggerStyle(), "rounded-full")}>
                       Pricing
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                    <NavigationMenuLink asChild>
-                    <Link href="/about" className={navigationMenuTriggerStyle()}>
+                    <Link href="/about" className={cn(navigationMenuTriggerStyle(), "rounded-full")}>
                       Company
                     </Link>
                   </NavigationMenuLink>
