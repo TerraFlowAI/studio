@@ -228,7 +228,7 @@ const AgentFeaturesSection = () => {
                     className="text-center mb-12"
                 >
                     <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800">
-                       Your AI Co-Pilot for Every Step of the Sale.
+                       Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">AI Co-Pilot</span> for Every Step of the Sale.
                     </h2>
                     <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mt-4">
                        TerraFlow isn't just another CRM. It's a suite of intelligent tools designed to automate your busywork and empower you with the insights you need to become a top performer.
