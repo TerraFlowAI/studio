@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -42,8 +41,7 @@ const getMatchedProperties = (leadId: string) => {
 
 
 export default function LeadDetailPage() {
-    const params = useParams();
-    const leadId = params.leadId as string;
+    const { leadId } = useParams<{ leadId: string }>();
 
     const leadData = getLeadData(leadId);
     

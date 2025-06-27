@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -65,8 +64,7 @@ const mockPropertyData = {
 };
 
 export default function PropertyDetailPage() {
-    const params = useParams();
-    const propertyId = params.propertyId as string;
+    const { propertyId } = useParams<{ propertyId: string }>();
     
     const propertyData = getPropertyData(propertyId);
     
