@@ -24,8 +24,8 @@ export function HeroSection() {
             From lead scoring and content creation to predictive market analytics, TerraFlowAI provides an end-to-end solution to streamline operations, accelerate sales, and make smarter, data-driven decisions.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-             <StarBorder as="button">
-                <span className="animate-text-shimmer text-base">Request a Demo</span>
+             <StarBorder as="a" href="#contact">
+                <span className="animate-text-shimmer text-base font-medium">Request a Demo</span>
              </StarBorder>
              <Button asChild variant="ghost" size="lg" className="text-foreground hover:bg-accent">
                 <Link href="#features">

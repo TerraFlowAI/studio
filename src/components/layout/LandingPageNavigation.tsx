@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/Logo";
 import { Menu, X, Users, Code, Building, Zap, BarChart3, PenSquare } from "lucide-react";
+import { StarBorder } from "@/components/ui/star-border";
 
 const navLinks = [
   { name: "Features", href: "#features" },
@@ -86,11 +87,9 @@ export function LandingPageNavigation() {
 
           {/* Right: CTAs */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button asChild className="animate-shimmering-border rounded-lg bg-slate-900 text-white hover:shadow-primary/20 hover:shadow-lg transition-shadow">
-               <Link href="#contact">
-                    <span className="relative">Request a Demo</span>
-                </Link>
-            </Button>
+            <StarBorder as="a" href="#contact" className="[&>div]:text-sm [&>div]:font-medium [&>div]:py-2 [&>div]:px-4">
+              Request a Demo
+            </StarBorder>
             <Button asChild variant="ghost" className="text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white">
               <Link href="/login">Login</Link>
             </Button>
@@ -188,9 +187,9 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
       ))}
     </nav>
     <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
-        <Button asChild className="w-full py-3 text-lg animate-shimmering-border rounded-lg bg-slate-900 text-white">
-            <Link href="#contact" onClick={onDismiss}><span className="relative">Request a Demo</span></Link>
-        </Button>
+        <StarBorder as="a" href="#contact" onClick={onDismiss} className="w-full [&>div]:text-lg [&>div]:py-3">
+          Request a Demo
+        </StarBorder>
         <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
             <Link href="/login" onClick={onDismiss}>Login</Link>
         </Button>
