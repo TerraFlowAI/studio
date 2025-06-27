@@ -188,8 +188,8 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
       ))}
     </nav>
     <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
-        <Button asChild className="w-full py-3 text-lg bg-primary text-primary-foreground hover:bg-primary/90">
-            <Link href="#contact" onClick={onDismiss}>Request a Demo</Link>
+        <Button asChild className="w-full py-3 text-lg animate-shimmering-border rounded-lg bg-slate-900 text-white">
+            <Link href="#contact" onClick={onDismiss}><span className="relative">Request a Demo</span></Link>
         </Button>
         <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
             <Link href="/login" onClick={onDismiss}>Login</Link>

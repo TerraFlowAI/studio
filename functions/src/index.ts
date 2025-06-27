@@ -1,7 +1,7 @@
 
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {createClient} from "@supabase/supabase-js";
+import {createClient, SupabaseClient} from "@supabase/supabase-js";
 
 // Initialize Firebase Admin SDK
 admin.initializeApp();
@@ -13,7 +13,7 @@ admin.initializeApp();
 const supabaseUrl = functions.config().supabase?.url;
 const supabaseKey = functions.config().supabase?.key;
 
-let supabaseAdmin;
+let supabaseAdmin: SupabaseClient | undefined;
 if (!supabaseUrl || !supabaseKey) {
   console.error(
     "Supabase URL or Key not set. Functions using Supabase will fail."
