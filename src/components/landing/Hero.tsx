@@ -262,10 +262,10 @@ export const Hero = () => {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center" style={{ perspective: '1000px' }}>
         <div className="max-w-6xl mx-auto">
-          <div className={`mt-8 inline-flex items-center gap-2 bg-transparent backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-teal-700 dark:text-teal-300 mb-8 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'} animate-shimmering-border`}>
-            <Sparkles className="w-4 h-4 animate-pulse text-teal-700 dark:text-teal-300 z-10" />
-            <span className="animate-text-shimmer">Powered by TerraFlow AI-Suit</span>
-           <span className="relative flex w-3 h-3 ml-2"><span className="absolute inset-0 inline-flex w-full h-full bg-green-400 rounded-full opacity-75 animate-pulse"></span><span className="relative inline-flex w-3 h-3 bg-green-500 rounded-full"></span></span>
+          <div className={`mt-8 inline-flex items-center gap-2 bg-background/50 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-primary dark:text-teal-300 mb-8 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'} border border-primary/20`}>
+            <Sparkles className="w-4 h-4 text-primary dark:text-teal-300" />
+            <span>Powered by TerraFlow AI Suite</span>
+            <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
           </div>
 
           {headlineJsx}
