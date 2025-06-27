@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -70,7 +69,7 @@ export function LandingPageNavigation() {
         <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Logo */}
           <div className="flex-shrink-0">
-            <Logo href="/" size={40} />
+            <Logo href="/" size={48} />
           </div>
 
           {/* Center: Desktop Nav */}
