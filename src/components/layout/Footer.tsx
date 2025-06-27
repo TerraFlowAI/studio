@@ -63,7 +63,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
           {/* Column 1: Brand & Newsletter */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <Logo href="/" size={48} variant="on-dark" className="inline-block mb-4" />
+            <Logo href="/" size={64} variant="on-dark" className="mb-4" layout="vertical" />
             <p className="text-sm max-w-xs">
               The AI Operating System for Real Estate.
             </p>
