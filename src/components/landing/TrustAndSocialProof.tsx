@@ -1,3 +1,4 @@
+
 "use client";
 
 import { motion, useInView } from "framer-motion";
@@ -38,22 +39,56 @@ export function TrustAndSocialProof() {
     { icon: LifeBuoy, text: "24/7 Dedicated Support", color: "text-sky-600" },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+    },
+  };
+
   return (
-    <motion.section
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: "easeOut" }}
-      className="py-16 md:py-24 bg-white"
-    >
+    <section ref={ref} className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Title and Description */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">
+            Trusted by the Best, Built for the Bold
+          </h2>
+          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+            Our commitment to excellence and security is reflected in our certifications and the trust our partners place in us.
+          </p>
+        </motion.div>
+        
         {/* Trust Badges */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto"
+        >
           {badges.map((badge, index) => (
-            <TrustBadge key={index} icon={badge.icon} text={badge.text} colorClass={badge.color} />
+            <motion.div key={index} variants={itemVariants}>
+              <TrustBadge icon={badge.icon} text={badge.text} colorClass={badge.color} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </motion.section>
+    </section>
   );
 }
