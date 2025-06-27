@@ -67,19 +67,19 @@ export function TerraLeadChatbot() {
   
   // Initial bot message
   useEffect(() => {
-    addMessage("Hello! I'm TerraLead AI. How can I help you with your property search today?", 'bot');
+    addMessage("Welcome to TerraFlow! I'm Terra, your AI guide. How can I help you today? Are you interested in solutions for an individual agent or a development team?", 'bot');
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
   return (
-    <div className="flex flex-col h-[400px] rounded-lg border bg-card shadow-sm">
+    <div className="flex flex-col h-[500px] max-h-[80vh] rounded-xl border bg-card shadow-2xl">
       <div className="p-4 border-b flex items-center gap-3">
         <Avatar>
           <AvatarFallback><Bot className="text-primary" /></AvatarFallback>
         </Avatar>
         <div>
-          <p className="font-semibold font-headline text-primary">TerraLead AI</p>
+          <p className="font-semibold font-headline text-primary">Terra</p>
           <p className="text-xs text-muted-foreground">Online</p>
         </div>
       </div>
@@ -100,13 +100,13 @@ export function TerraLeadChatbot() {
               )}
               <div
                 className={cn(
-                  "max-w-[70%] rounded-lg px-3 py-2 text-sm shadow",
+                  "max-w-[80%] rounded-lg px-3 py-2 text-sm shadow",
                   msg.sender === 'user'
                     ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground'
+                    : 'bg-muted'
                 )}
               >
-                <p>{msg.text}</p>
+                <p className="whitespace-pre-wrap">{msg.text}</p>
                 <p className={cn(
                   "text-xs mt-1",
                   msg.sender === 'user' ? 'text-primary-foreground/70 text-right' : 'text-muted-foreground/70 text-left'
@@ -126,7 +126,7 @@ export function TerraLeadChatbot() {
               <Avatar className="h-8 w-8">
                 <AvatarFallback><Bot className="text-primary h-5 w-5"/></AvatarFallback>
               </Avatar>
-              <div className="max-w-[70%] rounded-lg px-3 py-2 text-sm shadow bg-muted text-muted-foreground">
+              <div className="max-w-[70%] rounded-lg px-3 py-2 text-sm shadow bg-muted">
                 <p className="animate-pulse">Typing...</p>
               </div>
             </div>
@@ -134,13 +134,9 @@ export function TerraLeadChatbot() {
         </div>
       </ScrollArea>
       <form onSubmit={handleSubmit} className="border-t p-3 flex items-center gap-2">
-        <Button variant="ghost" size="icon" type="button" className="text-muted-foreground">
-          <Paperclip className="h-5 w-5" />
-          <span className="sr-only">Attach file</span>
-        </Button>
         <Input
           type="text"
-          placeholder="Type your message..."
+          placeholder="Ask Terra anything..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           className="flex-1"
