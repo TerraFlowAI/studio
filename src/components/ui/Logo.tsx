@@ -18,7 +18,7 @@ export const Logo = ({ className, href = '/', size = 40, hideText = false, onCli
         href={href} 
         className={cn(
             "flex items-center group", 
-            layout === 'horizontal' ? 'flex-row gap-3' : 'flex-col gap-1',
+            layout === 'horizontal' ? 'flex-row gap-3' : 'flex-col',
             className
         )} 
         onClick={onClick}
@@ -37,7 +37,7 @@ export const Logo = ({ className, href = '/', size = 40, hideText = false, onCli
         />
       </div>
       {!hideText && (
-        <span className="font-bold text-2xl lg:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-purple-600 group-hover:opacity-90 transition-opacity">
+        <span className="font-bold text-2xl lg:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-purple-600 group-hover:opacity-90 transition-opacity -mt-2">
           TerraFlow
         </span>
       )}
