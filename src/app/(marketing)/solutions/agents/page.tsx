@@ -27,46 +27,57 @@ import { Switch } from "@/components/ui/switch";
 
 // --- PAGE-SPECIFIC DATA ---
 
-const agentFeatureBlocks = [
+const agentSpecificFeatureBlocks = [
   {
-    suiteName: "TerraLead™ Suite",
-    headline: "Never Miss an Opportunity. Turn Every Lead into a Relationship.",
-    description: "Stop chasing cold inquiries. Our intelligent AI works 24/7 to capture, qualify, score, and nurture your prospects, turning your pipeline into a high-efficiency conversion engine.",
+    badge: "TerraLead™ Suite",
+    headline: "Intelligent Lead Management",
+    description: "Stop wasting time on cold inquiries. Our AI automatically scores and prioritizes every lead based on their engagement and budget, so you know exactly who to call next.",
     checklist: [
-      "AI-powered Lead Scoring",
-      "24/7 Chatbot Qualification",
-      "Automated Follow-up Sequences",
-      "Personalized Recommendations",
+      "AI Lead Scoring: Instantly identify your most promising prospects.",
+      "Automated Follow-ups: Nurture leads with personalized email sequences while you sleep.",
+      "24/7 Chatbot: Let our AI qualify leads from your website at any hour.",
     ],
-    metrics: ["10x More Qualified Leads", "95% Less Manual Work"],
-    cta: "Explore Lead Automation",
-    layout: "text-left",
     image: {
       src: "https://placehold.co/600x450.png",
       alt: "AI lead scoring and automation dashboard",
-      hint: "lead journey dashboard"
+      hint: "lead scoring dashboard",
     },
+    layout: "text-left",
   },
   {
-    suiteName: "TerraScribe™ AI",
-    headline: "Create Stunning Marketing Content in a Fraction of the Time.",
-    description: "Reclaim hours of your week. Instantly generate compelling property descriptions, emails, and social media posts that captivate buyers and build your personal brand.",
+    badge: "TerraScribe™ Suite",
+    headline: "Create Stunning Listings in Seconds",
+    description: "Eliminate writer's block forever. Generate professional, compelling, and SEO-optimized property descriptions, marketing emails, and social media posts with a single click.",
     checklist: [
-      "AI Marketing Copywriting",
-      "Automated Email & Social Campaigns",
-      "Multiple Writing Styles & Tones",
-      "One-Click Content Refinement",
+      "AI Property Descriptions: Turn key features into captivating narratives.",
+      "Email & Social Media Templates: Generate engaging content for any channel.",
+      "RERA-Compliant Clauses: Ensure your documentation is professional and compliant.",
     ],
-    metrics: ["10x Faster Content Creation", "Endless Content Ideas"],
-    cta: "Explore Content Automation",
-    layout: "text-right",
     image: {
       src: "https://placehold.co/600x450.png",
       alt: "AI content generation tool showing a property description being written",
-      hint: "writing document AI"
+      hint: "ai writing editor",
     },
+    layout: "text-right",
+  },
+  {
+    badge: "TerraValuate™ & MarketIntel™",
+    headline: "Win More Listings with Data-Driven Valuations",
+    description: "Walk into every client meeting with confidence. Generate accurate, hyper-local valuation reports and CMAs in minutes, backed by real-time market data and predictive analytics.",
+    checklist: [
+      "Instant Property Valuations: Get a data-backed price estimate anytime.",
+      "Professional CMA Reports: Impress sellers and justify your pricing strategy.",
+      "Neighborhood Trend Analysis: Become the undisputed local market expert.",
+    ],
+    image: {
+      src: "https://placehold.co/600x450.png",
+      alt: "A clean, professional CMA report being generated instantly",
+      hint: "market analysis report",
+    },
+    layout: "text-left",
   },
 ];
+
 
 const monthlyPlans: PricingPlan[] = [
   {
@@ -173,7 +184,7 @@ const thirdColumn = agentTestimonials.slice(2, 3);
 
 // --- REUSABLE COMPONENTS (LOCALIZED) ---
 
-const FeatureBlock = ({ block }: { block: typeof agentFeatureBlocks[0] }) => {
+const AgentFeatureBlock = ({ block }: { block: typeof agentSpecificFeatureBlocks[0] }) => {
   const isTextLeft = block.layout === 'text-left';
   return (
     <motion.div
@@ -185,13 +196,13 @@ const FeatureBlock = ({ block }: { block: typeof agentFeatureBlocks[0] }) => {
     >
       <div className={cn("grid grid-cols-1 md:grid-cols-2 items-center gap-12 lg:gap-24")}>
         <div className={cn("space-y-6", !isTextLeft && "md:col-start-2")}>
-          <span className="inline-block rounded-full px-3 py-1 text-sm font-semibold bg-primary/10 text-primary">{block.suiteName}</span>
-          <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">{block.headline}</h2>
+          <span className="inline-block rounded-full px-3 py-1 text-sm font-semibold bg-primary/10 text-primary">{block.badge}</span>
+          <h3 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">{block.headline}</h3>
           <p className="text-lg text-slate-600">{block.description}</p>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+          <ul className="space-y-3">
             {block.checklist.map((item, index) => (
-              <li key={index} className="flex items-center gap-2 text-slate-700">
-                <CheckCircle className="h-5 w-5 text-teal-500 flex-shrink-0" />
+              <li key={index} className="flex items-start gap-3 text-slate-700">
+                <CheckCircle className="h-5 w-5 text-teal-500 flex-shrink-0 mt-1" />
                 <span>{item}</span>
               </li>
             ))}
@@ -204,6 +215,32 @@ const FeatureBlock = ({ block }: { block: typeof agentFeatureBlocks[0] }) => {
     </motion.div>
   );
 };
+
+const AgentFeaturesSection = () => {
+    return (
+        <section id="features" className="bg-slate-50/50 py-16 md:py-24">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                 <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center mb-12"
+                >
+                    <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800">
+                       Your AI Co-Pilot for Every Step of the Sale.
+                    </h2>
+                    <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mt-4">
+                       TerraFlow isn't just another CRM. It's a suite of intelligent tools designed to automate your busywork and empower you with the insights you need to become a top performer.
+                    </p>
+                </motion.div>
+                <div className="divide-y divide-slate-200">
+                    {agentSpecificFeatureBlocks.map((block, index) => ( <AgentFeatureBlock key={index} block={block} /> ))}
+                </div>
+            </div>
+        </section>
+    )
+}
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required." }),
@@ -310,13 +347,7 @@ export default function AgentsSolutionPage() {
       </section>
 
       {/* 3. Feature Deep Dive */}
-      <section id="features" className="bg-slate-50/50 py-16 md:py-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="divide-y divide-slate-200">
-                {agentFeatureBlocks.map((block, index) => ( <FeatureBlock key={index} block={block} /> ))}
-            </div>
-        </div>
-      </section>
+      <AgentFeaturesSection />
 
       {/* 4. Pricing Spotlight */}
       <section id="pricing" className="py-16 md:py-24 bg-background">
