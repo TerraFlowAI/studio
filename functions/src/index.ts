@@ -13,19 +13,27 @@ admin.initializeApp();
 const supabaseUrl = functions.config().supabase?.url;
 const supabaseKey = functions.config().supabase?.key;
 
+let supabaseAdmin;
 if (!supabaseUrl || !supabaseKey) {
   console.error(
-    "Supabase URL or Key not set in Firebase function configuration.",
+    "Supabase URL or Key not set. Functions using Supabase will fail."
   );
+} else {
+  supabaseAdmin = createClient(supabaseUrl, supabaseKey);
 }
 
-const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
 
 /**
  * HTTP-callable function to set a user's role (e.g., 'admin').
  * Must be called by an existing administrator.
  */
 export const setAdminRole = functions.https.onCall(async (request) => {
+  if (!supabaseAdmin) {
+    throw new functions.https.HttpsError(
+      "internal",
+      "Supabase client is not initialized. Check function logs for details."
+    );
+  }
   // 1. Security Check: Ensure the caller is an administrator.
   /*
   if (request.auth?.token?.admin !== true) {

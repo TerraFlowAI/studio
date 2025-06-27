@@ -57,6 +57,10 @@ export default function DashboardPage() {
                 </Button>
             </PageHeader>
             
+            <div className="mb-8">
+                <AiCoPilots />
+            </div>
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <KpiCard title="Active Listings" value={kpiData.activeListings.value} trend={kpiData.activeListings.trend} icon={Briefcase} />
                 <KpiCard title="New Leads" value={kpiData.leadsGenerated.value} trend={kpiData.leadsGenerated.trend} icon={Users} />
@@ -72,9 +76,6 @@ export default function DashboardPage() {
               <ListingBoard properties={recentProperties} />
             </div>
 
-            <div>
-                <AiCoPilots />
-            </div>
         </div>
     )
 }
