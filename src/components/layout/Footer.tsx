@@ -63,7 +63,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
           {/* Column 1: Brand & Newsletter */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <Logo href="/" className="inline-block mb-4 [&>span]:text-white" />
+            <Logo href="/" size={48} variant="on-dark" className="inline-block mb-4" />
             <p className="text-sm max-w-xs">
               The AI Operating System for Real Estate.
             </p>
@@ -147,7 +147,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-gray-700 flex flex-col sm:flex-row justify-between items-center">
           <p className="text-xs text-gray-500">
-            &copy; {new Date().getFullYear()} TerraFlowAI Technologies Pvt. Ltd. All rights reserved.
+            &copy; {new Date().getFullYear()} TerraFlow Technologies Pvt. Ltd. All rights reserved.
           </p>
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
             {socialLinks.map((social) => {
