@@ -27,20 +27,20 @@ import { useToast } from "@/hooks/use-toast";
 
 const brokerageFeatureBlocks = [
   {
-    suiteName: "TerraLead™ Suite",
-    headline: "Centralize Your Lead Flow. Distribute with Intelligence.",
-    description: "Implement rules-based lead assignment to ensure the right agent gets the right lead, instantly. Track team performance and conversion rates from a single dashboard.",
+    suiteName: "TerraLead™ with Voice Agent",
+    headline: "Centralize & Distribute Qualified Leads, Automatically.",
+    description: "Let Terra be your brokerage's front line. The AI voice agent calls and qualifies every lead, then our SmartFlow engine routes the hot, appointment-ready prospects to the right agent based on your custom rules. No more lead disputes, just a pipeline full of opportunities.",
     checklist: [
-      "Automated Lead Assignment & Routing",
-      "Team-wide Pipeline View",
-      "Agent Performance Analytics",
-      "Centralized Lead Nurturing Campaigns",
+      "Autonomous Lead Qualification & Calling",
+      "Rules-based Lead Assignment & Routing",
+      "Real-time Agent Performance Analytics",
+      "Centralized Nurturing Campaigns",
     ],
     layout: "text-left",
     image: {
       src: "https://placehold.co/600x450.png",
-      alt: "Dashboard showing lead distribution among team members",
-      hint: "team dashboard chart"
+      alt: "Dashboard showing qualified leads being routed to different agents",
+      hint: "team dashboard lead assignment"
     },
   },
   {

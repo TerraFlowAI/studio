@@ -29,18 +29,18 @@ import { Switch } from "@/components/ui/switch";
 
 const agentSpecificFeatureBlocks = [
   {
-    badge: "TerraLead™ Suite",
-    headline: "Intelligent Lead Management",
-    description: "Stop wasting time on cold inquiries. Our AI automatically scores and prioritizes every lead based on their engagement and budget, so you know exactly who to call next.",
+    badge: "TerraLead™ Suite with AI Voice Agent",
+    headline: "Never Make a Cold Call Again.",
+    description: "Imagine an assistant that works for you even when you're on the move. Terra calls every new lead, asks the right questions, and books qualified meetings for you. You just show up to the appointments that appear on your calendar.",
     checklist: [
-      "AI Lead Scoring: Instantly identify your most promising prospects.",
-      "Automated Follow-ups: Nurture leads with personalized email sequences while you sleep.",
-      "24/7 Chatbot: Let our AI qualify leads from your website at any hour.",
+      "Automated Prospect Calling: Let your AI handle the first touch.",
+      "Intelligent Appointment Setting: Fills your calendar with promising clients.",
+      "AI Lead Scoring: Know who to focus on before you even meet.",
     ],
     image: {
       src: "https://placehold.co/600x450.png",
-      alt: "AI lead scoring and automation dashboard",
-      hint: "lead scoring dashboard",
+      alt: "Mobile phone showing a notification of a new appointment booked by Terra AI",
+      hint: "phone notification appointment",
     },
     layout: "text-left",
   },
@@ -316,12 +316,12 @@ export default function AgentsSolutionPage() {
       </section>
 
       {/* 2. Pain Point / Solution Section */}
-      <section className="py-16 md:py-24 bg-slate-50/50 relative">
-          <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem] opacity-20"></div>
+      <section className="py-16 md:py-24 bg-background relative">
+          <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem] opacity-20 dark:bg-slate-950 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)]"></div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">Stop Juggling, <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Start Closing.</span></h2>
-                <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">Here’s how TerraFlow solves your biggest daily challenges.</p>
+                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800 dark:text-slate-100">Stop Juggling, <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Start Closing.</span></h2>
+                <p className="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">Here’s how TerraFlow solves your biggest daily challenges.</p>
              </div>
              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
@@ -330,15 +330,15 @@ export default function AgentsSolutionPage() {
                     { icon: Calculator, title: "Struggling with Pricing?", solution: "TerraValuate™", description: "Create accurate, professional CMA reports with AI-powered market data to price properties perfectly." },
                 ].map((item, index) => (
                     <motion.div key={item.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
-                        <Card className="h-full text-left shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group bg-white/50 backdrop-blur-sm">
+                        <Card className="h-full text-left shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group bg-background/80 backdrop-blur-sm border-border">
                             <CardContent className="p-6">
                                 <div className="flex items-center gap-4 mb-4">
                                     <div className="p-3 bg-primary/10 rounded-xl group-hover:bg-primary transition-colors duration-300">
                                         <item.icon className="h-8 w-8 text-primary group-hover:text-white transition-colors duration-300" />
                                     </div>
-                                    <h3 className="font-headline text-xl text-slate-800">{item.title}</h3>
+                                    <h3 className="font-headline text-xl text-slate-800 dark:text-slate-100">{item.title}</h3>
                                 </div>
-                                <p className="text-slate-600">
+                                <p className="text-slate-600 dark:text-slate-300">
                                   <span className="font-bold text-primary">{item.solution}</span>: {item.description}
                                 </p>
                             </CardContent>
@@ -356,8 +356,8 @@ export default function AgentsSolutionPage() {
       <section id="pricing" className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">Pricing That <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Grows With You</span></h2>
-                <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">Simple, transparent plans designed for the individual agent.</p>
+                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800 dark:text-slate-100">Pricing That <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Grows With You</span></h2>
+                <p className="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">Simple, transparent plans designed for the individual agent.</p>
              </div>
              <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -375,7 +375,7 @@ export default function AgentsSolutionPage() {
                   />
                   <Label htmlFor="pricing-toggle" className={cn("font-medium", isAnnual && "text-primary")}>Annually</Label>
                   {isAnnual && (
-                    <span className="text-sm font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full">2 months free!</span>
+                    <span className="text-sm font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full dark:bg-green-900/50 dark:text-green-300">2 months free!</span>
                   )}
               </motion.div>
              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.15 } }, }} className="grid md:grid-cols-2 gap-8 mt-12 items-start max-w-4xl mx-auto">
@@ -413,15 +413,15 @@ export default function AgentsSolutionPage() {
              <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.8, ease: "easeOut" }}
                 className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 <div className="text-center lg:text-left">
-                    <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 mb-4">
+                    <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 dark:text-slate-100 mb-4">
                         Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Start Winning?</span>
                     </h2>
-                    <p className="text-lg text-slate-600 mb-8">
+                    <p className="text-lg text-slate-600 dark:text-slate-300 mb-8">
                        Fill out the form to begin your free 14-day trial. No credit card required. Experience firsthand how TerraFlow's AI can streamline your workflow and boost your sales.
                     </p>
                 </div>
                 <div>
-                  <Card className="shadow-2xl bg-white border border-slate-200">
+                  <Card className="shadow-2xl bg-white border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
                     <CardHeader><CardTitle className="text-2xl font-headline text-center text-primary">Start Your 14-Day Free Trial</CardTitle></CardHeader>
                     <CardContent>
                       {isSubmitted ? (
@@ -429,8 +429,8 @@ export default function AgentsSolutionPage() {
                           <Confetti recycle={false} numberOfPieces={250} />
                           <div className="flex flex-col items-center justify-center text-center h-80">
                             <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
-                            <h3 className="text-2xl font-bold text-slate-800">Request Sent!</h3>
-                            <p className="text-slate-600 mt-2">Thank you! We'll be in touch to set up your trial.</p>
+                            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Request Sent!</h3>
+                            <p className="text-slate-600 dark:text-slate-300 mt-2">Thank you! We'll be in touch to set up your trial.</p>
                           </div>
                         </>
                       ) : (

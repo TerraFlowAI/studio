@@ -27,6 +27,22 @@ import { useToast } from "@/hooks/use-toast";
 
 const developerFeatureBlocks = [
   {
+    suiteName: "TerraLead™ Voice Agent for Projects",
+    headline: "Scale Your Project Outreach Instantly.",
+    description: "Handle thousands of inquiries for a new project launch without hiring a call center. Terra can be configured to call every interested prospect, provide key project details, answer FAQs, and schedule site visits or sales calls for your team.",
+    checklist: [
+      "High-Volume Outbound Calling: Handle thousands of inquiries automatically.",
+      "Custom Calling Scripts: Tailor Terra's conversation for each project.",
+      "Bulk Appointment Scheduling: Efficiently manage site visits and sales calls.",
+    ],
+    layout: "text-right",
+    image: {
+      src: "https://placehold.co/600x450.png",
+      alt: "Animation showing a project launch leading to many appointments being scheduled",
+      hint: "project launch analytics"
+    },
+  },
+  {
     suiteName: "MarketIntel™ & TerraValuate™",
     headline: "De-risk Your Investments with Predictive Analytics.",
     description: "From site acquisition to final pricing, leverage AI to analyze market viability, forecast demand, and determine the optimal pricing strategy for maximum ROI.",
