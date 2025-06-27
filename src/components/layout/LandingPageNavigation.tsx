@@ -28,7 +28,7 @@ const navLinks = [
 
 const solutionsDropdownLinks = {
   byRole: [
-    { name: "For Agents", description: "AI tools to boost individual agent productivity.", href: "#", icon: Users },
+    { name: "For Agents", description: "AI tools to boost individual agent productivity.", href: "/solutions/agents", icon: Users },
     { name: "For Developers", description: "Streamline project management and sales cycles.", href: "#", icon: Building },
     { name: "For Brokerages", description: "Scale your business with an end-to-end OS.", href: "#", icon: Code },
   ],
@@ -66,10 +66,10 @@ export function LandingPageNavigation() {
           scrolled ? "border-b border-slate-200/50 bg-background/80 backdrop-blur-lg" : "bg-transparent"
         )}
       >
-        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Logo */}
           <div className="flex-shrink-0">
-            <Logo href="/" size={48} />
+            <Logo href="/" size={56} />
           </div>
 
           {/* Center: Desktop Nav */}
@@ -182,7 +182,7 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
     variants={mobileMenuVariants}
     className="fixed inset-0 z-40 h-screen w-screen bg-background/95 backdrop-blur-xl p-4 md:hidden"
   >
-    <div className="flex h-20 items-center justify-between">
+    <div className="flex h-16 items-center justify-between">
       <Logo />
       <Button variant="ghost" size="icon" onClick={onDismiss}>
         <X className="h-6 w-6" />
