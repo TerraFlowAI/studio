@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -13,6 +14,7 @@ import {
   Settings,
   LogOut,
   HelpCircle,
+  Shield, // New Icon for Admin
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -25,6 +27,8 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   useSidebar,
+  SidebarSeparator,
+  SidebarGroupLabel,
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -55,11 +59,15 @@ export const utilityNavItems: NavItem[] = [
    { href: '/help-support', label: 'Help & Support', icon: HelpCircle },
 ];
 
+export const adminNavItems: NavItem[] = [
+  { href: '/admin', label: 'User Management', icon: Shield },
+];
+
 
 export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter(); 
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth(); // Get isAdmin state
   const { setOpenMobile, isMobile, state } = useSidebar();
 
   const handleLogout = async () => {
@@ -116,6 +124,42 @@ export function AppSidebar() {
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
+
+        {/* Admin Section */}
+        {isAdmin && (
+          <>
+            <SidebarSeparator className="my-2" />
+            <SidebarMenu>
+              <SidebarGroupLabel className="group-data-[collapsible=icon]:-mt-2">Admin</SidebarGroupLabel>
+              {adminNavItems.map((item) => (
+                <SidebarMenuItem key={item.href} className="mb-1">
+                  <Link href={item.href}>
+                    <SidebarMenuButton
+                      isActive={pathname.startsWith(item.href)}
+                      tooltip={item.label}
+                       onClick={() => {
+                        if (isMobile) setOpenMobile(false);
+                      }}
+                      className={cn(
+                        "justify-start w-full h-11 px-3 rounded-lg text-sm",
+                        pathname.startsWith(item.href)
+                          ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      )}
+                    >
+                      <item.icon className={cn("h-5 w-5 mr-3 shrink-0",
+                         pathname.startsWith(item.href)
+                           ? "text-sidebar-primary-foreground"
+                           : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
+                      )} />
+                      {(state === 'expanded' || isMobile) && <span>{item.label}</span>}
+                    </SidebarMenuButton>
+                  </Link>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </>
+        )}
       </SidebarContent>
       <SidebarFooter className="p-4 border-t border-sidebar-border space-y-2">
          {utilityNavItems.map((item) => (

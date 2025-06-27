@@ -46,8 +46,8 @@ export const setAdminRole = functions.https.onCall(async (request) => {
     !role
   ) {
     throw new functions.https.HttpsError(
-        "invalid-argument",
-        "The function requires an 'email' and 'role' argument.",
+      "invalid-argument",
+      "The function requires an 'email' and 'role' argument.",
     );
   }
 
@@ -73,8 +73,8 @@ export const setAdminRole = functions.https.onCall(async (request) => {
         supabaseError,
       );
       throw new functions.https.HttpsError(
-          "internal",
-          "Failed to update role in the database.",
+        "internal",
+        "Failed to update role in the database.",
       );
     }
 
@@ -87,13 +87,13 @@ export const setAdminRole = functions.https.onCall(async (request) => {
     console.error("Error setting custom role:", error);
     if (error.message.includes("USER_NOT_FOUND")) {
       throw new functions.https.HttpsError(
-          "not-found",
-          "User with the provided email does not exist.",
+        "not-found",
+        "User with the provided email does not exist.",
       );
     }
     throw new functions.https.HttpsError(
-        "internal",
-        "An unexpected error occurred while setting the user role.",
+      "internal",
+      "An unexpected error occurred while setting the user role.",
     );
   }
 });

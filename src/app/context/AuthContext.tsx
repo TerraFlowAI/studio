@@ -1,3 +1,4 @@
+
 // src/app/context/AuthContext.tsx
 "use client";
 
@@ -9,6 +10,7 @@ import { auth } from '@/lib/firebase';
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
+  isAdmin: boolean;
 }
 
 // Create the context with a default value
@@ -18,11 +20,22 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // This is the core Firebase listener for authentication state
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in, get their token to check for custom claims
+        const tokenResult = await user.getIdTokenResult();
+        // Set admin status based on the 'role' custom claim
+        setIsAdmin(tokenResult.claims.role === 'admin');
+        setUser(user);
+      } else {
+        // User is signed out
+        setUser(null);
+        setIsAdmin(false);
+      }
       setIsLoading(false);
     });
 
@@ -31,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading }}>
+    <AuthContext.Provider value={{ user, isLoading, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );
