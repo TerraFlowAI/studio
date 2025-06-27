@@ -67,10 +67,10 @@ export function LandingPageNavigation() {
           scrolled ? "border-b border-slate-200/50 bg-background/80 backdrop-blur-lg" : "bg-transparent"
         )}
       >
-        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto flex h-24 items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Logo */}
           <div className="flex-shrink-0">
-            <Logo href="/" />
+            <Logo href="/" size={48} />
           </div>
 
           {/* Center: Desktop Nav */}
@@ -79,13 +79,13 @@ export function LandingPageNavigation() {
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="#features" className={cn(navigationMenuTriggerStyle(), "rounded-full")}>
+                    <Link href="#features" className={cn(navigationMenuTriggerStyle(), "rounded-full text-base font-medium")}>
                       Features
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="rounded-full">Solutions</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="rounded-full text-base font-medium">Solutions</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="grid grid-cols-2 gap-4 p-4 w-[600px]">
                       <div className="space-y-1">
@@ -105,14 +105,14 @@ export function LandingPageNavigation() {
                 </NavigationMenuItem>
                  <NavigationMenuItem>
                    <NavigationMenuLink asChild>
-                    <Link href="/pricing" className={cn(navigationMenuTriggerStyle(), "rounded-full")}>
+                    <Link href="/pricing" className={cn(navigationMenuTriggerStyle(), "rounded-full text-base font-medium")}>
                       Pricing
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                    <NavigationMenuLink asChild>
-                    <Link href="/about" className={cn(navigationMenuTriggerStyle(), "rounded-full")}>
+                    <Link href="/about" className={cn(navigationMenuTriggerStyle(), "rounded-full text-base font-medium")}>
                       Company
                     </Link>
                   </NavigationMenuLink>
@@ -123,10 +123,10 @@ export function LandingPageNavigation() {
 
           {/* Right: CTAs */}
           <div className="hidden md:flex items-center space-x-2">
-            <StarBorder as="a" href="#contact" className="[&>div:last-child]:text-sm [&>div:last-child]:font-medium [&>div:last-child]:py-2 [&>div:last-child]:px-4">
+            <StarBorder as="a" href="#contact" className="[&>div:last-child]:text-base [&>div:last-child]:font-semibold [&>div:last-child]:py-3 [&>div:last-child]:px-5">
               Request a Demo
             </StarBorder>
-            <Button asChild variant="ghost">
+            <Button asChild variant="ghost" size="lg" className="rounded-full text-base font-semibold">
               <Link href="/login">Login</Link>
             </Button>
           </div>
