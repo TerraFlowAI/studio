@@ -86,9 +86,8 @@ export function LandingPageNavigation() {
 
           {/* Right: CTAs */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button asChild className="group relative overflow-hidden bg-slate-900 text-white shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl dark:bg-slate-800">
+            <Button asChild className="animate-shimmering-border rounded-lg bg-slate-900 text-white hover:shadow-primary/20 hover:shadow-lg transition-shadow">
                <Link href="#contact">
-                    <div className="absolute inset-0 w-0 bg-primary transition-all duration-[250ms] ease-out group-hover:w-full"></div>
                     <span className="relative">Request a Demo</span>
                 </Link>
             </Button>
