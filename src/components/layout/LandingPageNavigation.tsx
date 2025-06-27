@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -123,7 +122,11 @@ export function LandingPageNavigation() {
 
           {/* Right: CTAs */}
           <div className="hidden md:flex items-center space-x-2">
-            <StarBorder as="a" href="#contact" className="[&>div:last-child]:text-base [&>div:last-child]:font-semibold [&>div:last-child]:py-3 [&>div:last-child]:px-5">
+            <StarBorder
+              as="a"
+              href="#contact"
+              className="[&>div:last-child]:text-base [&>div:last-child]:font-semibold [&>div:last-child]:py-3 [&>div:last-child]:px-5 [&>div:last-child]:bg-gradient-to-r [&>div:last-child]:from-teal-500 [&>div:last-child]:to-blue-600 [&>div:last-child]:text-white [&>div:last-child]:border-transparent"
+            >
               Request a Demo
             </StarBorder>
             <Button asChild variant="ghost" size="lg" className="rounded-full text-base font-semibold">
