@@ -138,7 +138,7 @@ export function ThreeStepProcess() {
           })}
           
           {/* Spacer div to push the button down */}
-          <div className="h-16" />
+          <div className="h-24" />
 
           <motion.div
             initial={{ opacity: 0 }}
