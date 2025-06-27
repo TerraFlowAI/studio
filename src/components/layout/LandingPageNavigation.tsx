@@ -31,7 +31,7 @@ const solutionsDropdownLinks = {
   byRole: [
     { name: "For Agents", description: "AI tools to boost individual agent productivity.", href: "/solutions/agents", icon: Users },
     { name: "For Developers", description: "Streamline project management and sales cycles.", href: "/solutions/developers", icon: Building },
-    { name: "For Brokerages", description: "Scale your business with an end-to-end OS.", href: "#", icon: Code },
+    { name: "For Brokerages", description: "Scale your business with an end-to-end OS.", href: "/solutions/brokerages", icon: Code },
   ],
   byService: [
     { name: "TerraLead™", href: "#", icon: Zap, description: "Capture, qualify, and nurture leads automatically." },
