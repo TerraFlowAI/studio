@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -66,10 +67,10 @@ export function LandingPageNavigation() {
           scrolled ? "border-b border-slate-200/50 bg-background/80 backdrop-blur-lg" : "bg-transparent"
         )}
       >
-        <div className="container mx-auto flex h-24 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Logo */}
           <div className="flex-shrink-0">
-            <Logo href="/" size={48} />
+            <Logo href="/" size={40} />
           </div>
 
           {/* Center: Desktop Nav */}
@@ -125,7 +126,7 @@ export function LandingPageNavigation() {
             <StarBorder
               as="a"
               href="#contact"
-              className="[&>div:last-child]:text-base [&>div:last-child]:font-semibold [&>div:last-child]:py-3 [&>div:last-child]:px-5 [&>div:last-child]:bg-gradient-to-r [&>div:last-child]:from-teal-500 [&>div:last-child]:to-blue-600 [&>div:last-child]:text-white [&>div:last-child]:border-transparent"
+              className="[&>div:last-child]:text-base [&>div:last-child]:font-semibold [&>div:last-child]:py-3 [&>div:last-child]:px-5 [&>div:last-child]:bg-gradient-to-r [&>div:last-child]:from-teal-500 [&>div:last-child]:to-blue-600 [&>div:last-child]:text-white [&>div:last-child]:border-transparent [&>div:last-child]:hover:from-teal-600 [&>div:last-child]:hover:to-blue-700"
             >
               Request a Demo
             </StarBorder>
