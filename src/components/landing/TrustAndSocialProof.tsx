@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { ShieldCheck, CheckCircle, Star } from "lucide-react";
+import { ShieldCheck, CheckCircle, Star, Lock, Trophy, LifeBuoy } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // --- Trust Badge Component ---
@@ -33,6 +33,9 @@ export function TrustAndSocialProof() {
     { icon: ShieldCheck, text: "RERA Certified", color: "text-green-600" },
     { icon: CheckCircle, text: "ISO 27001", color: "text-blue-600" },
     { icon: Star, text: "5 Star Rated", color: "text-yellow-500" },
+    { icon: Lock, text: "Data Privacy Compliant", color: "text-purple-600" },
+    { icon: Trophy, text: "Award-Winning AI", color: "text-orange-600" },
+    { icon: LifeBuoy, text: "24/7 Dedicated Support", color: "text-sky-600" },
   ];
 
   return (
@@ -45,7 +48,7 @@ export function TrustAndSocialProof() {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Trust Badges */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-3xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
           {badges.map((badge, index) => (
             <TrustBadge key={index} icon={badge.icon} text={badge.text} colorClass={badge.color} />
           ))}
