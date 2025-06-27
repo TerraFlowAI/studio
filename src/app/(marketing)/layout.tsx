@@ -1,6 +1,7 @@
 
 import { LandingPageNavigation } from "@/components/layout/LandingPageNavigation";
 import { Footer } from "@/components/layout/Footer";
+import { TerraChatBubble } from "@/components/chatbot/TerraChatBubble";
 
 export default function MarketingLayout({
   children,
@@ -13,6 +14,7 @@ export default function MarketingLayout({
       <main className="flex-grow pt-16">
         {children}
       </main>
+      <TerraChatBubble />
       <Footer />
     </div>
   );
