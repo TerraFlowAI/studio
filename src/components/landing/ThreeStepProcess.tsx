@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -138,7 +137,7 @@ export function ThreeStepProcess() {
           })}
           
           {/* Spacer div to push the button down */}
-          <div className="h-24" />
+          <div className="h-40" />
 
           <motion.div
             initial={{ opacity: 0 }}
