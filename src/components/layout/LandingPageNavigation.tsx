@@ -17,6 +17,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
+import { StarBorder } from "@/components/ui/star-border";
 
 
 const navLinks = [
@@ -122,9 +123,9 @@ export function LandingPageNavigation() {
 
           {/* Right: CTAs */}
           <div className="hidden md:flex items-center space-x-2">
-            <Button asChild>
-              <Link href="#contact">Request a Demo</Link>
-            </Button>
+            <StarBorder as="a" href="#contact" className="[&>div:last-child]:text-sm [&>div:last-child]:font-medium [&>div:last-child]:py-2 [&>div:last-child]:px-4">
+              Request a Demo
+            </StarBorder>
             <Button asChild variant="ghost">
               <Link href="/login">Login</Link>
             </Button>
