@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -29,7 +30,7 @@ const navLinks = [
 const solutionsDropdownLinks = {
   byRole: [
     { name: "For Agents", description: "AI tools to boost individual agent productivity.", href: "/solutions/agents", icon: Users },
-    { name: "For Developers", description: "Streamline project management and sales cycles.", href: "#", icon: Building },
+    { name: "For Developers", description: "Streamline project management and sales cycles.", href: "/solutions/developers", icon: Building },
     { name: "For Brokerages", description: "Scale your business with an end-to-end OS.", href: "#", icon: Code },
   ],
   byService: [
