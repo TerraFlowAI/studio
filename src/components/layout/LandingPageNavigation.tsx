@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -85,14 +86,14 @@ export function LandingPageNavigation() {
 
           {/* Right: CTAs */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button asChild variant="ghost" className="text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white">
-              <Link href="/login">Login</Link>
-            </Button>
             <Button asChild className="group relative overflow-hidden bg-slate-900 text-white shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl dark:bg-slate-800">
                <Link href="#contact">
                     <div className="absolute inset-0 w-0 bg-primary transition-all duration-[250ms] ease-out group-hover:w-full"></div>
                     <span className="relative">Request a Demo</span>
                 </Link>
+            </Button>
+            <Button asChild variant="ghost" className="text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white">
+              <Link href="/login">Login</Link>
             </Button>
           </div>
 
@@ -188,11 +189,11 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
       ))}
     </nav>
     <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
-        <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
-            <Link href="/login" onClick={onDismiss}>Login</Link>
-        </Button>
         <Button asChild className="w-full py-3 text-lg bg-primary text-primary-foreground hover:bg-primary/90">
             <Link href="#contact" onClick={onDismiss}>Request a Demo</Link>
+        </Button>
+        <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
+            <Link href="/login" onClick={onDismiss}>Login</Link>
         </Button>
     </div>
   </motion.div>

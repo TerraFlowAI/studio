@@ -39,10 +39,15 @@ export const setAdminRole = functions.https.onCall(async (request) => {
   // 2. Input Validation: Access email and role from the 'data' property.
   const email = request.data.email;
   const role = request.data.role;
-  if (typeof email !== "string" || !email || typeof role !== "string" || !role) {
+  if (
+    typeof email !== "string" ||
+    !email ||
+    typeof role !== "string" ||
+    !role
+  ) {
     throw new functions.https.HttpsError(
-      "invalid-argument",
-      "The function requires an 'email' and 'role' argument.",
+        "invalid-argument",
+        "The function requires an 'email' and 'role' argument.",
     );
   }
 
@@ -68,8 +73,8 @@ export const setAdminRole = functions.https.onCall(async (request) => {
         supabaseError,
       );
       throw new functions.https.HttpsError(
-        "internal",
-        "Failed to update role in the database.",
+          "internal",
+          "Failed to update role in the database.",
       );
     }
 
@@ -82,13 +87,13 @@ export const setAdminRole = functions.https.onCall(async (request) => {
     console.error("Error setting custom role:", error);
     if (error.message.includes("USER_NOT_FOUND")) {
       throw new functions.https.HttpsError(
-        "not-found",
-        "User with the provided email does not exist.",
+          "not-found",
+          "User with the provided email does not exist.",
       );
     }
     throw new functions.https.HttpsError(
-      "internal",
-      "An unexpected error occurred while setting the user role.",
+        "internal",
+        "An unexpected error occurred while setting the user role.",
     );
   }
 });
