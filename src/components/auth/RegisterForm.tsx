@@ -58,9 +58,9 @@ export default function RegisterForm() {
   return (
     <>
       <div className="mb-8 text-center">
-        <Logo href="/" className="justify-center mb-2" size={44} />
+        <Logo href="/" className="justify-center mb-4" size={80} layout="vertical" />
         <h1 className="text-2xl font-bold">Create Your Account</h1>
-        <p className="text-muted-foreground">Start your journey with TerraFlowAI.</p>
+        <p className="text-muted-foreground">Start your journey with TerraFlow.</p>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

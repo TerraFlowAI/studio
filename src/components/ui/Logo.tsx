@@ -9,11 +9,20 @@ interface LogoProps {
   size?: number; 
   hideText?: boolean;
   onClick?: () => void;
+  layout?: 'horizontal' | 'vertical';
 }
 
-export const Logo = ({ className, href = '/', size = 40, hideText = false, onClick }: LogoProps) => {
+export const Logo = ({ className, href = '/', size = 40, hideText = false, onClick, layout = 'horizontal' }: LogoProps) => {
   return (
-    <Link href={href} className={cn("flex items-center gap-3 group", className)} onClick={onClick}>
+    <Link 
+        href={href} 
+        className={cn(
+            "flex items-center group", 
+            layout === 'horizontal' ? 'flex-row gap-3' : 'flex-col gap-2',
+            className
+        )} 
+        onClick={onClick}
+    >
       <div 
         className="relative shrink-0" 
         style={{ width: size, height: size }}
