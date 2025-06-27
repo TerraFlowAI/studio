@@ -7,8 +7,18 @@ import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/Logo";
-import { Menu, X, Users, Code, Building, Zap, BarChart3, PenSquare } from "lucide-react";
+import { Menu, X, Users, Code, Building, Zap, BarChart3, PenSquare, ShieldCheck } from "lucide-react";
 import { StarBorder } from "@/components/ui/star-border";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle
+} from "@/components/ui/navigation-menu";
+
 
 const navLinks = [
   { name: "Features", href: "#features" },
@@ -24,9 +34,10 @@ const solutionsDropdownLinks = {
     { name: "For Brokerages", description: "Scale your business with an end-to-end OS.", href: "#", icon: Code },
   ],
   byService: [
-    { name: "TerraLead™", href: "#", icon: Zap },
-    { name: "TerraValuate™", href: "#", icon: BarChart3 },
-    { name: "TerraScribe™", href: "#", icon: PenSquare },
+    { name: "TerraLead™", href: "#", icon: Zap, description: "Capture, qualify, and nurture leads automatically." },
+    { name: "TerraValuate™ & MarketIntel™", href: "#", icon: BarChart3, description: "Get precise, data-driven property valuations." },
+    { name: "TerraScribe™ & TerraVision™", href: "#", icon: PenSquare, description: "Generate content and immersive VR tours." },
+    { name: "TerraSmartFlow™ & TerraSecure™", href: "#", icon: ShieldCheck, description: "Automate workflows with bank-grade security." },
   ],
 };
 
@@ -36,7 +47,6 @@ export function LandingPageNavigation() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [hoveredSolution, setHoveredSolution] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -64,25 +74,51 @@ export function LandingPageNavigation() {
           </div>
 
           {/* Center: Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-2">
-            {navLinks.map((link) => (
-              <div
-                key={link.name}
-                onMouseEnter={() => link.dropdown && setHoveredSolution(true)}
-                onMouseLeave={() => link.dropdown && setHoveredSolution(false)}
-                className="relative"
-              >
-                <Link href={link.href} className="group relative px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
-                    {link.name}
-                    <span className="absolute bottom-0 left-0 h-0.5 w-full origin-center scale-x-0 bg-primary transition-transform group-hover:scale-x-100"></span>
-                </Link>
-                {link.dropdown && (
-                  <AnimatePresence>
-                    {hoveredSolution && <SolutionsDropdown />}
-                  </AnimatePresence>
-                )}
-              </div>
-            ))}
+          <nav className="hidden md:flex">
+             <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <Link href="#features" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Features
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Solutions</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="grid grid-cols-2 gap-4 p-4 w-[600px]">
+                      <div className="space-y-1">
+                        <h3 className="font-semibold text-sm text-primary px-3">By Role</h3>
+                        {solutionsDropdownLinks.byRole.map(({ name, description, href, icon: Icon }) => (
+                           <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
+                        ))}
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="font-semibold text-sm text-primary px-3">By Service</h3>
+                        {solutionsDropdownLinks.byService.map(({ name, description, href, icon: Icon }) => (
+                           <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
+                        ))}
+                      </div>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                 <NavigationMenuItem>
+                  <Link href="/pricing" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Pricing
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/about" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Company
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </nav>
 
           {/* Right: CTAs */}
@@ -112,42 +148,15 @@ export function LandingPageNavigation() {
   );
 }
 
-const SolutionsDropdown = () => (
-    <motion.div 
-        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -10, scale: 0.95 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-screen max-w-md"
-    >
-        <div className="overflow-hidden rounded-xl bg-white/80 shadow-lg ring-1 ring-slate-900/5 backdrop-blur-lg dark:bg-slate-900/80 dark:ring-white/10">
-            <div className="grid grid-cols-2 gap-4 p-4">
-                <div className="space-y-1">
-                    <h3 className="font-semibold text-sm text-primary">By Role</h3>
-                    {solutionsDropdownLinks.byRole.map(({ name, description, href, icon: Icon }) => (
-                       <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
-                    ))}
-                </div>
-                 <div className="space-y-1">
-                    <h3 className="font-semibold text-sm text-primary">By Service</h3>
-                    {solutionsDropdownLinks.byService.map(({ name, href, icon: Icon }) => (
-                       <DropdownListItem key={name} href={href} title={name} icon={Icon} />
-                    ))}
-                </div>
-            </div>
-        </div>
-    </motion.div>
-);
-
 const DropdownListItem: React.FC<{ href: string; title: string; children?: React.ReactNode; icon: React.ElementType }> = ({ href, title, children, icon: Icon }) => (
   <Link href={href} className="group block rounded-lg p-3 text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-800">
-    <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+    <div className="flex items-start gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white shrink-0">
             <Icon className="h-5 w-5" />
         </div>
         <div>
             <p className="font-semibold text-slate-900 dark:text-white">{title}</p>
-            {children && <p className="text-slate-500 dark:text-slate-400">{children}</p>}
+            {children && <p className="text-slate-500 dark:text-slate-400 text-xs leading-snug">{children}</p>}
         </div>
     </div>
   </Link>
