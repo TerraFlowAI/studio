@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/Logo";
 import { Menu, X, Users, Code, Building, Zap, BarChart3, PenSquare, ShieldCheck } from "lucide-react";
-import { StarBorder } from "@/components/ui/star-border";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -122,11 +121,11 @@ export function LandingPageNavigation() {
           </nav>
 
           {/* Right: CTAs */}
-          <div className="hidden md:flex items-center space-x-4">
-            <StarBorder as="a" href="#contact" className="[&>div]:text-sm [&>div]:font-medium [&>div]:py-2 [&>div]:px-4">
-              Request a Demo
-            </StarBorder>
-            <Button asChild variant="ghost" className="text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white">
+          <div className="hidden md:flex items-center space-x-2">
+            <Button asChild>
+              <Link href="#contact">Request a Demo</Link>
+            </Button>
+            <Button asChild variant="ghost">
               <Link href="/login">Login</Link>
             </Button>
           </div>
@@ -198,9 +197,11 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
       ))}
     </nav>
     <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
-        <StarBorder as="a" href="#contact" onClick={onDismiss} className="w-full [&>div]:text-lg [&>div]:py-3">
-          Request a Demo
-        </StarBorder>
+        <Button asChild className="w-full text-lg py-3">
+            <Link href="#contact" onClick={onDismiss}>
+                Request a Demo
+            </Link>
+        </Button>
         <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
             <Link href="/login" onClick={onDismiss}>Login</Link>
         </Button>
