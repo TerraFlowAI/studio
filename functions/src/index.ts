@@ -25,20 +25,20 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
  * HTTP-callable function to set a user's role (e.g., 'admin').
  * Must be called by an existing administrator.
  */
-export const setAdminRole = functions.https.onCall(async (data, context) => {
+export const setAdminRole = functions.https.onCall(async (request) => {
   // 1. Security Check: Ensure the caller is an administrator.
   /*
-if (context.auth?.token?.admin !== true) {
-  throw new functions.https.HttpsError(
-    "unauthenticated",
-    "The function must be called by an administrator.",
-  );
-}
-*/
+  if (request.auth?.token?.admin !== true) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "The function must be called by an administrator.",
+    );
+  }
+  */
 
-  // 2. Input Validation: Check for required email and role fields.
-  const email = data.email;
-  const role = data.role;
+  // 2. Input Validation: Access email and role from the 'data' property.
+  const email = request.data.email;
+  const role = request.data.role;
   if (typeof email !== "string" || !email || typeof role !== "string" || !role) {
     throw new functions.https.HttpsError(
       "invalid-argument",
