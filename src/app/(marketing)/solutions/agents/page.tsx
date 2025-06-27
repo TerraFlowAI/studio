@@ -231,7 +231,7 @@ const AgentFeaturesSection = () => {
                        Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">AI Co-Pilot</span> for Every Step of the Sale.
                     </h2>
                     <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mt-4">
-                       TerraFlow isn't just another CRM. It's a suite of intelligent tools designed to automate your busywork and empower you with the insights you need to become a top performer.
+                       More than a CRM, TerraFlow offers intelligent AI tools for real estate agents to automate busywork, gain data-driven insights, and close more deals.
                     </p>
                 </motion.div>
                 <div className="divide-y divide-slate-200">
@@ -357,8 +357,8 @@ export default function AgentsSolutionPage() {
                 <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">Simple, transparent plans designed for the individual agent.</p>
              </div>
              <motion.div
-                initial="hidden"
-                whileInView="visible"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
                 className="flex items-center justify-center gap-4 my-8"
