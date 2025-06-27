@@ -1,3 +1,4 @@
+
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -59,8 +60,10 @@ export function ThreeStepProcess() {
         </motion.div>
 
         <div ref={targetRef} className="relative max-w-3xl mx-auto">
+          {/* Vertical Line: A static background track and an animated gradient fill */}
+          <div className="absolute left-1/2 top-0 -translate-x-1/2 h-full w-0.5 bg-slate-200" />
           <motion.div
-            className="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-slate-300 origin-top"
+            className="absolute left-1/2 top-0 -translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-teal-400 to-blue-500 origin-top"
             style={{ scaleY: lineScaleY }}
           />
 
@@ -79,10 +82,16 @@ export function ThreeStepProcess() {
               [progressSegmentStart, progressSegmentEnd],
               [isRight ? 50 : -50, 0]
             );
-             const scale = useTransform(
+            // Enhanced "pop" and "glow" animation for the nodes
+            const nodeScale = useTransform(
               scrollYProgress,
-              [progressSegmentStart, progressSegmentEnd],
-              [0.8, 1]
+              [progressSegmentStart, progressSegmentStart + 0.1, progressSegmentEnd, progressSegmentEnd + 0.1],
+              [1, 1.1, 1.1, 1]
+            );
+            const nodeBoxShadow = useTransform(
+              scrollYProgress,
+              [progressSegmentStart, progressSegmentStart + 0.1, progressSegmentEnd, progressSegmentEnd + 0.1],
+              ["0px 0px 0px hsla(var(--primary), 0)", "0px 0px 25px hsla(var(--primary), 0.3)", "0px 0px 25px hsla(var(--primary), 0.3)", "0px 0px 0px hsla(var(--primary), 0)"]
             );
 
             const Icon = step.icon;
@@ -94,10 +103,10 @@ export function ThreeStepProcess() {
                   "relative flex justify-center items-start min-h-[280px]"
                 )}
               >
-                {/* Node on the line */}
+                {/* Node on the line with new animations */}
                 <motion.div 
                     className="sticky top-1/2 -translate-y-1/2 z-10"
-                    style={{ scale }}
+                    style={{ scale: nodeScale, boxShadow: nodeBoxShadow, borderRadius: '9999px' }}
                 >
                   <div className="w-14 h-14 bg-white border-4 border-slate-300 rounded-full flex items-center justify-center">
                     <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg">
