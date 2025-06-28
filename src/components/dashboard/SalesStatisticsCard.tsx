@@ -1,21 +1,49 @@
 
 "use client";
+import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
-interface SalesStatisticsCardProps {
-  chartData: {
-    labels: string[];
-    datasets: Array<{ data: number[]; color: string; name?: string }>;
-  };
+interface FullSalesData {
+  labels: string[];
+  datasets: Array<{ data: number[]; color: string; name?: string }>;
 }
 
-export function SalesStatisticsCard({ chartData }: SalesStatisticsCardProps) {
-  const dataForChart = chartData.labels.map((label, index) => {
+interface SalesStatisticsCardProps {
+  chartData: FullSalesData;
+}
+
+type TimeRange = "3m" | "6m" | "12m";
+
+const timeRangeLabels: Record<TimeRange, string> = {
+  "3m": "Last 3 Months",
+  "6m": "Last 6 Months",
+  "12m": "Last 12 Months",
+};
+
+export function SalesStatisticsCard({ chartData: fullChartData }: SalesStatisticsCardProps) {
+  const [timeRange, setTimeRange] = React.useState<TimeRange>("6m");
+
+  const filteredChartData = React.useMemo(() => {
+    const rangeMap = { "3m": 3, "6m": 6, "12m": 12 };
+    const monthsToShow = rangeMap[timeRange];
+
+    const labels = fullChartData.labels.slice(-monthsToShow);
+    const datasets = fullChartData.datasets.map(dataset => ({
+      ...dataset,
+      data: dataset.data.slice(-monthsToShow),
+    }));
+
+    return { labels, datasets };
+  }, [timeRange, fullChartData]);
+
+
+  const dataForChart = filteredChartData.labels.map((label, index) => {
     const entry: { name: string; [key: string]: any } = { name: label };
-    chartData.datasets.forEach((dataset, i) => {
+    filteredChartData.datasets.forEach((dataset, i) => {
       entry[`line${i + 1}`] = dataset.data[index];
     });
     return entry;
@@ -28,7 +56,7 @@ export function SalesStatisticsCard({ chartData }: SalesStatisticsCardProps) {
           <p className="label text-sm font-medium text-foreground">{`${label}`}</p>
           {payload.map((pld: any, index: number) => (
             <div key={index} style={{ color: pld.stroke }} className="text-xs">
-              {`${chartData.datasets[index]?.name || `Series ${index + 1}`}: ₹${pld.value.toLocaleString()}`}
+              {`${filteredChartData.datasets[index]?.name || `Series ${index + 1}`}: ₹${pld.value.toLocaleString()}`}
             </div>
           ))}
         </div>
@@ -44,9 +72,18 @@ export function SalesStatisticsCard({ chartData }: SalesStatisticsCardProps) {
         <div>
           <CardTitle className="text-xl font-semibold font-headline text-foreground">Sales Statistics</CardTitle>
         </div>
-        <Button variant="outline" size="sm" className="text-muted-foreground hover:text-foreground hover:border-primary/50">
-          Last 6 months <ChevronDown className="ml-1 h-4 w-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="text-muted-foreground hover:text-foreground hover:border-primary/50">
+              {timeRangeLabels[timeRange]} <ChevronDown className="ml-1 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onSelect={() => setTimeRange("3m")}>Last 3 Months</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setTimeRange("6m")}>Last 6 Months</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setTimeRange("12m")}>Last 12 Months</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
       <CardContent>
         <div className="h-[350px] w-full mb-6 -ml-4">
@@ -60,9 +97,9 @@ export function SalesStatisticsCard({ chartData }: SalesStatisticsCardProps) {
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
               <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(value) => `₹${value/1000}k`} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(value) => `₹${value/1000000}M`} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} cursor={{stroke: 'hsl(var(--primary))', strokeWidth:1, strokeDasharray: "3 3"}}/>
-              {chartData.datasets.map((dataset, index) => (
+              {filteredChartData.datasets.map((dataset, index) => (
                 <Line 
                   key={index} 
                   type="monotone" 

@@ -23,19 +23,19 @@ const mockDashboardData = {
         totalSales: { value: '₹4.5Cr', trend: '+₹1.2Cr from last month' }
     },
     salesData: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
         datasets: [{
             name: 'This Year',
-            data: [1200000, 1900000, 3000000, 5000000, 2300000, 3200000],
+            data: [1200000, 1900000, 3000000, 5000000, 2300000, 3200000, 4500000, 4800000, 4200000, 6000000, 5500000, 7000000],
             color: 'hsl(var(--primary))'
         }, {
             name: 'Last Year',
-            data: [800000, 1200000, 4000000, 2500000, 4000000, 4500000],
+            data: [800000, 1200000, 4000000, 2500000, 4000000, 4500000, 4100000, 4300000, 3800000, 5500000, 5000000, 6500000],
             color: 'hsl(var(--muted-foreground))'
         }]
     },
     recentProperties: [
-        { id: "prop1", title: "Luxury Villa with Pool", locality: "Indiranagar, Bangalore", price: "₹7 Cr", imageUrl: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811', aiHint: "luxury villa" },
+        { id: "prop1", title: "Luxury Villa with Pool", locality: "Indiranagar, Bangalore", price: "₹7 Cr", imageUrl: 'https://images.unsplash.com/photo-1717167398817-121e3c283dbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsdXh1cnklMjB2aWxsYSUyMHxlbnwwfHx8fDE3NTExMTk5NzZ8MA&ixlib=rb-4.1.0&q=80&w=1080', aiHint: "luxury villa" },
         { id: "prop2", title: "Modern 3BHK Apartment", locality: "Koramangala, Bangalore", price: "₹2.5 Cr", imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267', aiHint: "modern apartment" },
         { id: "prop3", title: "Spacious 2BHK Flat", locality: "Whitefield, Bangalore", price: "₹1.1 Cr", imageUrl: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45', aiHint: "apartment interior" },
     ],
