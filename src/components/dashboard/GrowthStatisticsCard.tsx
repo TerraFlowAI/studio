@@ -1,20 +1,22 @@
 
 "use client";
+import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown, ArrowUpRight } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
-interface GrowthChartData {
-  quarter: string;
+interface GrowthChartPoint {
+  month: string;
   sale: number;
   rent: number;
 }
 
 interface GrowthStatisticsCardProps {
   totalRevenue: string;
-  chartData: GrowthChartData[];
+  monthlyData: GrowthChartPoint[];
 }
 
 const chartConfig = {
@@ -22,7 +24,32 @@ const chartConfig = {
   rent: { label: "Property Rent", color: "hsl(var(--accent))" },
 };
 
-export function GrowthStatisticsCard({ totalRevenue, chartData }: GrowthStatisticsCardProps) {
+type TimeRange = "quarterly" | "yearly";
+
+export function GrowthStatisticsCard({ totalRevenue, monthlyData }: GrowthStatisticsCardProps) {
+  const [timeRange, setTimeRange] = React.useState<TimeRange>("yearly");
+
+  const chartData = React.useMemo(() => {
+    if (timeRange === 'quarterly') {
+      const quarterlyData: { name: string; sale: number; rent: number }[] = [
+        { name: 'Q1', sale: 0, rent: 0 },
+        { name: 'Q2', sale: 0, rent: 0 },
+        { name: 'Q3', sale: 0, rent: 0 },
+        { name: 'Q4', sale: 0, rent: 0 },
+      ];
+      monthlyData.forEach((monthData, index) => {
+        const quarterIndex = Math.floor(index / 3);
+        if (quarterlyData[quarterIndex]) {
+            quarterlyData[quarterIndex].sale += monthData.sale;
+            quarterlyData[quarterIndex].rent += monthData.rent;
+        }
+      });
+      return quarterlyData;
+    }
+    // Yearly view (all months)
+    return monthlyData.map(d => ({ name: d.month, sale: d.sale, rent: d.rent }));
+  }, [monthlyData, timeRange]);
+  
   return (
     <Card className="shadow-lg bg-card h-full">
       <CardHeader>
@@ -31,9 +58,17 @@ export function GrowthStatisticsCard({ totalRevenue, chartData }: GrowthStatisti
             <CardTitle className="text-xl font-semibold font-headline text-foreground">Growth Statistics</CardTitle>
             <CardDescription>Total Revenue</CardDescription>
           </div>
-          <Button variant="outline" size="sm" className="text-xs shrink-0">
-            Yearly <ChevronDown className="ml-1 h-4 w-4" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="text-xs shrink-0 capitalize">
+                {timeRange} <ChevronDown className="ml-1 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onSelect={() => setTimeRange("quarterly")}>Quarterly</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setTimeRange("yearly")}>Yearly</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div className="flex items-baseline gap-2 pt-2">
             <p className="text-3xl font-bold text-foreground">{totalRevenue}</p>
@@ -48,7 +83,7 @@ export function GrowthStatisticsCard({ totalRevenue, chartData }: GrowthStatisti
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} barCategoryGap="20%">
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="quarter" tickLine={false} axisLine={false} tickMargin={8} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} />
+                    <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} />
                     <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `₹${value / 1000}k`} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} />
                     <Tooltip
                         cursor={{ fill: 'hsl(var(--accent))', radius: 4 }}

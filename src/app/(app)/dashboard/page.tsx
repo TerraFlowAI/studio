@@ -41,11 +41,19 @@ const mockDashboardData = {
     ],
     growthData: {
         totalRevenue: '₹7.32Cr',
-        chartData: [
-            { quarter: 'Q1', sale: 150000, rent: 80000 },
-            { quarter: 'Q2', sale: 220000, rent: 110000 },
-            { quarter: 'Q3', sale: 180000, rent: 90000 },
-            { quarter: 'Q4', sale: 250000, rent: 130000 },
+        monthlyData: [
+            { month: "Jan", sale: 180000, rent: 90000 },
+            { month: "Feb", sale: 210000, rent: 100000 },
+            { month: "Mar", sale: 250000, rent: 110000 },
+            { month: "Apr", sale: 230000, rent: 115000 },
+            { month: "May", sale: 270000, rent: 120000 },
+            { month: "Jun", sale: 300000, rent: 130000 },
+            { month: "Jul", sale: 280000, rent: 125000 },
+            { month: "Aug", sale: 310000, rent: 135000 },
+            { month: "Sep", sale: 340000, rent: 140000 },
+            { month: "Oct", sale: 370000, rent: 150000 },
+            { month: "Nov", sale: 350000, rent: 145000 },
+            { month: "Dec", sale: 400000, rent: 160000 },
         ]
     }
 };
@@ -84,7 +92,7 @@ export default function DashboardPage() {
                     <SalesStatisticsCard chartData={salesData} />
                 </div>
                 <div className="lg:col-span-2">
-                    <GrowthStatisticsCard totalRevenue={growthData.totalRevenue} chartData={growthData.chartData} />
+                    <GrowthStatisticsCard totalRevenue={growthData.totalRevenue} monthlyData={growthData.monthlyData} />
                 </div>
             </div>
             
