@@ -1,16 +1,20 @@
 
 "use client";
 
+import * as React from "react";
+import type { DateRange } from "react-day-picker";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard";
 import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
 import { ListingBoard } from "@/components/dashboard/ListingBoard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp, FileSignature, ArrowRight } from "lucide-react";
+import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp, FileSignature, Upload, FileText, FileSpreadsheet, Share2 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker } from "@/components/shared/DateRangePicker";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 // Mock data as the hook was removed
 const mockDashboardData = {
@@ -42,6 +46,10 @@ const mockDashboardData = {
 export default function DashboardPage() {
     const { user, isLoading } = useAuth();
     const data = mockDashboardData; // Use mock data
+    const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
+        from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+        to: new Date(),
+    });
 
     if (isLoading || !data) {
         return <DashboardSkeleton />;
@@ -52,9 +60,39 @@ export default function DashboardPage() {
     return (
         <div className="container mx-auto">
             <PageHeader title={`Welcome, ${user?.displayName?.split(' ')[0] || 'Agent'}!`} description="Here's a snapshot of your real estate business.">
-                <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                    <Link href="/properties/new"><PlusCircle className="mr-2 h-4 w-4"/> Add New Property</Link>
-                </Button>
+                <div className="flex items-center gap-2">
+                    <DateRangePicker
+                        initialDateFrom={dateRange?.from}
+                        initialDateTo={dateRange?.to}
+                        onUpdate={(values) => setDateRange(values.range)}
+                        triggerClassName="h-10"
+                    />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button className="h-10">
+                                <Upload className="mr-2 h-4 w-4" /> Export
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => alert('Exporting as PDF...')}>
+                                <FileText className="mr-2 h-4 w-4" />
+                                <span>Export as PDF</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => alert('Exporting as CSV...')}>
+                                <FileSpreadsheet className="mr-2 h-4 w-4" />
+                                <span>Export as CSV</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => alert('Sharing report...')}>
+                                <Share2 className="mr-2 h-4 w-4" />
+                                <span>Share Report</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground h-10">
+                        <Link href="/properties/new"><PlusCircle className="mr-2 h-4 w-4"/> Add New Property</Link>
+                    </Button>
+                </div>
             </PageHeader>
             
             <div className="mb-8">
