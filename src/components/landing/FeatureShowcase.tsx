@@ -6,109 +6,28 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Bot, BarChart3, PenSquare, ShieldCheck, Target, Phone, CalendarCheck2, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from 'next/link';
 
 // --- NEW VISUAL COMPONENT FOR TERRALEAD ---
 const TerraLeadVisual = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.5,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100 } },
-  };
-  
-  const soundWaveVariants = {
-    hidden: { opacity: 0, scale: 0.5 },
-    visible: { 
-      opacity: [0.5, 1, 0], 
-      scale: [0.5, 1.2],
-      transition: { duration: 1, repeat: Infinity, repeatDelay: 1.5, ease: "easeInOut", delay: 1 } 
-    }
-  };
-
-  const phoneRingVariants = {
-      hidden: { rotate: 0 },
-      visible: { 
-        rotate: [0, -10, 10, -10, 10, 0], 
-        transition: { duration: 0.5, repeat: Infinity, repeatDelay: 1.5, ease: "easeInOut", delay: 2 } 
-      }
-  };
-  
-  const calendarEventVariants = {
-      hidden: { opacity: 0, y: -20 },
-      visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, delay: 3.5 } }
-  };
-
+  // To use a video, first create a 'videos' folder inside your 'public' directory.
+  // Then, place your video file (e.g., 'terralead-showcase.mp4') inside 'public/videos'.
+  // The 'src' attribute below will then correctly point to your video.
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.5 }}
-      className="relative w-full aspect-square sm:aspect-[4/3] bg-slate-100/80 dark:bg-slate-900/80 rounded-2xl p-6 flex items-center justify-center overflow-hidden"
-    >
-      {/* Background elements */}
-      <div className="absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(to_bottom,white,transparent)] dark:bg-grid-slate-700/30"></div>
-      
-      {/* Icons and flow */}
-      <div className="relative flex items-center justify-between w-full max-w-sm">
-        {/* 1. Lead Icon */}
-        <motion.div variants={itemVariants} className="flex flex-col items-center gap-1 z-10">
-          <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-lg border">
-            <Target className="w-8 h-8 text-blue-500" />
-          </div>
-          <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">New Lead</p>
-        </motion.div>
-
-        {/* 2. Phone Icon */}
-        <motion.div variants={itemVariants} className="flex flex-col items-center gap-1 z-10">
-           <motion.div 
-             variants={phoneRingVariants}
-             className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-lg border"
-           >
-            <Phone className="w-8 h-8 text-green-500" />
-           </motion.div>
-          <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">AI Call</p>
-        </motion.div>
-
-        {/* 3. Calendar Icon & Event */}
-        <motion.div variants={itemVariants} className="flex flex-col items-center gap-1 z-10">
-           <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-lg border relative">
-            <CalendarCheck2 className="w-8 h-8 text-purple-500" />
-            <motion.div 
-              variants={calendarEventVariants}
-              className="absolute -right-5 -bottom-2 w-20 bg-primary text-primary-foreground p-1.5 rounded-md shadow-xl text-left"
-            >
-                <p className="text-[10px] font-bold">Demo</p>
-                <p className="text-[9px] opacity-80">with Aarav Sharma</p>
-            </motion.div>
-           </div>
-          <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">Booked</p>
-        </motion.div>
-      </div>
-      
-      {/* Soundwave animation */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <motion.div
-            variants={soundWaveVariants}
-            className="w-24 h-24 rounded-full border-2 border-green-500"
-        />
-         <motion.div
-            variants={soundWaveVariants}
-            style={{animationDelay: "0.2s"}}
-            className="absolute top-0 left-0 w-24 h-24 rounded-full border-2 border-green-500"
-        />
-      </div>
-
-    </motion.div>
+    <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+      <video
+        key="/videos/terralead-showcase.mp4" // Adding a key helps React replace the element if the src changes
+        className="w-full h-full object-cover"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+    </div>
   );
 };
 
@@ -129,6 +48,7 @@ const featureBlocks = [
     cta: "Launch Your AI Sales Agent",
     layout: "text-left",
     visual: <TerraLeadVisual />,
+    href: "/leads",
   },
   {
     suiteName: "TerraValuate™ & MarketIntel™",
@@ -148,6 +68,7 @@ const featureBlocks = [
       alt: "Market intelligence dashboard showing charts and map data",
       hint: "data analytics map"
     },
+    href: "/terravaluate",
   },
   {
     suiteName: "TerraScribe™ & TerraVision™",
@@ -167,6 +88,7 @@ const featureBlocks = [
       alt: "Split screen showing a compliant document and a user in a VR tour",
       hint: "document verification VR"
     },
+    href: "/scribe",
   },
   {
     suiteName: "TerraSmartFlow™ & TerraSecure™",
@@ -186,6 +108,7 @@ const featureBlocks = [
       alt: "Workflow automation canvas with security checks",
       hint: "workflow security automation"
     },
+    href: "/smartflow",
   },
 ];
 
@@ -233,9 +156,11 @@ const FeatureBlock = ({ block }: { block: typeof featureBlocks[0] }) => {
               </div>
             ))}
           </div>
-          <Button variant="link" className="text-primary text-lg p-0 h-auto group">
-            {block.cta}
-            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+          <Button variant="link" asChild className="text-primary text-lg p-0 h-auto group">
+            <Link href={block.href}>
+              {block.cta}
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </Link>
           </Button>
         </div>
 
