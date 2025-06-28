@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -55,7 +54,6 @@ export const mainNavItems: NavItem[] = [
 ];
 
 export const utilityNavItems: NavItem[] = [
-   { href: '/settings', label: 'Settings', icon: Settings },
    { href: '/help-support', label: 'Help & Support', icon: HelpCircle },
 ];
 
@@ -188,26 +186,6 @@ export function AppSidebar() {
               </Link>
             </SidebarMenuItem>
           ))}
-        <div className="flex items-center gap-3 pt-2">
-            <Image
-                src={user?.photoURL || "https://placehold.co/40x40.png"}
-                alt="User Avatar"
-                width={36}
-                height={36}
-                className="rounded-full"
-                data-ai-hint="person avatar"
-            />
-            {(state === 'expanded' || isMobile) && (
-              <div>
-                <p className="text-sm font-semibold text-foreground">{user?.displayName || 'User'}</p>
-                <p className="text-xs text-muted-foreground">{user?.email}</p>
-              </div>
-            )}
-        </div>
-         <Button variant="ghost" className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-11 px-3" onClick={handleLogout}>
-            <LogOut className="h-5 w-5 mr-3 shrink-0" />
-             {(state === 'expanded' || isMobile) && <span>Logout</span>}
-        </Button>
       </SidebarFooter>
     </Sidebar>
   );
