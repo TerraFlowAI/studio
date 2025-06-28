@@ -255,11 +255,12 @@ export default function BrokeragesSolutionPage() {
       </section>
 
       {/* 2. Pain Point / Solution Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-16 md:py-24 bg-background relative">
+          <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem] opacity-20 dark:bg-slate-950 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)]"></div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">Your Command Center for Growth</h2>
-                <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">Solve your brokerage's biggest operational headaches with targeted AI.</p>
+                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800 dark:text-slate-100">Your Command Center for <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Growth</span></h2>
+                <p className="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">Solve your brokerage's biggest operational headaches with targeted AI.</p>
              </div>
              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
@@ -268,14 +269,16 @@ export default function BrokeragesSolutionPage() {
                     { icon: Star, title: "Lack of Brand Consistency?", solution: "Brand Hub", description: "Use shared templates in TerraScribe™ to ensure every listing and email is professional and on-brand." },
                 ].map((item, index) => (
                     <motion.div key={item.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
-                        <Card className="h-full text-center shadow-lg hover:shadow-xl transition-all">
-                            <CardHeader className="items-center">
-                                <div className="p-3 bg-primary/10 rounded-full mb-2"><item.icon className="h-8 w-8 text-primary" /></div>
-                                <CardTitle className="font-headline text-xl">{item.title}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">
-                                  <span className="font-semibold text-primary">{item.solution}</span>: {item.description}
+                        <Card className="h-full text-left shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group bg-background/80 backdrop-blur-sm border-border">
+                            <CardContent className="p-6">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="p-3 bg-primary/10 rounded-xl group-hover:bg-primary transition-colors duration-300">
+                                        <item.icon className="h-8 w-8 text-primary group-hover:text-white transition-colors duration-300" />
+                                    </div>
+                                    <h3 className="font-headline text-xl text-slate-800 dark:text-slate-100">{item.title}</h3>
+                                </div>
+                                <p className="text-slate-600 dark:text-slate-300">
+                                  <span className="font-bold text-primary">{item.solution}</span>: {item.description}
                                 </p>
                             </CardContent>
                         </Card>
