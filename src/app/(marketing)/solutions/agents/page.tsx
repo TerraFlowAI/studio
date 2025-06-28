@@ -49,11 +49,7 @@ const agentSpecificFeatureBlocks = [
       "Email & Social Media Templates: Generate engaging content for any channel.",
       "RERA-Compliant Clauses: Ensure your documentation is professional and compliant.",
     ],
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "AI content generation tool showing a property description being written",
-      hint: "ai writing editor",
-    },
+    videoSrc: "/videos/terrascribe-showcase.mp4",
     layout: "text-right",
   },
   {
@@ -65,11 +61,7 @@ const agentSpecificFeatureBlocks = [
       "Professional CMA Reports: Impress sellers and justify your pricing strategy.",
       "Neighborhood Trend Analysis: Become the undisputed local market expert.",
     ],
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "A clean, professional CMA report being generated instantly",
-      hint: "market analysis report",
-    },
+    videoSrc: "/videos/terravaluate-showcase.mp4",
     layout: "text-left",
   },
 ];

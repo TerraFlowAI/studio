@@ -52,11 +52,7 @@ const brokerageFeatureBlocks = [
       "White-labeling & Custom Branding",
     ],
     layout: "text-right",
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "System showing a library of shared content templates for a team",
-      hint: "template library interface"
-    },
+    videoSrc: "/videos/terrascribe-showcase.mp4",
   },
     {
     suiteName: "SmartFlow™ & Admin Controls",
@@ -69,11 +65,7 @@ const brokerageFeatureBlocks = [
       "Role-based Permissions & Access",
     ],
     layout: "text-left",
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "Workflow automation canvas showing a team process",
-      hint: "workflow automation canvas"
-    },
+    videoSrc: "/videos/smartflow-showcase.mp4",
   },
 ];
 

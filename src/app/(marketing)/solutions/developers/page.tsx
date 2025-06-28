@@ -52,11 +52,7 @@ const developerFeatureBlocks = [
       "Optimal Unit Mix & Pricing Strategy",
     ],
     layout: "text-left",
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "AI market analysis dashboard showing heatmaps and charts for developers",
-      hint: "data analytics map"
-    },
+    videoSrc: "/videos/terravaluate-showcase.mp4",
   },
   {
     suiteName: "SmartFlow™ & TerraSecure™",
@@ -69,11 +65,7 @@ const developerFeatureBlocks = [
       "E-Khata & Compliance Verification",
     ],
     layout: "text-right",
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "Project management dashboard with Gantt charts and compliance checklists",
-      hint: "gantt chart dashboard"
-    },
+    videoSrc: "/videos/smartflow-showcase.mp4",
   },
 ];
 

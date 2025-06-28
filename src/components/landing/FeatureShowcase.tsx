@@ -8,30 +8,6 @@ import { CheckCircle, ArrowRight, Bot, BarChart3, PenSquare, ShieldCheck, Target
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
 
-// --- NEW VISUAL COMPONENT FOR TERRALEAD ---
-const TerraLeadVisual = () => {
-  // To use a video, first create a 'videos' folder inside your 'public' directory.
-  // Then, place your video file (e.g., 'terralead-showcase.mp4') inside 'public/videos'.
-  // The 'src' attribute below will then correctly point to your video.
-  return (
-    <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
-      <video
-        key="/videos/terralead-showcase.mp4" // Adding a key helps React replace the element if the src changes
-        className="w-full h-full object-cover"
-        autoPlay
-        loop
-        muted
-        playsInline
-      >
-        <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-    </div>
-  );
-};
-
-
 // Data structure for feature blocks
 const featureBlocks = [
   {
@@ -47,7 +23,22 @@ const featureBlocks = [
     metrics: ["100% Lead Engagement Rate", "95% Less Manual Work"],
     cta: "Launch Your AI Sales Agent",
     layout: "text-left",
-    visual: <TerraLeadVisual />,
+    visual: (
+      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video
+          key="/videos/terralead-showcase.mp4"
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     href: "/leads",
   },
   {
@@ -63,11 +54,22 @@ const featureBlocks = [
     metrics: ["99% Valuation Accuracy", "50k+ Properties Analyzed"],
     cta: "Discover Valuation Tools",
     layout: "text-right",
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "Market intelligence dashboard showing charts and map data",
-      hint: "data analytics map"
-    },
+    visual: (
+      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video
+          key="/videos/terravaluate-showcase.mp4"
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/videos/terravaluate-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     href: "/terravaluate",
   },
   {
@@ -83,11 +85,22 @@ const featureBlocks = [
     metrics: ["10x Faster Content Creation", "100% RERA-Ready Docs"],
     cta: "Explore Content Automation",
     layout: "text-left",
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "Split screen showing a compliant document and a user in a VR tour",
-      hint: "document verification VR"
-    },
+    visual: (
+      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video
+          key="/videos/terrascribe-showcase.mp4"
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/videos/terrascribe-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     href: "/scribe",
   },
   {
@@ -103,11 +116,22 @@ const featureBlocks = [
     metrics: ["95% Task Automation", "100% Secure Transactions"],
     cta: "Configure Your Workflows",
     layout: "text-right",
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "Workflow automation canvas with security checks",
-      hint: "workflow security automation"
-    },
+    visual: (
+      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video
+          key="/videos/smartflow-showcase.mp4"
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/videos/smartflow-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     href: "/smartflow",
   },
 ];
