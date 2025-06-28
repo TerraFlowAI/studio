@@ -2,16 +2,11 @@
 "use client"; // Add this directive
 
 import * as React from "react";
-import type { DateRange } from "react-day-picker";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChart, TrendingUp, Users, ShieldAlert, Upload, FileText, Share2 } from "lucide-react"; 
+import { BarChart, LineChart, TrendingUp, Users, ShieldAlert } from "lucide-react"; 
 import { ResponsiveContainer, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Line, ComposedChart } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart"; 
-import { DateRangePicker } from "@/components/shared/DateRangePicker";
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { FileSpreadsheet } from "lucide-react";
 
 const chartData = [
   { month: "Jan", sales: 65, forecast: 70, price: 450000 },
@@ -31,48 +26,12 @@ const chartConfig = {
 
 
 export default function MarketAnalyticsPage() {
-    const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
-        from: new Date(new Date().setMonth(new Date().getMonth() - 6)),
-        to: new Date(),
-    });
-
   return (
     <div className="container mx-auto">
       <PageHeader 
         title="Predictive Market Analytics" 
         description="Forecast market trends, buyer behavior, and investment risks to guide smarter decisions." 
-      >
-        <div className="flex items-center gap-2">
-            <DateRangePicker
-                initialDateFrom={dateRange?.from}
-                initialDateTo={dateRange?.to}
-                onUpdate={(values) => setDateRange(values.range)}
-                triggerClassName="h-10"
-            />
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button className="h-10 bg-primary hover:bg-primary/90 text-primary-foreground">
-                        <Upload className="mr-2 h-4 w-4" /> Export Report
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => alert('Exporting as PDF...')}>
-                        <FileText className="mr-2 h-4 w-4" />
-                        <span>Export as PDF</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => alert('Exporting as CSV...')}>
-                        <FileSpreadsheet className="mr-2 h-4 w-4" />
-                        <span>Export as CSV</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => alert('Sharing report...')}>
-                        <Share2 className="mr-2 h-4 w-4" />
-                        <span>Share Report</span>
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </div>
-      </PageHeader>
+      />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
         <Card className="shadow-lg">

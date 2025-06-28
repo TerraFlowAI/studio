@@ -2,16 +2,11 @@
 "use client"; // Add this directive
 
 import * as React from "react";
-import type { DateRange } from "react-day-picker";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChart, TrendingUp, Upload, FileText, Share2, FileSpreadsheet } from "lucide-react"; 
+import { BarChart, LineChart, TrendingUp, Users, ShieldAlert } from "lucide-react"; 
 import { ResponsiveContainer, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Line, ComposedChart } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart"; 
-import { DateRangePicker } from "@/components/shared/DateRangePicker";
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
 
 const chartData = [
   { month: "Jan", sales: 65, forecast: 70, price: 450000 },
@@ -31,48 +26,12 @@ const chartConfig = {
 
 
 export default function MarketAnalyticsPage() {
-    const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
-        from: new Date(new Date().setMonth(new Date().getMonth() - 6)),
-        to: new Date(),
-    });
-
   return (
     <div className="container mx-auto">
       <PageHeader 
         title="Predictive Market Analytics" 
         description="Forecast market trends, buyer behavior, and investment risks to guide smarter decisions." 
-      >
-        <div className="flex items-center gap-2">
-            <DateRangePicker
-                initialDateFrom={dateRange?.from}
-                initialDateTo={dateRange?.to}
-                onUpdate={(values) => setDateRange(values.range)}
-                triggerClassName="h-10"
-            />
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button className="h-10 bg-primary hover:bg-primary/90 text-primary-foreground">
-                        <Upload className="mr-2 h-4 w-4" /> Export Report
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => alert('Exporting as PDF...')}>
-                        <FileText className="mr-2 h-4 w-4" />
-                        <span>Export as PDF</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => alert('Exporting as CSV...')}>
-                        <FileSpreadsheet className="mr-2 h-4 w-4" />
-                        <span>Export as CSV</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => alert('Sharing report...')}>
-                        <Share2 className="mr-2 h-4 w-4" />
-                        <span>Share Report</span>
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </div>
-      </PageHeader>
+      />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
         <Card className="shadow-lg">
@@ -150,7 +109,3 @@ export default function MarketAnalyticsPage() {
     </div>
   );
 }
-
-// Dummy components for Chart, assuming they are available as per Shadcn UI
-const Users = ({ className }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
-const ShieldAlert = ({ className }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>;
