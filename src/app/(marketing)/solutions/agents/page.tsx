@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -309,7 +308,7 @@ export default function AgentsSolutionPage() {
                     </Button>
                 </div>
                  <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} className="relative mt-12">
-                    <Image src="https://placehold.co/800x450.png" alt="Dashboard for a single user" width={800} height={450} className="rounded-lg shadow-2xl object-cover mx-auto" data-ai-hint="dashboard user interface" />
+                    <Image src="https://placehold.co/1200x675.png" alt="Screenshot of the TerraFlow agent dashboard showing leads and analytics" width={1200} height={675} className="rounded-lg shadow-2xl object-cover mx-auto" data-ai-hint="agent dashboard" />
                 </motion.div>
             </motion.div>
         </div>
