@@ -2,7 +2,7 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { ArrowDown, Sparkles, Zap, TrendingUp, Brain, BarChart3, Users, Target, Activity, Loader2, Home, Settings, PieChart, MapPin, Camera, FileText, Calendar, Bell, User, Menu, Search, Filter, ShieldCheck } from 'lucide-react';
+import { ArrowDown, ArrowRight, Sparkles, Zap, TrendingUp, Brain, BarChart3, Users, Target, Activity, Loader2, Home, Settings, PieChart, MapPin, Camera, FileText, Calendar, Bell, User, Menu, Search, Filter, ShieldCheck } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
@@ -312,11 +312,12 @@ export const Hero = () => {
               asChild
               size="lg"
               variant="outline"
-              className="border-primary text-primary dark:text-white hover:bg-primary hover:text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-lg"
+              className="group border-primary text-primary dark:text-white hover:bg-primary hover:text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-lg"
               data-cta-click="hero-strategic-call"
             >
-              <Link href="#contact">
+              <Link href="#contact" className="flex items-center gap-2">
                 Book Free Strategic Call
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
           </div>
