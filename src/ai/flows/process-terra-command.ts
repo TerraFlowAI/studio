@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview A master AI agent to process user commands.
+ * @fileOverview A master AI agent to process user commands and perform autonomous actions.
  *
  * - processTerraCommand - A function that takes a user command and returns a text response.
  * - ProcessTerraCommandInput - The input type for the processTerraCommand function.
@@ -9,39 +9,157 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
+import Twilio from 'twilio';
 
+// Schemas remain the same as the user command and final response text are simple strings.
 const ProcessTerraCommandInputSchema = z.object({
   command: z.string().describe('The user command to be processed.'),
 });
 export type ProcessTerraCommandInput = z.infer<typeof ProcessTerraCommandInputSchema>;
 
 const ProcessTerraCommandOutputSchema = z.object({
-  responseText: z.string().describe('The AI-generated response to the user command.'),
+  responseText: z.string().describe('The AI-generated response to the user command, summarizing actions taken.'),
 });
 export type ProcessTerraCommandOutput = z.infer<typeof ProcessTerraCommandOutputSchema>;
 
 
-export async function processTerraCommand(input: ProcessTerraCommandInput): Promise<ProcessTerraCommandOutput> {
-  return processTerraCommandFlow(input);
-}
+// --- Tool Definitions ---
+
+// Placeholder/Mock for finding leads. In a real app, this would query Firestore.
+const findLeads = ai.defineTool(
+    {
+        name: 'findLeads',
+        description: 'Finds leads in the CRM based on status (e.g., "Hot", "New", "Contacted").',
+        inputSchema: z.object({ status: z.string() }),
+        outputSchema: z.array(z.object({ name: z.string(), phone: z.string() })),
+    },
+    async ({ status }) => {
+        console.log(`TOOL: Finding leads with status: ${status}`);
+        // Mock data. Replace with actual Firestore query.
+        if (status.toLowerCase() === 'hot') {
+            return [
+                { name: 'Aarav Sharma', phone: '+919876543210' },
+                { name: 'Priya Patel', phone: '+919123456789' },
+                { name: 'Rohan Kumar', phone: '+919988776655' },
+            ];
+        }
+        return [];
+    }
+);
+
+// Twilio Voice Call Tool
+const initiateVoiceCall = ai.defineTool(
+    {
+        name: 'initiateVoiceCall',
+        description: 'Initiates a voice call to a specified phone number with a given script.',
+        inputSchema: z.object({
+            phoneNumber: z.string().describe("The recipient's phone number in E.164 format (e.g., +14155552671)."),
+            script: z.string().describe('The script for the AI to say when the call connects. Should start with a greeting.'),
+        }),
+        outputSchema: z.string(),
+    },
+    async ({ phoneNumber, script }) => {
+        console.log(`TOOL: Calling ${phoneNumber} with script: "${script}"`);
+
+        const accountSid = process.env.TWILIO_ACCOUNT_SID;
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
+        const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+
+        if (!accountSid || !authToken || !twilioPhoneNumber) {
+            const errorMessage = "Error: Twilio credentials not configured in environment variables.";
+            console.error(errorMessage);
+            return errorMessage;
+        }
+
+        const client = Twilio(accountSid, authToken);
+        const twiml = `<Response><Say voice="Polly.Aditi">${script}</Say></Response>`;
+
+        try {
+            const call = await client.calls.create({
+                twiml: twiml,
+                to: phoneNumber,
+                from: twilioPhoneNumber,
+            });
+            console.log(`Call initiated with SID: ${call.sid}`);
+            return `Successfully initiated call to ${phoneNumber}.`;
+        } catch (error) {
+            console.error("Twilio call failed:", error);
+            return `Failed to initiate call to ${phoneNumber}.`;
+        }
+    }
+);
 
 
+// Placeholder for sending an email
+const sendEmail = ai.defineTool(
+    {
+        name: 'sendEmail',
+        description: 'Sends an email to a specified recipient.',
+        inputSchema: z.object({
+            recipientEmail: z.string().email(),
+            subject: z.string(),
+            body: z.string(),
+        }),
+        outputSchema: z.string(),
+    },
+    async ({ recipientEmail, subject }) => {
+        console.log(`TOOL: Pretending to send email to ${recipientEmail} with subject "${subject}"`);
+        // In a real app, integrate with Resend, SendGrid, etc.
+        return `Email queued for sending to ${recipientEmail}.`;
+    }
+);
+
+
+// Placeholder for creating a calendar appointment
+const createCalendarAppointment = ai.defineTool(
+    {
+        name: 'createCalendarAppointment',
+        description: 'Creates a new event in the user\'s calendar.',
+        inputSchema: z.object({
+            title: z.string(),
+            dateTime: z.string().datetime(),
+            attendees: z.array(z.string().email()),
+        }),
+        outputSchema: z.string(),
+    },
+    async ({ title, dateTime, attendees }) => {
+        console.log(`TOOL: Pretending to create calendar event "${title}" at ${dateTime} for ${attendees.join(', ')}`);
+        // In a real app, integrate with Google Calendar API
+        return `Successfully scheduled "${title}" in the calendar.`;
+    }
+);
+
+
+// The main prompt, now enhanced with a system message and tools
 const prompt = ai.definePrompt({
   name: 'processTerraCommandPrompt',
   input: {schema: ProcessTerraCommandInputSchema},
   output: {schema: ProcessTerraCommandOutputSchema},
-  prompt: `You are Terra, a helpful real estate AI assistant.
-  The user has given you a command. Acknowledge the command and provide a brief, friendly confirmation that you are working on it.
+  tools: [findLeads, initiateVoiceCall, sendEmail, createCalendarAppointment],
+  system: `You are Terra, an autonomous real estate AI assistant. Your goal is to help the user by performing actions on their behalf using the available tools.
+
+  Analyze the user's command and determine the sequence of tools required to fulfill the request.
   
-  For example, if the user says "Call my 3 hottest leads", you could respond with "On it. I'm calling your top 3 leads now and will schedule appointments if they are available."
+  - If a user asks to contact leads, first use the 'findLeads' tool to get their information.
+  - Then, for each lead, use the appropriate tool like 'initiateVoiceCall' or 'sendEmail'.
+  - When initiating a call, you must generate a brief, friendly, and professional script to be spoken. For example: "Hi [Lead Name], this is Terra, the AI assistant for your agent. I'm calling about your interest in our properties. Is now a good time to talk for a minute?"
+  - After using the tools, provide a clear, concise summary of the actions you have taken. Do not just list the tool outputs.
+  - If you cannot fulfill the request with the available tools, explain what you can do instead.
   
-  Do not try to actually perform the action, just provide a natural language confirmation.
-  
-  User command: {{{command}}}
+  Example user command: "Call my hot leads."
+  Your thought process should be:
+  1. Call 'findLeads' with status: 'Hot'.
+  2. Receive a list of leads, e.g., [{name: 'Priya', phone: '+91...'}, {name: 'Rohan', phone: '+91...'}].
+  3. For each lead, call 'initiateVoiceCall' with their phone number and a generated script.
+  4. Your final response to the user should be a summary, like "I've just initiated calls to 2 of your hot leads: Priya and Rohan. I'll let you know how it goes."
   `,
+  prompt: `User command: {{{command}}}`,
 });
 
+export async function processTerraCommand(input: ProcessTerraCommandInput): Promise<ProcessTerraCommandOutput> {
+  return processTerraCommandFlow(input);
+}
 
 const processTerraCommandFlow = ai.defineFlow(
   {
@@ -50,10 +168,20 @@ const processTerraCommandFlow = ai.defineFlow(
     outputSchema: ProcessTerraCommandOutputSchema,
   },
   async input => {
-    // In a real application, this is where you would add complex logic,
-    // like using Genkit tools to interact with a database (e.g., Supabase),
-    // a CRM, or other APIs (e.g., Twilio for calls).
-    const {output} = await prompt(input);
-    return output!;
+    // We use ai.generate to enable the full tool-use reasoning loop.
+    const llmResponse = await ai.generate({
+        prompt,
+        input,
+        model: ai.model('googleai/gemini-2.0-flash'),
+    });
+
+    // The final text from the LLM, after it has used tools, is our responseText.
+    const responseText = llmResponse.text;
+
+    if (!responseText) {
+        throw new Error("The AI failed to generate a response text.");
+    }
+
+    return { responseText };
   }
 );
