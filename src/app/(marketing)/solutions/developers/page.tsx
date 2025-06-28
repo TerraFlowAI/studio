@@ -232,7 +232,7 @@ export default function DevelopersSolutionPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}>
                 <h1 className="text-4xl md:text-6xl font-bold font-headline text-foreground mb-4">
-                    Build, Market, and Sell Your Projects Faster.
+                    Build, Market, and <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Sell Your Projects Faster.</span>
                 </h1>
                 <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-8">
                    From site acquisition to final sale, TerraFlow integrates project management, compliance automation, and market analytics into a single OS for developers.
