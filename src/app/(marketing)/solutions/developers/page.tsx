@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 
 // --- PAGE-SPECIFIC DATA ---
@@ -79,14 +81,13 @@ const developerFeatureBlocks = [
   },
 ];
 
-const developerPricingPlans: PricingPlan[] = [
+const monthlyDeveloperPricingPlans: PricingPlan[] = [
   {
     name: "Business",
     price: "₹24,999",
     priceFrequency: "/month (inc. 5 users)",
-    description: "For growing brokerages and development teams needing advanced tools and collaboration.",
+    description: "For growing development teams needing advanced tools and collaboration.",
     features: [
-      "Everything in Professional, plus:",
       "TerraLead™ AI Suite (Inc. 2,000 leads)",
       "TerraValuate™ Pro CMA Reports",
       "Advanced SmartFlow™ Automation",
@@ -120,6 +121,48 @@ const developerPricingPlans: PricingPlan[] = [
     variant: 'dark'
   },
 ];
+
+const annualDeveloperPricingPlans: PricingPlan[] = [
+  {
+    name: "Business",
+    price: "₹20,833",
+    priceFrequency: "/month (inc. 5 users), billed annually",
+    description: "For growing development teams needing advanced tools and collaboration.",
+    features: [
+      "TerraLead™ AI Suite (Inc. 2,000 leads)",
+      "TerraValuate™ Pro CMA Reports",
+      "Advanced SmartFlow™ Automation",
+      "Predictive MarketIntel™ Analytics",
+      "API Access & Basic Integrations",
+      "Priority Support",
+    ],
+    ctaText: "Start Free Trial Annually",
+    ctaLink: "/signup?plan=business-annual",
+    isPopular: true,
+    variant: 'default'
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    priceFrequency: "Annual Billing",
+    description: "Tailor-made solutions for large-scale operations with specific needs.",
+    features: [
+      "Everything in Business, plus:",
+      "Unlimited Leads & Users",
+      "TerraSecure™ Document Analysis",
+      "TerraVision™ VR Tour Hosting",
+      "Custom Workflow Automation",
+      "White-labeling & Custom Branding",
+      "Dedicated Account Manager",
+      "On-site/Virtual Training",
+    ],
+    ctaText: "Schedule a Consultation",
+    ctaLink: "#contact",
+    isEnterprise: true,
+    variant: 'dark'
+  },
+];
+
 
 const developerTestimonials = [
     {
@@ -197,6 +240,8 @@ export default function DevelopersSolutionPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isAnnual, setIsAnnual] = useState(true);
+  const plansToDisplay = isAnnual ? annualDeveloperPricingPlans : monthlyDeveloperPricingPlans;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -258,8 +303,8 @@ export default function DevelopersSolutionPage() {
           <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem] opacity-20 dark:bg-slate-950 dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)]"></div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">Your Command Center for Growth</h2>
-                <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">Solve your brokerage's biggest operational headaches with targeted AI.</p>
+                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">Your End-to-End Development <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">OS</span></h2>
+                <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">Address your biggest challenges with targeted AI solutions.</p>
              </div>
              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
@@ -314,11 +359,30 @@ export default function DevelopersSolutionPage() {
       <section id="pricing" className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">A Bespoke Solution for Your Projects</h2>
+                <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">A <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Bespoke Solution</span> for Your Projects</h2>
                 <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">Powerful plans designed to scale with your development portfolio.</p>
              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
+                className="flex items-center justify-center gap-4 my-8"
+              >
+                  <Label htmlFor="pricing-toggle-dev" className={cn("font-medium", !isAnnual && "text-primary")}>Monthly</Label>
+                  <Switch 
+                      id="pricing-toggle-dev" 
+                      checked={isAnnual}
+                      onCheckedChange={setIsAnnual}
+                      aria-label="Toggle between monthly and annual pricing"
+                  />
+                  <Label htmlFor="pricing-toggle-dev" className={cn("font-medium", isAnnual && "text-primary")}>Annually</Label>
+                  {isAnnual && (
+                    <span className="text-sm font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full dark:bg-green-900/50 dark:text-green-300">2 months free!</span>
+                  )}
+              </motion.div>
              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.15 } }, }} className="grid md:grid-cols-2 gap-8 mt-12 items-start max-w-4xl mx-auto">
-              {developerPricingPlans.map((plan) => (
+              {plansToDisplay.map((plan) => (
                  <motion.div key={plan.name} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
                      <PricingCard plan={plan} />
                  </motion.div>
