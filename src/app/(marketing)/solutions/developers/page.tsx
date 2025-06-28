@@ -289,6 +289,20 @@ export default function DevelopersSolutionPage() {
       {/* 3. Feature Deep Dive */}
       <section id="features" className="bg-slate-50/50 py-16 md:py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-12 md:mb-16"
+            >
+              <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800">
+                The End-to-End AI Platform for <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Real Estate Developers</span>
+              </h2>
+              <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mt-4">
+                From predictive site analysis and project management to automated sales and compliance, TerraFlow provides the tools to build and sell smarter.
+              </p>
+            </motion.div>
             <div className="divide-y divide-slate-200">
                 {developerFeatureBlocks.map((block, index) => ( <FeatureBlock key={index} block={block} /> ))}
             </div>
