@@ -33,9 +33,9 @@ const mockDashboardData = {
         }]
     },
     recentProperties: [
-        { id: "prop1", title: "Modern 3BHK Apartment", locality: "Koramangala, Bangalore", price: "₹2.5 Cr", imageUrl: 'https://placehold.co/400x250.png', aiHint: "modern apartment" },
-        { id: "prop2", title: "Luxury Villa with Pool", locality: "Indiranagar, Bangalore", price: "₹7 Cr", imageUrl: 'https://placehold.co/400x250.png', aiHint: "luxury villa" },
-        { id: "prop3", title: "Spacious 2BHK Flat", locality: "Whitefield, Bangalore", price: "₹1.1 Cr", imageUrl: 'https://placehold.co/400x250.png', aiHint: "apartment interior" },
+        { id: "prop1", title: "Modern 3BHK Apartment", locality: "Koramangala, Bangalore", price: "₹2.5 Cr", imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267', aiHint: "modern apartment" },
+        { id: "prop2", title: "Luxury Villa with Pool", locality: "Indiranagar, Bangalore", price: "₹7 Cr", imageUrl: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811', aiHint: "luxury villa" },
+        { id: "prop3", title: "Spacious 2BHK Flat", locality: "Whitefield, Bangalore", price: "₹1.1 Cr", imageUrl: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45', aiHint: "apartment interior" },
     ]
 };
 
