@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import Link from 'next/link';
 
 const STATIC_HEADLINE_PART = "AI-Powered Real Estate is Here. ";
 const TYPING_PHRASES = ["Business on Auto-pilot with AI", "Start Closing More Deals", "Reclaim Your Time", "Automate- Analyze- Accelerate"];
@@ -295,22 +296,28 @@ export const Hero = () => {
 
           <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} animation-delay-1000`}>
             <Button
+              asChild
               size="lg"
               className="group bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95"
               data-cta-click="hero-demo-request"
             >
-              <span className="flex items-center gap-2">
-                See TerraFlow in Action
-                <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
-              </span>
+              <Link href="#features">
+                <span className="flex items-center gap-2">
+                  See TerraFlow in Action
+                  <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                </span>
+              </Link>
             </Button>
             <Button
+              asChild
               size="lg"
               variant="outline"
               className="border-primary text-primary dark:text-white hover:bg-primary hover:text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-lg"
               data-cta-click="hero-strategic-call"
             >
-              Book Free Strategic Call
+              <Link href="#contact">
+                Book Free Strategic Call
+              </Link>
             </Button>
           </div>
 
