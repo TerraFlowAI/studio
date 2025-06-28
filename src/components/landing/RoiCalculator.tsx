@@ -1,6 +1,8 @@
+
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -12,11 +14,11 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  BarChartBig,
-  Clock,
+  ArrowRight,
   ClipboardList,
+  Clock,
   DollarSign,
   IndianRupee,
   LineChart,
@@ -26,7 +28,6 @@ import {
   MailWarning,
   Percent,
   Timer,
-  Briefcase,
 } from "lucide-react";
 import {
   ChartContainer,
@@ -53,6 +54,12 @@ const formatNumber = (num: number, precision = 1) => {
   }).format(num);
 };
 
+const cityTierDefaults = {
+  "mumbai-delhi": 250000,
+  "pune-hyderabad": 150000,
+  "other-cities": 75000,
+};
+
 const RoiCalculator: React.FC = () => {
   const [cityTier, setCityTier] = useState<string>("mumbai-delhi");
   const [leadsPerMonth, setLeadsPerMonth] = useState<number>(100);
@@ -60,7 +67,12 @@ const RoiCalculator: React.FC = () => {
   const [currentConversionRate, setCurrentConversionRate] = useState<number>(3); // %
   const [avgHoursSpentPerLeadManual, setAvgHoursSpentPerLeadManual] = useState<number>(1.5); // hours
   const [avgResponseTime, setAvgResponseTime] = useState<number>(6); // hours
-  const [avgCommissionPerDeal, setAvgCommissionPerDeal] = useState<number>(100000);
+  const [avgCommissionPerDeal, setAvgCommissionPerDeal] = useState<number>(cityTierDefaults["mumbai-delhi"]);
+
+  // Update commission when city tier changes
+  useEffect(() => {
+    setAvgCommissionPerDeal(cityTierDefaults[cityTier as keyof typeof cityTierDefaults] || 100000);
+  }, [cityTier]);
 
   // Placeholder factors for TerraFlow's impact
   const TF_CONVERSION_RATE_INCREASE_FACTOR = 1.2; // 20% increase
@@ -216,11 +228,11 @@ const RoiCalculator: React.FC = () => {
 
 
   return (
-    <section className="py-12 md:py-16 bg-background text-foreground">
+    <section className="py-16 md:py-24 bg-slate-50/50 dark:bg-slate-900/50 text-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 md:mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Estimate Your <span className="animate-text-shimmer">TerraFlow ROI</span>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3 font-headline">
+            Estimate Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">TerraFlow ROI</span>
           </h2>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
             See how much time you can save and revenue you can generate with AI-powered automation.
@@ -284,7 +296,7 @@ const RoiCalculator: React.FC = () => {
                     placeholder="e.g., 100000"
                     className="text-sm"
                   />
-                  <p className="text-xs text-muted-foreground">e.g., ₹1,00,000 is ₹1L</p>
+                  <p className="text-xs text-muted-foreground">Updated based on City Tier. Adjust if needed.</p>
                 </div>
 
                 <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
@@ -363,7 +375,7 @@ const RoiCalculator: React.FC = () => {
           <Card className="shadow-lg bg-card border border-border">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <BarChartBig className="w-6 h-6 text-primary" />
+                <TrendingUp className="w-6 h-6 text-primary" />
                 <CardTitle className="text-xl">6-Month Revenue Projection</CardTitle>
               </div>
               <CardDescription>Projected monthly revenue with TerraFlow, assuming {TF_REVENUE_GROWTH_MOM * 100}% MoM growth.</CardDescription>
@@ -386,9 +398,11 @@ const RoiCalculator: React.FC = () => {
         </div>
 
         <div className="text-center mt-12">
-          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-lg">
-            Book Demo & Get Custom ROI Analysis
-          </Button>
+            <Button asChild size="lg" className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-lg">
+                <Link href="#contact">
+                    Book Demo & Get Custom ROI Analysis <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+            </Button>
         </div>
       </div>
     </section>
