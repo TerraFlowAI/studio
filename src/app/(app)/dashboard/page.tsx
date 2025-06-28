@@ -7,12 +7,27 @@ import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard"
 import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCard";
 import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
 import { ListingBoard } from "@/components/dashboard/ListingBoard";
+import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp, FileSignature } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
+
+// Extended mock property type for the dashboard
+type MockProperty = { 
+    id: string; 
+    title: string; 
+    locality: string; 
+    price: string; 
+    imageUrl: string; 
+    aiHint: string;
+    beds: number;
+    baths: number;
+    sqft: number;
+    hasVrTour: boolean;
+};
 
 // Mock data as the hook was removed
 const mockDashboardData = {
@@ -35,10 +50,10 @@ const mockDashboardData = {
         }]
     },
     recentProperties: [
-        { id: "prop1", title: "Luxury Villa with Pool", locality: "Indiranagar, Bangalore", price: "₹7 Cr", imageUrl: 'https://images.unsplash.com/photo-1717167398817-121e3c283dbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsdXh1cnklMjB2aWxsYSUyMHxlbnwwfHx8fDE3NTExMTk5NzZ8MA&ixlib=rb-4.1.0&q=80&w=1080', aiHint: "luxury villa" },
-        { id: "prop2", title: "Modern 3BHK Apartment", locality: "Koramangala, Bangalore", price: "₹2.5 Cr", imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267', aiHint: "modern apartment" },
-        { id: "prop3", title: "Spacious 2BHK Flat", locality: "Whitefield, Bangalore", price: "₹1.1 Cr", imageUrl: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45', aiHint: "apartment interior" },
-    ],
+        { id: "prop1", title: "Luxury Villa with Pool", locality: "Indiranagar, Bangalore", price: "₹7 Cr", imageUrl: 'https://images.unsplash.com/photo-1717167398817-121e3c283dbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsdXh1cnklMjB2aWxsYSUyMHxlbnwwfHx8fDE3NTExMTk5NzZ8MA&ixlib=rb-4.1.0&q=80&w=1080', aiHint: "luxury villa", beds: 5, baths: 6, sqft: 6000, hasVrTour: true },
+        { id: "prop2", title: "Modern 3BHK Apartment", locality: "Koramangala, Bangalore", price: "₹2.5 Cr", imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267', aiHint: "modern apartment", beds: 3, baths: 3, sqft: 1800, hasVrTour: true },
+        { id: "prop3", title: "Spacious 2BHK Flat", locality: "Whitefield, Bangalore", price: "₹1.1 Cr", imageUrl: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45', aiHint: "apartment interior", beds: 2, baths: 2, sqft: 1250, hasVrTour: false },
+    ] as MockProperty[],
     growthData: {
         totalRevenue: '₹7.32Cr',
         monthlyData: [
@@ -67,10 +82,11 @@ export default function DashboardPage() {
     }
 
     const { kpiData, salesData, recentProperties, growthData } = data;
+    const userName = user?.displayName?.split(' ')[0] || 'Agent';
 
     return (
         <div className="container mx-auto">
-            <PageHeader title={`Welcome, ${user?.displayName?.split(' ')[0] || 'Agent'}!`} description="Here's a snapshot of your real estate business.">
+            <PageHeader title={`Welcome, ${userName}!`} description="Here's a snapshot of your real estate business.">
                 <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground h-10">
                     <Link href="/properties/new"><PlusCircle className="mr-2 h-4 w-4"/> Add New Property</Link>
                 </Button>
@@ -96,8 +112,13 @@ export default function DashboardPage() {
                 </div>
             </div>
             
-            <div className="mb-8">
-              <ListingBoard properties={recentProperties} />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <div className="lg:col-span-2">
+                    <ListingBoard properties={recentProperties} />
+                </div>
+                <div>
+                    <AiAssistantCard userName={userName} />
+                </div>
             </div>
 
         </div>
@@ -121,12 +142,17 @@ function DashboardSkeleton() {
                  <Skeleton className="h-96 rounded-lg lg:col-span-3" />
                  <Skeleton className="h-96 rounded-lg lg:col-span-2" />
             </div>
-            <div className="mb-8">
-                <Skeleton className="h-8 w-48 mb-4" />
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <Skeleton className="h-56 rounded-lg" />
-                    <Skeleton className="h-56 rounded-lg" />
-                    <Skeleton className="h-56 rounded-lg" />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <div className="lg:col-span-2">
+                    <Skeleton className="h-8 w-48 mb-4" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Skeleton className="h-56 rounded-lg" />
+                        <Skeleton className="h-56 rounded-lg" />
+                        <Skeleton className="h-56 rounded-lg" />
+                    </div>
+                </div>
+                <div>
+                    <Skeleton className="h-64 rounded-2xl" />
                 </div>
             </div>
         </div>
