@@ -1,48 +1,74 @@
 
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ReceiptText, Wallet, Coins } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ArrowUpRight } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
-interface GrowthStatisticsCardProps {
-  totalSales: string;
-  totalProfit: string;
-  totalCost: string;
+interface GrowthChartData {
+  quarter: string;
+  sale: number;
+  rent: number;
 }
 
-export function GrowthStatisticsCard({ totalSales, totalProfit, totalCost }: GrowthStatisticsCardProps) {
+interface GrowthStatisticsCardProps {
+  totalRevenue: string;
+  chartData: GrowthChartData[];
+}
+
+const chartConfig = {
+  sale: { label: "Property Sale", color: "hsl(var(--primary))" },
+  rent: { label: "Property Rent", color: "hsl(var(--accent))" },
+};
+
+export function GrowthStatisticsCard({ totalRevenue, chartData }: GrowthStatisticsCardProps) {
   return (
     <Card className="shadow-lg bg-card h-full">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold font-headline text-foreground">Growth Statistics</CardTitle>
+        <div className="flex justify-between items-start">
+          <div className="grid gap-0.5">
+            <CardTitle className="text-xl font-semibold font-headline text-foreground">Growth Statistics</CardTitle>
+            <CardDescription>Total Revenue</CardDescription>
+          </div>
+          <Button variant="outline" size="sm" className="text-xs shrink-0">
+            Yearly <ChevronDown className="ml-1 h-4 w-4" />
+          </Button>
+        </div>
+        <div className="flex items-baseline gap-2 pt-2">
+            <p className="text-3xl font-bold text-foreground">{totalRevenue}</p>
+            <div className="flex items-center gap-1 text-green-600 text-sm font-semibold">
+                <ArrowUpRight className="h-4 w-4" />
+                <span>12%</span>
+            </div>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border">
-          <div className="p-2 bg-primary/10 rounded-md">
-            <ReceiptText className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Total Sales</p>
-            <p className="text-md font-semibold text-foreground">{totalSales}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border">
-          <div className="p-2 bg-green-500/10 rounded-md">
-            <Wallet className="h-5 w-5 text-green-500" />
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Total Profit</p>
-            <p className="text-md font-semibold text-foreground">{totalProfit}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border">
-          <div className="p-2 bg-orange-500/10 rounded-md">
-            <Coins className="h-5 w-5 text-orange-500" />
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Total Cost</p>
-            <p className="text-md font-semibold text-foreground">{totalCost}</p>
-          </div>
-        </div>
+      <CardContent className="h-[250px] w-full pt-4">
+        <ChartContainer config={chartConfig} className="w-full h-full">
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} barCategoryGap="20%">
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="quarter" tickLine={false} axisLine={false} tickMargin={8} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} />
+                    <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `₹${value / 1000}k`} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} />
+                    <Tooltip
+                        cursor={{ fill: 'hsl(var(--accent))', radius: 4 }}
+                        content={<ChartTooltipContent />}
+                    />
+                    <Legend content={({ payload }) => (
+                      <div className="flex justify-center items-center gap-4 mt-4 text-xs">
+                        {payload?.map((entry, index) => (
+                          <div key={`item-${index}`} className="flex items-center gap-1.5">
+                            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }}></div>
+                            <span>{entry.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )} />
+                    <Bar dataKey="sale" fill="var(--color-sale)" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="rent" fill="var(--color-rent)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+            </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
     </Card>
   );

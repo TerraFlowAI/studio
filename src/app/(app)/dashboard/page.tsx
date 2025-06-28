@@ -4,6 +4,7 @@
 import * as React from "react";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard";
+import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCard";
 import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
 import { ListingBoard } from "@/components/dashboard/ListingBoard";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,10 +35,19 @@ const mockDashboardData = {
         }]
     },
     recentProperties: [
-        { id: "prop1", title: "Modern 3BHK Apartment", locality: "Koramangala, Bangalore", price: "₹2.5 Cr", imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267', aiHint: "modern apartment" },
-        { id: "prop2", title: "Luxury Villa with Pool", locality: "Indiranagar, Bangalore", price: "₹7 Cr", imageUrl: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811', aiHint: "luxury villa" },
+        { id: "prop1", title: "Luxury Villa with Pool", locality: "Indiranagar, Bangalore", price: "₹7 Cr", imageUrl: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811', aiHint: "luxury villa" },
+        { id: "prop2", title: "Modern 3BHK Apartment", locality: "Koramangala, Bangalore", price: "₹2.5 Cr", imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267', aiHint: "modern apartment" },
         { id: "prop3", title: "Spacious 2BHK Flat", locality: "Whitefield, Bangalore", price: "₹1.1 Cr", imageUrl: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45', aiHint: "apartment interior" },
-    ]
+    ],
+    growthData: {
+        totalRevenue: '₹7.32Cr',
+        chartData: [
+            { quarter: 'Q1', sale: 150000, rent: 80000 },
+            { quarter: 'Q2', sale: 220000, rent: 110000 },
+            { quarter: 'Q3', sale: 180000, rent: 90000 },
+            { quarter: 'Q4', sale: 250000, rent: 130000 },
+        ]
+    }
 };
 
 export default function DashboardPage() {
@@ -48,7 +58,7 @@ export default function DashboardPage() {
         return <DashboardSkeleton />;
     }
 
-    const { kpiData, salesData, recentProperties } = data;
+    const { kpiData, salesData, recentProperties, growthData } = data;
 
     return (
         <div className="container mx-auto">
@@ -69,8 +79,13 @@ export default function DashboardPage() {
                 <KpiCard title="Total Sales (Month)" value={kpiData.totalSales.value} trend={kpiData.totalSales.trend} icon={DollarSign} />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 mb-8">
-                <SalesStatisticsCard chartData={salesData} />
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+                <div className="lg:col-span-3">
+                    <SalesStatisticsCard chartData={salesData} />
+                </div>
+                <div className="lg:col-span-2">
+                    <GrowthStatisticsCard totalRevenue={growthData.totalRevenue} chartData={growthData.chartData} />
+                </div>
             </div>
             
             <div className="mb-8">
@@ -94,8 +109,9 @@ function DashboardSkeleton() {
                 <Skeleton className="h-28 rounded-lg" />
                 <Skeleton className="h-28 rounded-lg" />
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 mb-8">
-                 <Skeleton className="h-96 rounded-lg" />
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+                 <Skeleton className="h-96 rounded-lg lg:col-span-3" />
+                 <Skeleton className="h-96 rounded-lg lg:col-span-2" />
             </div>
             <div className="mb-8">
                 <Skeleton className="h-8 w-48 mb-4" />
