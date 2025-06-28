@@ -39,11 +39,7 @@ const brokerageFeatureBlocks = [
       "Centralized Nurturing Campaigns",
     ],
     layout: "text-left",
-    image: {
-      src: "https://placehold.co/600x450.png",
-      alt: "Dashboard showing qualified leads being routed to different agents",
-      hint: "team dashboard lead assignment"
-    },
+    videoSrc: "/videos/terralead-showcase.mp4",
   },
   {
     suiteName: "TerraScribe™ & Brand Hub",
@@ -194,7 +190,7 @@ const thirdColumn = brokerageTestimonials.slice(2, 3);
 
 // --- REUSABLE COMPONENTS (LOCALIZED) ---
 
-const FeatureBlock = ({ block }: { block: typeof brokerageFeatureBlocks[0] }) => {
+const FeatureBlock = ({ block }: { block: any }) => {
   const isTextLeft = block.layout === 'text-left';
   return (
     <motion.div
@@ -210,7 +206,7 @@ const FeatureBlock = ({ block }: { block: typeof brokerageFeatureBlocks[0] }) =>
           <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">{block.headline}</h2>
           <p className="text-lg text-slate-600">{block.description}</p>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-            {block.checklist.map((item, index) => (
+            {block.checklist.map((item: string, index: number) => (
               <li key={index} className="flex items-center gap-2 text-slate-700">
                 <CheckCircle className="h-5 w-5 text-teal-500 flex-shrink-0" />
                 <span>{item}</span>
@@ -218,8 +214,20 @@ const FeatureBlock = ({ block }: { block: typeof brokerageFeatureBlocks[0] }) =>
             ))}
           </ul>
         </div>
-        <div className={cn("flex items-center justify-center p-8 bg-slate-100 rounded-2xl shadow-inner", !isTextLeft && "md:col-start-1 md:row-start-1")}>
-            <Image src={block.image.src} alt={block.image.alt} width={600} height={450} className="rounded-lg shadow-2xl object-cover" data-ai-hint={block.image.hint} />
+        <div className={cn("flex items-center justify-center", !isTextLeft && "md:col-start-1 md:row-start-1")}>
+            {block.videoSrc ? (
+                 <div className="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+                    <video key={block.videoSrc} className="w-full h-full object-cover" autoPlay loop muted playsInline>
+                        <source src={block.videoSrc} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+                </div>
+            ) : (
+                <div className="p-8 bg-slate-100 rounded-2xl shadow-inner">
+                    <Image src={block.image.src} alt={block.image.alt} width={600} height={450} className="rounded-lg shadow-2xl object-cover" data-ai-hint={block.image.hint} />
+                </div>
+            )}
         </div>
       </div>
     </motion.div>
