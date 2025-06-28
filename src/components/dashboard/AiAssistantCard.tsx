@@ -1,59 +1,109 @@
-
 "use client";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import React from 'react';
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Brain, Mic } from "lucide-react";
+import { Mic } from "lucide-react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface AiAssistantCardProps {
     userName: string;
 }
 
-const WavyLine = () => (
-    <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-        <svg viewBox="0 0 300 100" className="w-full h-auto opacity-20" preserveAspectRatio="none">
-            <path 
-                d="M 0 50 C 50 20, 100 80, 150 50 C 200 20, 250 80, 300 50" 
-                stroke="url(#waveGradient)" 
-                strokeWidth="2" 
-                fill="none" 
-            />
-            <defs>
-                <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style={{stopColor: 'hsl(var(--primary))', stopOpacity: 1}} />
-                    <stop offset="100%" style={{stopColor: 'hsl(var(--accent))', stopOpacity: 1}} />
-                </linearGradient>
-            </defs>
-            <circle cx="270" cy="58" r="3" fill="hsl(var(--primary))" className="animate-pulse" />
-        </svg>
-    </div>
-);
+// A new component for the animated waveform
+const AudioWaveform = () => {
+  const waveVariants = {
+    animate: {
+      d: [
+        "M 0 50 Q 50 30, 100 50 T 200 50",
+        "M 0 50 Q 50 70, 100 50 T 200 50",
+        "M 0 50 Q 50 30, 100 50 T 200 50",
+      ],
+      transition: {
+        duration: 4,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
+
+  return (
+    <svg viewBox="0 0 200 100" className="w-full h-auto absolute inset-0 opacity-50">
+      <motion.path
+        variants={waveVariants}
+        animate="animate"
+        fill="none"
+        stroke="hsl(var(--primary))"
+        strokeWidth="2"
+        style={{ transitionDelay: '0.2s' }}
+      />
+      <motion.path
+        variants={waveVariants}
+        animate="animate"
+        fill="none"
+        stroke="hsl(var(--primary))"
+        strokeWidth="2"
+        style={{ transitionDelay: '0.4s', opacity: 0.7 }}
+      />
+      <motion.path
+        variants={waveVariants}
+        animate="animate"
+        fill="none"
+        stroke="hsl(var(--primary))"
+        strokeWidth="2"
+        style={{ transitionDelay: '0.6s', opacity: 0.4 }}
+      />
+    </svg>
+  );
+};
 
 
 export function AiAssistantCard({ userName }: AiAssistantCardProps) {
   return (
-    <Card className="bg-slate-800 p-6 rounded-2xl shadow-xl h-full flex flex-col text-slate-100 relative overflow-hidden border border-slate-700">
-      <WavyLine />
-      <CardHeader className="p-0 mb-4 z-10">
-        <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-teal-400 rounded-full flex items-center justify-center">
-                <Brain className="w-6 h-6 text-white"/>
-            </div>
-            <CardTitle className="text-xl font-semibold">AI Suggestion</CardTitle>
-        </div>
-      </CardHeader>
+    <Card className="relative bg-slate-900 border-slate-700/50 rounded-2xl shadow-2xl h-full flex flex-col text-white overflow-hidden group">
+      {/* Glowing Border Effect */}
+      <div className="absolute -inset-px bg-gradient-to-r from-teal-500 via-sky-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 blur-md"></div>
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-500 via-sky-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-lg"></div>
 
-      <CardContent className="p-0 flex-grow flex flex-col justify-center z-10">
-        <p className="text-slate-200 text-lg leading-relaxed mb-6">
-           Hi {userName}, look at how your sales are going today?
-        </p>
-        <div className="relative">
+      <CardContent className="relative p-6 flex-grow flex flex-col items-center justify-between">
+        
+        {/* The Orb */}
+        <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full flex items-center justify-center">
+          {/* Orb Gradient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-sky-900/50 to-slate-900 rounded-full animate-pulse-subtle"></div>
+          
+          {/* Orb Inner Shadow */}
+          <div className="absolute inset-2 rounded-full shadow-[inset_0_4px_15px_rgba(0,0,0,0.4)]"></div>
+          
+          {/* Waveform Visualization */}
+          <div className="relative w-3/4 h-3/4">
+             <AudioWaveform />
+          </div>
+
+          {/* Center Glow */}
+           <div className="absolute w-20 h-20 bg-primary/20 rounded-full blur-2xl"></div>
+        </div>
+
+        {/* Conversation Area */}
+        <div className="text-center my-6">
+            <p 
+              className="text-lg text-slate-200" 
+              style={{ textShadow: '0 0 8px hsla(var(--primary), 0.5)' }}
+            >
+                Hi {userName}, how can I help you dominate your market today?
+            </p>
+        </div>
+
+        {/* Input Bar */}
+        <div className="w-full relative">
             <Input 
-                placeholder="Ask anything..." 
-                className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:ring-primary h-12"
+                placeholder='Ask Terra anything... (e.g., "Call my 3 hottest leads")'
+                className="bg-slate-800/80 border-slate-700 text-white placeholder:text-slate-400 focus:ring-primary h-12 rounded-full pl-5 pr-12"
             />
-            <Button variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+            <Button variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white hover:bg-primary/20 rounded-full">
                 <Mic className="h-5 w-5"/>
+                <span className="sr-only">Use Voice Command</span>
             </Button>
         </div>
       </CardContent>
