@@ -32,7 +32,7 @@ export default function RegisterForm() {
     defaultValues: { firstName: "", lastName: "", email: "", password: "" },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);

@@ -25,18 +25,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // This is the core Firebase listener for authentication state
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // User is signed in, get their token to check for custom claims
-        const tokenResult = await user.getIdTokenResult();
-        // Set admin status based on the 'role' custom claim
-        setIsAdmin(tokenResult.claims.role === 'admin');
-        setUser(user);
-      } else {
-        // User is signed out
+      try {
+        if (user) {
+          // User is signed in, get their token to check for custom claims
+          const tokenResult = await user.getIdTokenResult();
+          // Set admin status based on the 'role' custom claim
+          setIsAdmin(tokenResult.claims.role === 'admin');
+          setUser(user);
+        } else {
+          // User is signed out
+          setUser(null);
+          setIsAdmin(false);
+        }
+      } catch (error) {
+        console.error("Error during auth state change, signing out:", error);
+        // If there's an error getting the token, treat as logged out
         setUser(null);
         setIsAdmin(false);
+      } finally {
+        // This ensures the loading state is always turned off, even on error
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
 
     // Cleanup the listener when the component unmounts
