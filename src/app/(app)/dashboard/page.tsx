@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -7,7 +6,7 @@ import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard"
 import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCard";
 import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
 import { ListingBoard } from "@/components/dashboard/ListingBoard";
-import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
+import { TerraAiOrb } from "@/components/dashboard/TerraAiOrb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp, FileSignature } from "lucide-react";
 import Link from "next/link";
@@ -117,7 +116,7 @@ export default function DashboardPage() {
                     <ListingBoard properties={recentProperties} />
                 </div>
                 <div>
-                    <AiAssistantCard userName={userName} />
+                    <TerraAiOrb userName={userName} />
                 </div>
             </div>
 

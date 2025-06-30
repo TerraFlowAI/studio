@@ -1,4 +1,3 @@
-// src/ai/flows/generate-cma-report.ts
 'use server';
 
 /**
@@ -9,71 +8,92 @@
  * - GenerateCmaReportOutput - The return type for the generateCmaReport function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {defineFlow, generate} from 'genkit';
+import {geminiPro} from '@genkit-ai/googleai';
+import {z} from 'zod';
 
 const GenerateCmaReportInputSchema = z.object({
-  propertyAddress: z.string().describe('The address of the property to analyze.'),
+  propertyAddress: z
+    .string()
+    .describe('The address of the property to analyze.'),
   propertyDetails: z
     .string()
-    .describe('Detailed information about the property (e.g., size, features, condition).'),
-  marketTrends: z.string().describe('Current market trends and conditions in the area.'),
+    .describe(
+      'Detailed information about the property (e.g., size, features, condition).'
+    ),
+  marketTrends: z
+    .string()
+    .describe('Current market trends and conditions in the area.'),
   comparableProperties: z
     .string()
     .describe(
       'Information about comparable properties in the area (e.g., recent sales, listings).'
     ),
 });
-export type GenerateCmaReportInput = z.infer<typeof GenerateCmaReportInputSchema>;
+export type GenerateCmaReportInput = z.infer<
+  typeof GenerateCmaReportInputSchema
+>;
 
 const GenerateCmaReportOutputSchema = z.object({
   executiveSummary: z.string().describe('A summary of the CMA findings.'),
   propertyValuation: z.string().describe('The estimated value of the property.'),
-  marketAnalysis: z.string().describe('An analysis of the current market conditions.'),
+  marketAnalysis: z
+    .string()
+    .describe('An analysis of the current market conditions.'),
   comparablePropertyAnalysis: z
     .string()
-    .describe('An analysis of the comparable properties and their impact on valuation.'),
-  recommendation: z.string().describe('A recommendation for pricing and marketing the property.'),
+    .describe(
+      'An analysis of the comparable properties and their impact on valuation.'
+    ),
+  recommendation: z
+    .string()
+    .describe('A recommendation for pricing and marketing the property.'),
 });
-export type GenerateCmaReportOutput = z.infer<typeof GenerateCmaReportOutputSchema>;
+export type GenerateCmaReportOutput = z.infer<
+  typeof GenerateCmaReportOutputSchema
+>;
 
-export async function generateCmaReport(input: GenerateCmaReportInput): Promise<GenerateCmaReportOutput> {
+export async function generateCmaReport(
+  input: GenerateCmaReportInput
+): Promise<GenerateCmaReportOutput> {
   return generateCmaReportFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'generateCmaReportPrompt',
-  input: {schema: GenerateCmaReportInputSchema},
-  output: {schema: GenerateCmaReportOutputSchema},
-  prompt: `You are a real estate expert tasked with generating a Comparative Market Analysis (CMA) report.
-
-  Analyze the provided property details, market trends, and comparable properties to determine an accurate property valuation and provide actionable recommendations.
-
-  Property Address: {{{propertyAddress}}}
-  Property Details: {{{propertyDetails}}}
-  Market Trends: {{{marketTrends}}}
-  Comparable Properties: {{{comparableProperties}}}
-
-  Generate a comprehensive CMA report including:
-  - An executive summary of the findings.
-  - A detailed property valuation.
-  - An analysis of the current market conditions.
-  - An analysis of comparable properties and their impact on valuation.
-  - A clear recommendation for pricing and marketing the property.
-
-  Format the output in a professional and easy-to-understand manner.
-  `,
-});
-
-const generateCmaReportFlow = ai.defineFlow(
+const generateCmaReportFlow = defineFlow(
   {
     name: 'generateCmaReportFlow',
     inputSchema: GenerateCmaReportInputSchema,
     outputSchema: GenerateCmaReportOutputSchema,
   },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
+  async (input) => {
+    const prompt = `You are a real estate expert tasked with generating a Comparative Market Analysis (CMA) report.
+
+    Analyze the provided property details, market trends, and comparable properties to determine an accurate property valuation and provide actionable recommendations.
+
+    Property Address: ${input.propertyAddress}
+    Property Details: ${input.propertyDetails}
+    Market Trends: ${input.marketTrends}
+    Comparable Properties: ${input.comparableProperties}
+
+    Generate a comprehensive CMA report including:
+    - An executive summary of the findings.
+    - A detailed property valuation.
+    - An analysis of the current market conditions.
+    - An analysis of comparable properties and their impact on valuation.
+    - A clear recommendation for pricing and marketing the property.
+
+    Format the output in a professional and easy-to-understand manner.
+    `;
+
+    const llmResponse = await generate({
+      prompt,
+      model: geminiPro,
+      output: {
+        format: 'json',
+        schema: GenerateCmaReportOutputSchema,
+      },
+    });
+
+    return llmResponse.output()!;
   }
 );
-
