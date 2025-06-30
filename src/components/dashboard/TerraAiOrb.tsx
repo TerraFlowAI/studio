@@ -38,7 +38,7 @@ export function TerraAiOrb({ userName }: { userName: string }) {
   function triggerSplineAnimation(eventName: 'start_idle' | 'start_listening' | 'start_thinking') {
     if (spline.current) {
       // Emitting a global event for the Spline scene
-      spline.current.emitEvent(eventName, 'spline-object-id');
+      spline.current.emitEvent(eventName);
     }
   }
 
