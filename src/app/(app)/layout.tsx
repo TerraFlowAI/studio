@@ -1,23 +1,14 @@
 
 "use client";
 import React, { ReactNode, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { Loader2 } from 'lucide-react';
 import { AppHeader } from '@/components/layout/AppHeader';
+import { AppSidebar } from '@/components/layout/AppSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
 import { BottomNavBar } from '@/components/layout/BottomNavBar';
-
-const AppSidebar = dynamic(() => 
-  import('@/components/layout/AppSidebar').then(mod => mod.AppSidebar), 
-  { 
-    ssr: false,
-    loading: () => <Skeleton className="hidden md:block w-64 h-screen" />
-  }
-);
 
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
