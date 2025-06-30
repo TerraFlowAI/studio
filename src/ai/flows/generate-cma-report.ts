@@ -8,8 +8,7 @@
  * - GenerateCmaReportOutput - The return type for the generateCmaReport function.
  */
 
-import {defineFlow, generate} from 'genkit';
-import {geminiPro} from '@genkit-ai/googleai';
+import {ai} from '@/ai/genkit';
 import {z} from 'zod';
 
 const GenerateCmaReportInputSchema = z.object({
@@ -59,7 +58,7 @@ export async function generateCmaReport(
   return generateCmaReportFlow(input);
 }
 
-const generateCmaReportFlow = defineFlow(
+const generateCmaReportFlow = ai.defineFlow(
   {
     name: 'generateCmaReportFlow',
     inputSchema: GenerateCmaReportInputSchema,
@@ -85,15 +84,15 @@ const generateCmaReportFlow = defineFlow(
     Format the output in a professional and easy-to-understand manner.
     `;
 
-    const llmResponse = await generate({
+    const llmResponse = await ai.generate({
       prompt,
-      model: geminiPro,
+      model: 'googleai/gemini-1.5-flash',
       output: {
         format: 'json',
         schema: GenerateCmaReportOutputSchema,
       },
     });
 
-    return llmResponse.output()!;
+    return llmResponse.output!;
   }
 );

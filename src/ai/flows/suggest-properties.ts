@@ -8,8 +8,7 @@
  * - SuggestPropertiesOutput - The return type for the suggestProperties function.
  */
 
-import {defineFlow, generate} from 'genkit';
-import {geminiPro} from '@genkit-ai/googleai';
+import {ai} from '@/ai/genkit';
 import {z} from 'zod';
 
 const SuggestPropertiesInputSchema = z.object({
@@ -46,7 +45,7 @@ export async function suggestProperties(
   return suggestPropertiesFlow(input);
 }
 
-const suggestPropertiesFlow = defineFlow(
+const suggestPropertiesFlow = ai.defineFlow(
   {
     name: 'suggestPropertiesFlow',
     inputSchema: SuggestPropertiesInputSchema,
@@ -63,9 +62,9 @@ const suggestPropertiesFlow = defineFlow(
     Based on these details, what properties would you recommend, and why?
     `;
 
-    const llmResponse = await generate({
+    const llmResponse = await ai.generate({
       prompt: prompt,
-      model: geminiPro,
+      model: 'googleai/gemini-1.5-flash',
       output: {
         format: 'json',
         schema: SuggestPropertiesOutputSchema,
@@ -92,6 +91,6 @@ const suggestPropertiesFlow = defineFlow(
       },
     });
 
-    return llmResponse.output()!;
+    return llmResponse.output!;
   }
 );

@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, FormEvent } from 'react';
-import Spline from '@splinetool/react-spline';
+import dynamic from 'next/dynamic';
 import type { Spline as SplineType, Application } from '@splinetool/runtime';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,11 @@ import { Brain, Mic, MicOff, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { processTerraCommand } from '@/ai/flows/process-terra-command';
 import { Skeleton } from '../ui/skeleton';
+
+const Spline = dynamic(() => import('@splinetool/react-spline'), {
+  ssr: false,
+  loading: () => <Skeleton className="w-full h-full bg-slate-700" />,
+});
 
 export function TerraAiOrb({ userName }: { userName: string }) {
   const { toast } = useToast();
@@ -33,7 +38,7 @@ export function TerraAiOrb({ userName }: { userName: string }) {
   function triggerSplineAnimation(eventName: 'start_idle' | 'start_listening' | 'start_thinking') {
     if (spline.current) {
       // Emitting a global event for the Spline scene
-      spline.current.emitEvent(eventName);
+      spline.current.emitEvent(eventName, 'spline-object-id');
     }
   }
 
@@ -138,12 +143,10 @@ export function TerraAiOrb({ userName }: { userName: string }) {
         </CardHeader>
         <CardContent className="p-0 flex flex-col items-center justify-center">
           <div className="w-full h-64 cursor-grab">
-            <React.Suspense fallback={<Skeleton className="w-full h-full bg-slate-700" />}>
-              <Spline
-                scene="https://prod.spline.design/W0EvPlQZvuX-a4W1/scene.splinecode" 
-                onLoad={onLoad}
-              />
-            </React.Suspense>
+            <Spline
+              scene="https://prod.spline.design/W0EvPlQZvuX-a4W1/scene.splinecode" 
+              onLoad={onLoad}
+            />
           </div>
           <p className="text-center text-lg text-gray-300 min-h-[56px] mt-4 leading-relaxed">
             {isThinking ? <span className="italic">Thinking...</span> : aiResponse}

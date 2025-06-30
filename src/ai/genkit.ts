@@ -1,8 +1,7 @@
-import {configureGenkit} from 'genkit';
+import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 
-configureGenkit({
+export const ai = genkit({
   plugins: [googleAI()],
-  logLevel: 'debug',
-  enableTracingAndMetrics: true,
+  // Log level is configured by Gcloud environment variables in v1
 });
