@@ -2,11 +2,14 @@
 "use client"; // Add this directive
 
 import * as React from "react";
+import Link from 'next/link';
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChart, TrendingUp, Users, ShieldAlert } from "lucide-react"; 
-import { ResponsiveContainer, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Line, ComposedChart } from 'recharts';
-import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart"; 
+import { BarChart, LineChart, TrendingUp, Users, ShieldAlert, Eye, Filter } from "lucide-react"; 
+import { ResponsiveContainer, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Line, ComposedChart, FunnelChart, Funnel, LabelList } from 'recharts';
+import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 const chartData = [
   { month: "Jan", sales: 65, forecast: 70, price: 450000 },
@@ -24,6 +27,20 @@ const chartConfig = {
   price: { label: "Avg. Price", color: "hsl(var(--secondary-foreground))", icon: TrendingUp },
 } satisfies ChartConfig;
 
+const funnelData = [
+  { value: 1200, name: 'New Leads', fill: 'hsl(var(--chart-5))' },
+  { value: 950, name: 'Contacted', fill: 'hsl(var(--chart-4))' },
+  { value: 600, name: 'Qualified', fill: 'hsl(var(--chart-3))' },
+  { value: 350, name: 'Viewing Scheduled', fill: 'hsl(var(--chart-2))' },
+  { value: 150, name: 'Offer Made', fill: 'hsl(var(--chart-1))' },
+];
+
+const topListingsData = [
+    { id: '1', title: 'Luxury 3BHK with Sea View', views: 1250, leads: 45, conversionRate: 3.6 },
+    { id: '6', title: 'Penthouse with Rooftop Garden', views: 1800, leads: 35, conversionRate: 1.9 },
+    { id: '2', title: 'Spacious 4BHK Villa', views: 800, leads: 22, conversionRate: 2.8 },
+    { id: '3', title: '2BHK Apartment for Rent', views: 2100, leads: 88, conversionRate: 4.2 },
+];
 
 export default function MarketAnalyticsPage() {
   return (
@@ -91,6 +108,64 @@ export default function MarketAnalyticsPage() {
           </ChartContainer>
         </CardContent>
       </Card>
+      
+      <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2 mt-8">
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="font-headline text-xl">Lead Conversion Funnel</CardTitle>
+            <CardDescription>From initial contact to offer made.</CardDescription>
+          </CardHeader>
+          <CardContent className="h-[400px] w-full p-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <FunnelChart>
+                <Tooltip />
+                <Funnel
+                  dataKey="value"
+                  data={funnelData}
+                  isAnimationActive
+                >
+                  <LabelList position="right" fill="hsl(var(--foreground))" stroke="none" dataKey="name" className="text-xs"/>
+                </Funnel>
+              </FunnelChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="font-headline text-xl">Top Performing Listings</CardTitle>
+            <CardDescription>Properties generating the most engagement.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Listing</TableHead>
+                  <TableHead className="text-right">Views</TableHead>
+                  <TableHead className="text-right">Leads</TableHead>
+                  <TableHead className="text-right">Conversion</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topListingsData.map((listing) => (
+                  <TableRow key={listing.id} className="hover:bg-muted/50">
+                    <TableCell className="font-medium">
+                      <Link href={`/properties/${listing.id}`} className="hover:underline hover:text-primary transition-colors">
+                        {listing.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-right">{listing.views.toLocaleString()}</TableCell>
+                    <TableCell className="text-right">{listing.leads}</TableCell>
+                    <TableCell className="text-right">
+                        <Badge variant="secondary" className="font-mono">{listing.conversionRate.toFixed(1)}%</Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
 
       <Card className="mt-8 shadow-lg">
         <CardHeader>
