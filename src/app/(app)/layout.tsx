@@ -43,17 +43,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   
   return (
     <SidebarProvider>
-        <div className="flex min-h-screen bg-muted/40 dark:bg-slate-950">
+        {/* The h-screen on the grid container is the key fix */}
+        <div className="grid grid-cols-[auto_1fr] h-screen w-screen bg-muted/40 dark:bg-slate-950">
+            {/* Column 1: Sidebar */}
             <AppSidebar />
-            <div className="flex flex-1 flex-col overflow-hidden">
-                <AppHeader />
+            
+            {/* Column 2: Main Content Area (This column will scroll) */}
+            <div className="flex flex-col overflow-y-auto">
+                <AppHeader /> {/* Header is sticky inside this scrolling container */}
                 <main className={cn(
-                  "flex-1 overflow-auto pb-20 md:pb-0", // Use overflow-auto to allow both vertical and horizontal scrolling if needed
-                  !isBuilderPage && "p-4 md:p-6 lg:p-8"
+                  "flex-grow", // Use flex-grow to ensure it takes up remaining space in the flex column
+                  !isBuilderPage && "p-4 md:p-6 lg:p-8",
+                  "pb-20 md:pb-8" // Add padding to the bottom to avoid being obscured by the BottomNavBar on mobile
                 )}>
                     {children}
                 </main>
-                <BottomNavBar />
+                <BottomNavBar /> {/* Fixed positioning, will overlay content on mobile */}
             </div>
         </div>
     </SidebarProvider>
