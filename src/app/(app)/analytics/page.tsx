@@ -134,18 +134,20 @@ export default function MarketAnalyticsPage() {
             <CardDescription>From initial contact to offer made.</CardDescription>
           </CardHeader>
           <CardContent className="h-[400px] w-full p-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <FunnelChart>
-                <Tooltip />
-                <Funnel
-                  dataKey="value"
-                  data={funnelData}
-                  isAnimationActive
-                >
-                  <LabelList position="right" fill="hsl(var(--foreground))" stroke="none" dataKey="name" className="text-xs"/>
-                </Funnel>
-              </FunnelChart>
-            </ResponsiveContainer>
+            <ChartContainer config={chartConfig} className="w-full h-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <FunnelChart>
+                  <Tooltip content={<ChartTooltipContent />} />
+                  <Funnel
+                    dataKey="value"
+                    data={funnelData}
+                    isAnimationActive
+                  >
+                    <LabelList position="right" fill="hsl(var(--foreground))" stroke="none" dataKey="name" className="text-xs"/>
+                  </Funnel>
+                </FunnelChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
 
@@ -192,26 +194,28 @@ export default function MarketAnalyticsPage() {
             <CardDescription>Where are your most valuable leads coming from?</CardDescription>
           </CardHeader>
           <CardContent className="h-[350px] w-full p-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
-                <Pie data={leadSourceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                    const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-                    const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-                    return (
-                        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" className="text-xs font-bold">
-                            {`${(percent * 100).toFixed(0)}%`}
-                        </text>
-                    );
-                }}>
-                  {leadSourceData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                </Pie>
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <ChartContainer config={chartConfig} className="w-full h-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
+                  <Pie data={leadSourceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+                      const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                      const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                      const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+                      return (
+                          <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" className="text-xs font-bold">
+                              {`${(percent * 100).toFixed(0)}%`}
+                          </text>
+                      );
+                  }}>
+                    {leadSourceData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
 
