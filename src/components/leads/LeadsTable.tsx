@@ -21,8 +21,10 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LEAD_STATUSES } from "@/lib/constants";
 import type { LeadStatusId } from "@/lib/constants";
+import type { Lead } from "@/lib/supabase";
 
-export interface Lead {
+// Legacy interface for compatibility - maps to Supabase Lead type
+export interface LegacyLead {
   id: string;
   name: string;
   email: string;
@@ -35,8 +37,24 @@ export interface Lead {
   propertyOfInterest?: string;
 }
 
+// Helper function to convert Supabase Lead to Legacy format for UI compatibility
+export const convertLeadForUI = (lead: Lead): LegacyLead => ({
+  id: lead.id,
+  name: lead.name,
+  email: lead.email,
+  phone: lead.phone || undefined,
+  aiScore: lead.ai_score,
+  aiScoreFactors: lead.ai_score_factors,
+  source: lead.source,
+  dateAdded: lead.created_at,
+  status: lead.status,
+  propertyOfInterest: lead.property_of_interest || undefined,
+});
+
+export { Lead };
+
 interface LeadsTableProps {
-  leads: Lead[];
+  leads: LegacyLead[];
   isLoading: boolean;
   selectedLeads: Set<string>;
   onSelectLead: (leadId: string, isSelected: boolean) => void;
@@ -77,7 +95,7 @@ export function LeadsTable({ leads, isLoading, selectedLeads, onSelectLead, onSe
     }
   };
 
-  const MobileLeadCard = ({ lead }: { lead: Lead }) => (
+  const MobileLeadCard = ({ lead }: { lead: LegacyLead }) => (
     <Card className="mb-4" onClick={() => handleNavigateToDetail(lead.id)}>
       <CardHeader>
         <div className="flex items-start justify-between">

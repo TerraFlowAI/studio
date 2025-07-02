@@ -5,32 +5,17 @@ import { useState, useMemo } from 'react';
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, UserX } from "lucide-react";
-import { LeadsTable, type Lead } from "@/components/leads/LeadsTable";
+import { LeadsTable, convertLeadForUI } from "@/components/leads/LeadsTable";
 import { LeadFiltersToolbar, type Filters } from "@/components/leads/LeadFiltersToolbar";
 import { BulkActionsToolbar } from "@/components/leads/BulkActionsToolbar";
 import { AddLeadSheet } from "@/components/leads/AddLeadSheet";
-import { useToast } from "@/hooks/use-toast";
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
-import { useAuth } from '@/app/context/AuthContext';
-
-
-const mockLeads: Lead[] = [
-  { id: '1', name: 'Aarav Sharma', email: 'aarav.sharma@example.com', aiScore: 92, aiScoreFactors: 'High budget, looking for 3BHK, active on weekends', source: 'Website Chatbot', dateAdded: '2024-07-20T10:00:00Z', status: 'New', propertyOfInterest: 'Skyline Apartments' },
-  { id: '2', name: 'Priya Patel', email: 'priya.p@example.com', aiScore: 78, aiScoreFactors: 'Interested in villas, viewed 3 listings', source: 'Property Listing', dateAdded: '2024-07-19T14:30:00Z', status: 'Contacted' },
-  { id: '3', name: 'Rohan Kumar', email: 'rohan.k@example.com', aiScore: 45, aiScoreFactors: 'Low engagement, budget is unclear', source: 'Social Media', dateAdded: '2024-07-18T09:00:00Z', status: 'Qualified' },
-  { id: '4', name: 'Sneha Reddy', email: 'sneha.r@example.com', aiScore: 85, aiScoreFactors: 'Matches new premium listing, high urgency', source: 'Referral', dateAdded: '2024-07-21T11:00:00Z', status: 'Viewing Scheduled' },
-  { id: '5', name: 'Vikram Singh', email: 'vikram.s@example.com', aiScore: 62, aiScoreFactors: 'Interested in commercial properties', source: 'Manual Entry', dateAdded: '2024-07-15T16:00:00Z', status: 'Offer Made' },
-  { id: '6', name: 'Anjali Rao', email: 'anjali.rao@example.com', aiScore: 33, aiScoreFactors: 'Not responsive to emails', source: 'Google Ads', dateAdded: '2024-07-12T12:00:00Z', status: 'Unqualified' },
-];
+import { useLeads } from '@/hooks/useLeads';
+import type { LeadInsert } from '@/lib/supabase';
 
 export default function LeadsPage() {
-  const { toast } = useToast();
-  const { user } = useAuth();
-  const [leads, setLeads] = useState<Lead[]>(mockLeads);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
-  const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
+  const { leads, isLoading, createLead, updateLead, deleteLead, deleteLeads, updateLeadStatus } = useLeads()
+  const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set())
+  const [isAddSheetOpen, setIsAddSheetOpen] = useState(false)
   
   const [filters, setFilters] = useState<Filters>({
     searchTerm: '',
@@ -41,7 +26,7 @@ export default function LeadsPage() {
   });
 
   const filteredLeads = useMemo(() => {
-    let tempLeads = [...leads];
+    let tempLeads = leads.map(convertLeadForUI)
     
     // Smart Views
     switch (filters.smartView) {
@@ -109,25 +94,8 @@ export default function LeadsPage() {
     }
   };
   
-  const handleAddLead = async (leadData: Omit<Lead, 'id' | 'aiScore' | 'aiScoreFactors' | 'dateAdded'>) => {
-    if (!user) {
-        toast({ title: "Authentication Error", description: "You must be logged in to add a lead.", variant: "destructive" });
-        return;
-    }
-
-    const newLead: Lead = {
-      id: (Math.random() * 10000).toString(), // Mock ID
-      aiScore: Math.floor(Math.random() * 60) + 40, // Mock AI Score
-      aiScoreFactors: "Generated from manual entry",
-      dateAdded: new Date().toISOString(),
-      ...leadData,
-    };
-    
-    // This is where you would call your actual Firebase/Supabase add function.
-    // For now, we just update the local state.
-    setLeads(prev => [newLead, ...prev]);
-
-    toast({ title: "Lead Added!", description: `${leadData.name} has been successfully added.` });
+  const handleAddLead = async (leadData: Omit<LeadInsert, 'id' | 'user_id' | 'ai_score' | 'ai_score_factors' | 'created_at' | 'updated_at'>) => {
+    await createLead(leadData)
   };
 
 
