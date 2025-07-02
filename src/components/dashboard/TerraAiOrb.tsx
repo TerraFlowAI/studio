@@ -11,10 +11,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Brain, Mic, MicOff, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { processTerraCommand } from '@/ai/flows/process-terra-command';
+// import { processTerraCommand } from '@/ai/flows/process-terra-command';
 import { Skeleton } from '../ui/skeleton';
 
-const Spline = dynamic(() => import('@splinetool/react-spline'), {
+const Spline = dynamic(() => import('@splinetool/react-spline').then(mod => mod.Spline), {
   ssr: false,
   loading: () => <Skeleton className="w-full h-full bg-slate-700" />,
 });
@@ -103,8 +103,9 @@ export function TerraAiOrb({ userName }: { userName: string }) {
     setTranscript(''); 
 
     try {
-        const result = await processTerraCommand({ command });
-        setAiResponse(result.responseText);
+        // const result = await processTerraCommand({ command });
+        // setAiResponse(result.responseText);
+        setAiResponse('AI command processing is temporarily disabled. Your Supabase leads integration is ready!');
     } catch(error) {
         const errorMessage = "Sorry, I had trouble processing that. Please try again.";
         setAiResponse(errorMessage);
