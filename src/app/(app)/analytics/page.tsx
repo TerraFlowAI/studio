@@ -5,8 +5,8 @@ import * as React from "react";
 import Link from 'next/link';
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChart, TrendingUp, Users, ShieldAlert, Eye, Filter } from "lucide-react"; 
-import { ResponsiveContainer, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Line, ComposedChart, FunnelChart, Funnel, LabelList } from 'recharts';
+import { BarChart, LineChart, TrendingUp, Users, ShieldAlert, Eye, Filter, PieChart as PieChartIcon, Building } from "lucide-react"; 
+import { ResponsiveContainer, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Line, ComposedChart, FunnelChart, Funnel, LabelList, PieChart, Pie, Cell } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ const chartConfig = {
   sales: { label: "Actual Sales", color: "hsl(var(--primary))", icon: BarChart },
   forecast: { label: "Forecasted Sales", color: "hsl(var(--accent))", icon: LineChart },
   price: { label: "Avg. Price", color: "hsl(var(--secondary-foreground))", icon: TrendingUp },
+  leads: { label: "Leads", color: "hsl(var(--chart-1))" },
 } satisfies ChartConfig;
 
 const funnelData = [
@@ -41,6 +42,23 @@ const topListingsData = [
     { id: '2', title: 'Spacious 4BHK Villa', views: 800, leads: 22, conversionRate: 2.8 },
     { id: '3', title: '2BHK Apartment for Rent', views: 2100, leads: 88, conversionRate: 4.2 },
 ];
+
+const leadSourceData = [
+  { name: 'Website Chatbot', value: 400, fill: 'hsl(var(--chart-1))' },
+  { name: 'Social Media', value: 300, fill: 'hsl(var(--chart-2))' },
+  { name: 'Property Listing', value: 250, fill: 'hsl(var(--chart-3))' },
+  { name: 'Referral', value: 200, fill: 'hsl(var(--chart-4))' },
+  { name: 'Google Ads', value: 150, fill: 'hsl(var(--chart-5))' },
+];
+
+const propertyTypeData = [
+    { name: 'Apartment', leads: 450 },
+    { name: 'Villa', leads: 200 },
+    { name: 'House', leads: 150 },
+    { name: 'Commercial', leads: 80 },
+    { name: 'Land', leads: 30 },
+];
+
 
 export default function MarketAnalyticsPage() {
   return (
@@ -163,6 +181,58 @@ export default function MarketAnalyticsPage() {
                 ))}
               </TableBody>
             </Table>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2 mt-8">
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="font-headline text-xl flex items-center gap-2"><PieChartIcon className="text-primary"/> Lead Source Breakdown</CardTitle>
+            <CardDescription>Where are your most valuable leads coming from?</CardDescription>
+          </CardHeader>
+          <CardContent className="h-[350px] w-full p-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
+                <Pie data={leadSourceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                    const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                    const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+                    return (
+                        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" className="text-xs font-bold">
+                            {`${(percent * 100).toFixed(0)}%`}
+                        </text>
+                    );
+                }}>
+                  {leadSourceData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="font-headline text-xl flex items-center gap-2"><Building className="text-primary"/> Property Type Demand</CardTitle>
+            <CardDescription>Which property types are generating the most leads?</CardDescription>
+          </CardHeader>
+          <CardContent className="h-[350px] w-full p-0">
+            <ChartContainer config={chartConfig} className="w-full h-full">
+                <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={propertyTypeData} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                        <XAxis type="number" tickLine={false} axisLine={false} />
+                        <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} />
+                        <Tooltip content={<ChartTooltipContent />} cursor={{fill: 'hsl(var(--accent))'}} />
+                        <Legend />
+                        <Bar dataKey="leads" fill="hsl(var(--chart-1))" radius={[0, 4, 4, 0]} />
+                    </BarChart>
+                </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
