@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo } from 'react';
@@ -66,7 +65,7 @@ export default function PropertiesPage() {
     };
 
     return (
-        <div className="container mx-auto">
+        <>
             <PageHeader title="Property Listings" description="Manage all your properties in one place.">
                 <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
                     <Link href="/properties/new">
@@ -98,7 +97,6 @@ export default function PropertiesPage() {
                     />
                 )}
             </div>
-        </div>
+        </>
     );
 }
-

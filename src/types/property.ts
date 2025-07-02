@@ -1,4 +1,3 @@
-
 import type { PropertyStatusId, PropertyTypeId } from "@/lib/constants";
 
 // Represents a property listing in the application
