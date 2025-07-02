@@ -8,11 +8,9 @@
  * - ProcessTerraCommandOutput - The return type for the processTerraCommand function.
  */
 
-import {defineFlow, run, generate} from 'genkit';
-import {defineTool} from 'genkit/tool';
+import {ai} from '@/ai/genkit';
 import {z} from 'zod';
 import Twilio from 'twilio';
-import {geminiPro} from '@genkit-ai/googleai';
 
 // Schemas remain the same as the user command and final response text are simple strings.
 const ProcessTerraCommandInputSchema = z.object({
@@ -36,7 +34,7 @@ export type ProcessTerraCommandOutput = z.infer<
 // --- Tool Definitions ---
 
 // Placeholder/Mock for finding leads. In a real app, this would query Firestore.
-const findLeads = defineTool(
+const findLeads = ai.defineTool(
   {
     name: 'findLeads',
     description:
@@ -59,7 +57,7 @@ const findLeads = defineTool(
 );
 
 // Twilio Voice Call Tool
-const initiateVoiceCall = defineTool(
+const initiateVoiceCall = ai.defineTool(
   {
     name: 'initiateVoiceCall',
     description:
@@ -111,7 +109,7 @@ const initiateVoiceCall = defineTool(
 );
 
 // Placeholder for sending an email
-const sendEmail = defineTool(
+const sendEmail = ai.defineTool(
   {
     name: 'sendEmail',
     description: 'Sends an email to a specified recipient.',
@@ -132,7 +130,7 @@ const sendEmail = defineTool(
 );
 
 // Placeholder for creating a calendar appointment
-const createCalendarAppointment = defineTool(
+const createCalendarAppointment = ai.defineTool(
   {
     name: 'createCalendarAppointment',
     description: "Creates a new event in the user's calendar.",
@@ -178,26 +176,26 @@ export async function processTerraCommand(
   return processTerraCommandFlow(input);
 }
 
-const processTerraCommandFlow = defineFlow(
+const processTerraCommandFlow = ai.defineFlow(
   {
     name: 'processTerraCommandFlow',
     inputSchema: ProcessTerraCommandInputSchema,
     outputSchema: ProcessTerraCommandOutputSchema,
   },
   async (input) => {
-    const llmResponse = await generate({
+    const llmResponse = await ai.generate({
       prompt: `User command: ${input.command}`,
-      model: geminiPro,
+      model: 'googleai/gemini-1.5-flash',
       tools: [
         findLeads,
         initiateVoiceCall,
         sendEmail,
         createCalendarAppointment,
       ],
-      systemInstruction: systemInstruction,
+      system: systemInstruction,
     });
 
-    const responseText = llmResponse.text();
+    const responseText = llmResponse.text;
 
     if (!responseText) {
       throw new Error('The AI failed to generate a response text.');

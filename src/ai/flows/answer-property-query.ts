@@ -8,9 +8,8 @@
  * - AnswerPropertyQueryOutput - The return type for the answerPropertyQuery function.
  */
 
-import {defineFlow, generate} from 'genkit';
+import {ai} from '@/ai/genkit';
 import {z} from 'zod';
-import {geminiPro} from '@genkit-ai/googleai';
 
 const AnswerPropertyQueryInputSchema = z.object({
   query: z.string().describe('The property-related question from the user.'),
@@ -36,7 +35,7 @@ export async function answerPropertyQuery(
   return answerPropertyQueryFlow(input);
 }
 
-const answerPropertyQueryFlow = defineFlow(
+const answerPropertyQueryFlow = ai.defineFlow(
   {
     name: 'answerPropertyQueryFlow',
     inputSchema: AnswerPropertyQueryInputSchema,
@@ -54,15 +53,15 @@ const answerPropertyQueryFlow = defineFlow(
     Question: ${input.query}
     Answer:`;
 
-    const llmResponse = await generate({
+    const llmResponse = await ai.generate({
       prompt: prompt,
-      model: geminiPro,
+      model: 'googleai/gemini-1.5-flash',
       output: {
         format: 'json',
         schema: AnswerPropertyQueryOutputSchema,
       },
     });
 
-    return llmResponse.output()!;
+    return llmResponse.output!;
   }
 );

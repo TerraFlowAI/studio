@@ -7,9 +7,8 @@
  * - GenerateImageFromTextOutput - The return type for the generateImageFromText function.
  */
 
-import {defineFlow, generate} from 'genkit';
+import {ai} from '@/ai/genkit';
 import {z} from 'zod';
-import {geminiProVision} from '@genkit-ai/googleai';
 
 const GenerateImageFromTextInputSchema = z.object({
   description: z
@@ -37,26 +36,21 @@ export async function generateImageFromText(
   return generateImageFromTextFlow(input);
 }
 
-const generateImageFromTextFlow = defineFlow(
+const generateImageFromTextFlow = ai.defineFlow(
   {
     name: 'generateImageFromTextFlow',
     inputSchema: GenerateImageFromTextInputSchema,
     outputSchema: GenerateImageFromTextOutputSchema,
   },
   async (input) => {
-    // Note: Image generation models might have different identifiers in v0.6.0
-    // This uses geminiProVision as a placeholder. In a real v0.6.0 scenario,
-    // you might need a specific image generation model or plugin.
-    // The prompt structure for image generation is also simplified here.
-    const llmResponse = await generate({
+    const {media} = await ai.generate({
+      model: 'googleai/gemini-2.0-flash-preview-image-generation',
       prompt: `Generate a photorealistic image of a property based on this description: ${input.description}`,
-      model: geminiProVision, // Placeholder for an actual image generation model in v0.6.0
-      output: {
-        format: 'media', // Assuming media format for image output
+      config: {
+        responseModalities: ['IMAGE', 'TEXT'],
       },
     });
 
-    const media = llmResponse.output();
     if (!media?.url) {
       throw new Error('Image generation failed or returned no media URL.');
     }
