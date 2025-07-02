@@ -48,7 +48,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex flex-1 flex-col overflow-hidden">
                 <AppHeader />
                 <main className={cn(
-                  "flex-1 overflow-y-auto pb-20 md:pb-0", // Padding bottom for mobile bottom nav
+                  "flex-1 overflow-auto pb-20 md:pb-0", // Use overflow-auto to allow both vertical and horizontal scrolling if needed
                   !isBuilderPage && "p-4 md:p-6 lg:p-8"
                 )}>
                     {children}
