@@ -12,31 +12,20 @@ import { ResponsiveContainer, LineChart, Line, Tooltip } from 'recharts';
 // --- Visual Components for each Feature Block ---
 
 const TerraLeadVisual = () => (
-    <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
-    <div className="absolute w-full h-full bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.3),rgba(255,255,255,0))]"></div>
-    <div className="relative flex flex-col items-center">
-      {/* Lead Sources */}
-      <div className="flex gap-8 mb-6">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Globe className="h-6 w-6 text-blue-500" /></motion.div>
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.4, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Users className="h-6 w-6 text-purple-500" /></motion.div>
-      </div>
-      {/* Flowing Lines */}
-      <motion.svg width="200" height="50" viewBox="0 0 200 50" className="mb-6">
-        <motion.path d="M 50 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
-        <motion.path d="M 150 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
-        <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" /><stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="1" /></linearGradient></defs>
-      </motion.svg>
-      {/* Central AI Processor */}
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1, transition: { delay: 1.5, type: 'spring' } }} className="flex flex-col items-center gap-4">
-        <div className="p-4 bg-primary text-primary-foreground rounded-xl shadow-lg"><Bot className="h-8 w-8" /></div>
-        {/* Output Actions */}
-        <div className="flex items-center gap-4">
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0, transition: { delay: 2.0 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md text-sm font-bold text-green-500">92</motion.div>
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0, transition: { delay: 2.2 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Mail className="h-6 w-6 text-orange-500" /></motion.div>
-        </div>
-      </motion.div>
+    <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video
+          key="/videos/terralead-showcase.mp4"
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
     </div>
-  </div>
 );
 
 const TerraScribeVisual = () => (
