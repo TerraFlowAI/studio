@@ -5,7 +5,7 @@ import { useState } from "react";
 import { PricingCard, type PricingPlan } from "@/components/pricing/PricingCard";
 import { ContactFormPricing } from "@/components/pricing/ContactFormPricing";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, ClipboardCheck, Plug, Zap } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -263,6 +263,65 @@ export default function PricingPage() {
              </motion.div>
           ))}
         </motion.div>
+        
+        <motion.section
+            className="mt-24"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={sectionVariants}
+        >
+            <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 mb-4">
+                    Get Started in <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Minutes</span>
+                </h2>
+                <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+                    Launch your journey to higher conversions and streamlined operations. TerraFlow is designed for a seamless onboarding experience.
+                </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[
+                    {
+                        icon: ClipboardCheck,
+                        title: "Choose Your Plan",
+                        description: "Select the plan that fits your business. Start with a 14-day free trial—no credit card required."
+                    },
+                    {
+                        icon: Plug,
+                        title: "Connect Your Data",
+                        description: "Easily import your property listings and leads. Our guided setup gets you running in minutes."
+                    },
+                    {
+                        icon: Zap,
+                        title: "Activate Your AI",
+                        description: "Enable your AI co-pilots and start automating workflows, generating content, and closing deals."
+                    }
+                ].map((step, index) => {
+                    const Icon = step.icon;
+                    return (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.5, delay: index * 0.15 }}
+                        >
+                            <Card className="h-full text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group bg-background/80 backdrop-blur-sm border-border">
+                                <CardHeader className="items-center">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+                                        <Icon className="h-6 w-6" />
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <CardTitle className="font-headline text-xl text-foreground mb-2">{step.title}</CardTitle>
+                                    <CardDescription>{step.description}</CardDescription>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    );
+                })}
+            </div>
+        </motion.section>
 
         <motion.div
              initial="hidden"
