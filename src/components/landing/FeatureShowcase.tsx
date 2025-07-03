@@ -3,8 +3,8 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight, Bot, Calculator, PenSquare, Users, Zap } from "lucide-react";
-import { cn } from "@/lib/utils"; // Assuming you have this from shadcn/ui
+import { CheckCircle, ArrowRight, Bot } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Link from 'next/link';
 
 // Data structure defining each feature block for easy management
@@ -19,10 +19,11 @@ const featureBlocks = [
     layout: "text-left",
     visual: (
       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
-        {/* Placeholder for a video or animation */}
         <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/terralead-showcase.mp4">
           <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
         </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
       </div>
     ),
     href: "/solutions/agents",
@@ -40,6 +41,7 @@ const featureBlocks = [
         <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/terrascribe-showcase.mp4">
           <source src="/videos/terrascribe-showcase.mp4" type="video/mp4" />
         </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
       </div>
     ),
     href: "/scribe",
@@ -57,6 +59,7 @@ const featureBlocks = [
         <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/terravaluate-showcase.mp4">
           <source src="/videos/terravaluate-showcase.mp4" type="video/mp4" />
         </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
       </div>
     ),
     href: "/analytics",
@@ -74,6 +77,7 @@ const featureBlocks = [
         <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/smartflow-showcase.mp4">
           <source src="/videos/smartflow-showcase.mp4" type="video/mp4" />
         </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
       </div>
     ),
     href: "/solutions/developers",
@@ -81,7 +85,7 @@ const featureBlocks = [
   {
     suiteName: "Featuring Terra, your AI Agent",
     headline: "Your Autonomous Team Member is Here.",
-    description: "This is what sets TerraFlow apart. Use voice or chat to command Terra. Tell it to call leads, generate reports, or schedule meetings, and it gets done. It's not just a tool; it's a new way to run your business.",
+    description: "This is what sets TerraFlow apart. Use voice or chat to command Terra, your AI agent. Tell it to call leads, generate reports, or schedule meetings, and it gets done. It's not just a tool; it's a new way to run your business.",
     checklist: [ "Autonomous Outbound Voice Calls", "Conversational UI (Voice & Chat)" ],
     metrics: [],
     cta: "Meet Your AI Agent",
@@ -114,27 +118,27 @@ const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] }) => {
       transition={{ duration: 0.7, ease: "easeOut" }}
       className={cn(
         "py-12",
-        block.isSpecial && "bg-slate-900 text-white rounded-3xl my-12 py-16 px-4 sm:px-8" // Special styling for the AI Agent block
+        (block as any).isSpecial && "bg-slate-900 text-white rounded-3xl my-12 py-16 px-4 sm:px-8" // Special styling
       )}
     >
       <div className={cn(
         "grid grid-cols-1 md:grid-cols-2 items-center gap-12 lg:gap-24",
-        block.isSpecial ? "container mx-auto" : ""
+        (block as any).isSpecial ? "container mx-auto" : ""
       )}>
         {/* Text Content */}
         <div className={cn("space-y-6", !isTextLeft && "md:col-start-2")}>
-          <span className={cn("inline-block rounded-full px-3 py-1 text-sm font-semibold", block.isSpecial ? "bg-teal-400/10 text-teal-300" : "bg-primary/10 text-primary")}>
+          <span className={cn("inline-block rounded-full px-3 py-1 text-sm font-semibold", (block as any).isSpecial ? "bg-teal-400/10 text-teal-300" : "bg-primary/10 text-primary")}>
             {block.suiteName}
           </span>
-          <h2 className={cn("text-3xl md:text-4xl font-bold font-headline", block.isSpecial ? "text-slate-100" : "text-slate-800 dark:text-slate-100")}>
+          <h2 className={cn("text-3xl md:text-4xl font-bold font-headline", (block as any).isSpecial ? "text-slate-100" : "text-slate-800 dark:text-slate-100")}>
             {block.headline}
           </h2>
-          <p className={cn("text-lg", block.isSpecial ? "text-slate-300" : "text-slate-600 dark:text-slate-300")}>
+          <p className={cn("text-lg", (block as any).isSpecial ? "text-slate-300" : "text-slate-600 dark:text-slate-300")}>
             {block.description}
           </p>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
             {block.checklist.map((item, index) => (
-              <li key={index} className={cn("flex items-center gap-2", block.isSpecial ? "text-slate-200" : "text-slate-700 dark:text-slate-200")}>
+              <li key={index} className={cn("flex items-center gap-2", (block as any).isSpecial ? "text-slate-200" : "text-slate-700 dark:text-slate-200")}>
                 <CheckCircle className="h-5 w-5 text-teal-500 flex-shrink-0" />
                 <span>{item}</span>
               </li>
@@ -150,7 +154,7 @@ const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] }) => {
                 ))}
               </div>
           )}
-          <Button variant="link" asChild className={cn("text-lg p-0 h-auto group", block.isSpecial ? "text-teal-400 hover:text-teal-300" : "text-primary")}>
+          <Button variant="link" asChild className={cn("text-lg p-0 h-auto group", (block as any).isSpecial ? "text-teal-400 hover:text-teal-300" : "text-primary")}>
             <Link href={block.href}>
               {block.cta}
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -191,8 +195,7 @@ export function FeatureShowcase() {
           </p>
         </motion.div>
         
-        {/* Use a simple container for the feature blocks */}
-        <div className="space-y-8 md:space-y-16">
+        <div className="divide-y divide-slate-200 dark:divide-slate-800">
           {featureBlocks.map((block, index) => (
             <FeatureBlock key={index} block={block} />
           ))}
