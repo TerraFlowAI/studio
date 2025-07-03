@@ -12,7 +12,7 @@ const featureBlocks = [
   {
     suiteName: "TerraLead™ Suite",
     headline: "Supercharge Your Sales Pipeline with an AI Co-Pilot.",
-    description: "Stop chasing cold inquiries. Our intelligent AI system works 24/7 to capture, qualify, score, and nurture prospects across multiple channels. We turn your entire lead management process into a high-efficiency conversion engine.",
+    description: "Stop chasing cold inquiries. Our intelligent AI system works 24/7 to capture, qualify, score, and nurture prospects across multiple channels like WhatsApp and property portals. We turn your entire lead management process into a high-efficiency conversion engine.",
     checklist: [ "AI-powered Lead Scoring", "24/7 Chatbot Qualification", "Automated Follow-up Sequences", "Omni-channel Communication" ],
     metrics: ["10x More Qualified Leads", "95% Less Manual Work"],
     cta: "Explore Lead Automation",
@@ -29,7 +29,7 @@ const featureBlocks = [
     href: "/solutions/agents",
   },
   {
-    suiteName: "TerraScribe™ & TerraSecure™",
+    suiteName: "TerraScribe™ Suite",
     headline: "Generate Compliant Documents & Marketing Copy Instantly.",
     description: "Eliminate writer's block and legal uncertainty. Generate professional marketing content in seconds, and create error-free, RERA-compliant documents like sale agreements with our AI, ensuring speed and peace of mind.",
     checklist: [ "AI Marketing Copywriting", "Automated RERA Document Generation" ],
@@ -65,9 +65,9 @@ const featureBlocks = [
     href: "/analytics",
   },
   {
-    suiteName: "TerraConstruct™ & SmartFlow™",
-    headline: "Streamline Projects from Groundbreaking to Handover.",
-    description: "Designed for developers. Manage your project lifecycle, track construction milestones, automate post-sales processes, and build custom workflows for any task.",
+    suiteName: "TerraConstruct™ Suite",
+    headline: "Streamline Your Projects from Groundbreaking to Handover.",
+    description: "Designed for developers. Manage your entire project lifecycle in one place. Track construction milestones, manage inventory, and automate post-sales processes like payment reminders and handovers.",
     checklist: [ "Real-time Inventory Management", "Automated Payment & Demand Notes" ],
     metrics: [],
     cta: "Explore Developer Tools",
