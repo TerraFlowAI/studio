@@ -7,10 +7,10 @@ import { useTheme } from 'next-themes'; // Assuming you use next-themes for them
 interface OnboardingTourProps {
   run: boolean;
   steps: Step[];
-  onTourEnd: (data: CallBackProps) => void;
+  onCallback: (data: CallBackProps) => void;
 }
 
-export function OnboardingTour({ run, steps, onTourEnd }: OnboardingTourProps) {
+export function OnboardingTour({ run, steps, onCallback }: OnboardingTourProps) {
   // Get the current theme to apply correct styles
   const { theme } = useTheme();
 
@@ -18,7 +18,7 @@ export function OnboardingTour({ run, steps, onTourEnd }: OnboardingTourProps) {
     <Joyride
       run={run}
       steps={steps}
-      callback={onTourEnd}
+      callback={onCallback}
       continuous={true} // Go to the next step when 'Next' is clicked
       showProgress={true} // Show progress like "1 of 5"
       showSkipButton={true} // Allow users to skip the tour
