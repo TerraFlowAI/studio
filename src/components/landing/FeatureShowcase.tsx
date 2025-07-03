@@ -3,17 +3,10 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight, Bot, Mail, Phone, Calendar, MessageCircle, Sparkles, Zap, Users, BadgeCheck, FileText, BarChart3, GanttChartSquare, Map } from "lucide-react";
+import { CheckCircle, ArrowRight, Bot, Mail, Phone, Calendar, MessageCircle, Sparkles, Zap, Users, BadgeCheck, FileText, BarChart3, GanttChartSquare, Map, LineChart as LineChartIcon, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { ResponsiveContainer, LineChart, Line, Tooltip } from 'recharts';
 
 
 // --- Visual Components for each Feature Block ---
@@ -25,7 +18,7 @@ const TerraLeadVisual = () => (
       {/* Lead Sources */}
       <div className="flex gap-8 mb-6">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><MessageCircle className="h-6 w-6 text-green-500" /></motion.div>
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.4, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Zap className="h-6 w-6 text-blue-500" /></motion.div>
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.4, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Globe className="h-6 w-6 text-blue-500" /></motion.div>
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.6, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Users className="h-6 w-6 text-purple-500" /></motion.div>
       </div>
       {/* Flowing Lines */}
@@ -70,7 +63,6 @@ const TerraScribeVisual = () => (
 const TerraIntelVisual = () => (
     <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
         <Map className="absolute inset-0 w-full h-full text-slate-200 dark:text-slate-700 opacity-50" strokeWidth={1}/>
-        {/* Glowing hotspots */}
         <motion.div
             className="absolute top-[30%] left-[25%] w-16 h-16 bg-teal-400/50 rounded-full blur-2xl"
             animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
@@ -99,10 +91,8 @@ const TerraIntelVisual = () => (
                             border: '1px solid hsl(var(--border))',
                             borderRadius: '0.5rem',
                         }}/>
-                        <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} hide/>
-                        <Line type="monotone" dataKey="price" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
-                        <Line type="monotone" dataKey="predicted" stroke="hsl(var(--primary))" strokeWidth={2} strokeDasharray="5 5" dot={false}/>
+                        <Line type="monotone" dataKey="price" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} name="Historical Prices" />
+                        <Line type="monotone" dataKey="predicted" stroke="hsl(var(--primary))" strokeWidth={2} strokeDasharray="5 5" dot={false} name="AI Predicted Trend" />
                     </LineChart>
                 </ResponsiveContainer>
             </div>
@@ -117,17 +107,45 @@ const TerraIntelVisual = () => (
 const TerraConstructVisual = () => (
     <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
         <div className="w-full max-w-md space-y-3">
-            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1, transition: { delay: 0.2 } }} className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md">
-                <div className="p-2 bg-green-100 dark:bg-green-800/50 rounded-full"><CheckCircle className="h-5 w-5 text-green-500" /></div>
+            <motion.div
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { delay: 0.2 } }}
+                className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md"
+            >
+                <div className="p-2 bg-green-100 dark:bg-green-800/50 rounded-full">
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                </div>
                 <p className="font-medium text-sm text-foreground">Foundation Complete</p>
             </motion.div>
-            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1, transition: { delay: 0.4 } }} className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md">
-                <div className="p-2 bg-green-100 dark:bg-green-800/50 rounded-full"><CheckCircle className="h-5 w-5 text-green-500" /></div>
-                <p className="font-medium text-sm text-foreground">Phase 1 Sold Out</p>
-                <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.8 } }} className="ml-auto p-2 bg-blue-100 dark:bg-blue-800/50 rounded-md"><FileText className="h-5 w-5 text-blue-500" /></motion.div>
+            <motion.div
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { delay: 0.4 } }}
+                className="flex items-center justify-between gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md"
+            >
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-100 dark:bg-green-800/50 rounded-full">
+                        <CheckCircle className="h-5 w-5 text-green-500" />
+                    </div>
+                    <p className="font-medium text-sm text-foreground">Phase 1 Sold Out</p>
+                </div>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1, transition: { delay: 0.8 } }}
+                    className="flex items-center gap-1 text-blue-500"
+                >
+                    <FileText className="h-5 w-5" />
+                    <ArrowRight className="h-4 w-4" />
+                    <Users className="h-5 w-5" />
+                </motion.div>
             </motion.div>
-            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1, transition: { delay: 0.6 } }} className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md">
-                <div className="p-2 bg-slate-200 dark:bg-slate-600 rounded-full"><GanttChartSquare className="h-5 w-5 text-slate-500" /></div>
+            <motion.div
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { delay: 0.6 } }}
+                className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md"
+            >
+                <div className="p-2 bg-slate-200 dark:bg-slate-600 rounded-full">
+                    <GanttChartSquare className="h-5 w-5 text-slate-500" />
+                </div>
                 <p className="font-medium text-sm text-muted-foreground">Handover Phase</p>
             </motion.div>
         </div>
