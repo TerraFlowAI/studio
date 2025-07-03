@@ -1,6 +1,5 @@
 
 import { Hero } from "@/components/landing/Hero";
-import { FeatureShowcase } from "@/components/landing/FeatureShowcase";
 import { CoreServicesGrid } from "@/components/landing/CoreServicesGrid";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { FinalCTA } from "@/components/landing/FinalCTA";
@@ -12,6 +11,7 @@ import { TrustAndSocialProof } from "@/components/landing/TrustAndSocialProof";
 import { ThreeStepProcess } from "@/components/landing/ThreeStepProcess";
 import dynamic from 'next/dynamic';
 import { TerraChatBubble } from "@/components/chatbot/TerraChatBubble";
+import { FeatureShowcase } from "@/components/landing/FeatureShowcase";
 
 const LandingPageNavigation = dynamic(() =>
   import('@/components/layout/LandingPageNavigation').then(mod => mod.LandingPageNavigation)
