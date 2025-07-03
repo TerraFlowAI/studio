@@ -3,7 +3,7 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight, Bot, Mail, Phone, Calendar, MessageCircle, Sparkles, Zap, Users, BadgeCheck, FileText, BarChart3, GanttChartSquare, Map, LineChart as LineChartIcon, Globe } from "lucide-react";
+import { CheckCircle, ArrowRight, Bot, Mail, Users, Zap, BadgeCheck, FileText, BarChart3, GanttChartSquare, Map, LineChart as LineChartIcon, Globe, Phone, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
 import { ResponsiveContainer, LineChart, Line, Tooltip } from 'recharts';
@@ -17,15 +17,13 @@ const TerraLeadVisual = () => (
     <div className="relative flex flex-col items-center">
       {/* Lead Sources */}
       <div className="flex gap-8 mb-6">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><MessageCircle className="h-6 w-6 text-green-500" /></motion.div>
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.4, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Globe className="h-6 w-6 text-blue-500" /></motion.div>
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.6, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Users className="h-6 w-6 text-purple-500" /></motion.div>
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Globe className="h-6 w-6 text-blue-500" /></motion.div>
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.4, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Users className="h-6 w-6 text-purple-500" /></motion.div>
       </div>
       {/* Flowing Lines */}
       <motion.svg width="200" height="50" viewBox="0 0 200 50" className="mb-6">
-        <motion.path d="M 30 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
-        <motion.path d="M 100 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
-        <motion.path d="M 170 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
+        <motion.path d="M 50 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
+        <motion.path d="M 150 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
         <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" /><stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="1" /></linearGradient></defs>
       </motion.svg>
       {/* Central AI Processor */}
