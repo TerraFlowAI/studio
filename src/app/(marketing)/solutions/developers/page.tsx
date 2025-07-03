@@ -287,26 +287,41 @@ export default function DevelopersSolutionPage() {
 
       {/* 1. Hero Section */}
       <section className="py-16 md:py-24 bg-slate-50/50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}>
-                <h1 className="text-4xl md:text-6xl font-bold font-headline text-foreground mb-4">
-                    Build, Market, and <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Sell Your Projects Faster.</span>
-                </h1>
-                <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-8">
-                   From site acquisition to final sale, TerraFlow integrates project management, compliance automation, and market analytics into a single OS for developers.
-                </p>
-                <div className="flex justify-center gap-4">
-                    <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                        <Link href="#contact">Schedule a Consultation</Link>
-                    </Button>
-                    <Button asChild variant="outline" size="lg">
-                        <Link href="#features">Explore Platform</Link>
-                    </Button>
-                </div>
-                 <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} className="relative mt-12">
-                    <Image src="https://placehold.co/800x450.png" alt="Blueprint turning into 3D model with data overlays" width={800} height={450} className="rounded-lg shadow-2xl object-cover mx-auto" data-ai-hint="blueprint 3d model" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+                {/* Left Column: Content */}
+                <motion.div
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="text-center md:text-left"
+                >
+                    <h1 className="text-4xl md:text-6xl font-bold font-headline text-foreground mb-4">
+                        Build, Market, and <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Sell Your Projects Faster.</span>
+                    </h1>
+                    <p className="text-lg md:text-xl text-muted-foreground mb-8">
+                       From site acquisition to final sale, TerraFlow integrates project management, compliance automation, and market analytics into a single OS for developers.
+                    </p>
+                    <div className="flex justify-center md:justify-start gap-4">
+                        <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                            <Link href="#contact">Schedule a Consultation</Link>
+                        </Button>
+                        <Button asChild variant="outline" size="lg">
+                            <Link href="#features">Explore Platform</Link>
+                        </Button>
+                    </div>
                 </motion.div>
-            </motion.div>
+
+                {/* Right Column: Image */}
+                <motion.div
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="relative"
+                >
+                    <Image src="https://placehold.co/800x450.png" alt="Blueprint turning into 3D model with data overlays" width={800} height={450} className="rounded-lg shadow-2xl object-cover" data-ai-hint="blueprint 3d model" />
+                </motion.div>
+            </div>
         </div>
       </section>
 
