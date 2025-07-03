@@ -32,9 +32,7 @@ import {
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/ui/Logo';
-import { auth } from '@/lib/firebase';
 import { useAuth } from '@/app/context/AuthContext';
-import { signOut } from 'firebase/auth';
 
 export interface NavItem {
   href: string;
@@ -65,17 +63,8 @@ export const adminNavItems: NavItem[] = [
 export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter(); 
-  const { user, isAdmin } = useAuth(); // Get isAdmin state
+  const { isAdmin } = useAuth(); // Get isAdmin state
   const { setOpenMobile, isMobile, state } = useSidebar();
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      router.push('/login');
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
-  };
 
   return (
     <Sidebar

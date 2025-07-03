@@ -22,17 +22,20 @@ const nextConfig = {
     ],
   },
 
-  // Custom webpack configuration to fix a build issue with a Genkit dependency.
+  // Custom webpack configuration to fix build issues.
   webpack: (config, { isServer }) => {
+    // Fix for Genkit 'handlebars' dependency issue.
     if (isServer) {
-      // The 'handlebars' library, a dependency of Genkit, uses a feature not
-      // supported by webpack by default. This alias directs webpack to use a
-      // CommonJS build of the library which is compatible.
       config.resolve.alias = {
         ...config.resolve.alias,
         'handlebars': 'handlebars/dist/cjs/handlebars.js',
       };
     }
+    
+    // Fix for Supabase 'ws' dependency issue.
+    // The 'ws' module is a server-side WebSocket library that shouldn't be bundled for the client.
+    config.externals.push('ws');
+
     return config;
   },
 };

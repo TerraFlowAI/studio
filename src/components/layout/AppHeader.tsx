@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -10,8 +9,6 @@ import { ThemeToggle } from '@/components/shared/ThemeToggle';
 import { useMounted } from '@/hooks/useMounted';
 import { Logo } from "../ui/Logo";
 import { useAuth } from "@/app/context/AuthContext";
-import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -28,7 +25,7 @@ import { DateRangePicker, type DateRange } from "@/components/shared/DateRangePi
 export function AppHeader() {
   const { toggleSidebar, isMobile } = useSidebar();
   const mounted = useMounted();
-  const { user } = useAuth();
+  const { user, supabase } = useAuth();
   const router = useRouter();
 
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
@@ -38,7 +35,7 @@ export function AppHeader() {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await supabase.auth.signOut();
       router.push('/login');
     } catch (error) {
       console.error("Error signing out: ", error);
