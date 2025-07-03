@@ -35,18 +35,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // This function handles fetching the user's profile from your public 'users' table.
     const fetchUserProfile = async (currentUser: User) => {
-      const { data: userProfile, error } = await supabase
+      const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('id', currentUser.id)
         .single();
       
-      if (error) {
+      // "PGRST116" is the error code for when .single() finds 0 rows.
+      // We can safely ignore it and treat it as a "profile not found" case.
+      if (error && error.code !== 'PGRST116') {
         console.error('Error fetching user profile:', error);
-        setProfile(null);
-      } else {
-        setProfile(userProfile);
+        return null;
       }
+      
+      return data;
     };
 
     // Subscribe to authentication state changes
@@ -57,7 +59,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(currentUser);
 
         if (currentUser) {
-          await fetchUserProfile(currentUser);
+            let userProfile = await fetchUserProfile(currentUser);
+
+            // If a new user signs in (e.g., via Google OAuth) and they don't have a profile yet, create one.
+            if (!userProfile && event === 'SIGNED_IN') {
+                 console.log("No profile found for new user, creating one...");
+                 const { data: newUserProfile, error: insertError } = await supabase.from('users').insert({
+                    id: currentUser.id,
+                    // Use the name from Google/OAuth provider, fallback to email
+                    display_name: currentUser.user_metadata.name || currentUser.email,
+                    email: currentUser.email,
+                    role: 'customer',
+                    has_completed_onboarding: false,
+                 }).select().single(); // select().single() to get the new profile back
+
+                 if (insertError) {
+                    console.error("Error creating user profile:", insertError);
+                    setProfile(null);
+                 } else {
+                    userProfile = newUserProfile;
+                 }
+            }
+            
+            setProfile(userProfile);
+
         } else {
           setProfile(null);
         }
@@ -70,7 +95,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         setUser(session.user);
-        await fetchUserProfile(session.user);
+        const userProfile = await fetchUserProfile(session.user);
+        setProfile(userProfile);
       }
       setIsLoading(false);
     };

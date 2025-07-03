@@ -1,24 +1,6 @@
 
-import { Hero } from "@/components/landing/Hero";
-import TrustAndSocialProof from "@/components/landing/TrustAndSocialProof";
-import { FeatureShowcase } from "@/components/landing/FeatureShowcase";
-import { ThreeStepProcess } from "@/components/landing/ThreeStepProcess";
-import { CoreServicesGrid } from "@/components/landing/CoreServicesGrid";
-import RoiCalculator from "@/components/landing/RoiCalculator";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
-import { FinalCTA } from "@/components/landing/FinalCTA";
-
-export default function LandingPage() {
-  return (
-    <>
-      <Hero />
-      <TrustAndSocialProof />
-      <FeatureShowcase />
-      <ThreeStepProcess />
-      <CoreServicesGrid />
-      <RoiCalculator />
-      <TestimonialsSection />
-      <FinalCTA />
-    </>
-  );
+// This page's content has been moved to src/app/page.tsx to serve as the definitive homepage
+// and resolve a routing conflict. This file is no longer needed and can be safely deleted.
+export default function MarketingHomePage() {
+  return null;
 }
