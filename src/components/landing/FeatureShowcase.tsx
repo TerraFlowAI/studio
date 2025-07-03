@@ -107,7 +107,7 @@ const featureBlocks = [
 
 
 // A reusable component for each feature block
-const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] }) => {
+const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] & { isSpecial?: boolean } }) => {
   const isTextLeft = block.layout === 'text-left';
 
   return (
@@ -118,27 +118,27 @@ const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] }) => {
       transition={{ duration: 0.7, ease: "easeOut" }}
       className={cn(
         "py-12",
-        (block as any).isSpecial && "bg-slate-900 text-white rounded-3xl my-12 py-16 px-4 sm:px-8" // Special styling
+        block.isSpecial && "bg-slate-900 text-white rounded-3xl my-12 py-16 px-4 sm:px-8" // Special styling
       )}
     >
       <div className={cn(
         "grid grid-cols-1 md:grid-cols-2 items-center gap-12 lg:gap-24",
-        (block as any).isSpecial ? "container mx-auto" : ""
+        block.isSpecial ? "container mx-auto" : ""
       )}>
         {/* Text Content */}
         <div className={cn("space-y-6", !isTextLeft && "md:col-start-2")}>
-          <span className={cn("inline-block rounded-full px-3 py-1 text-sm font-semibold", (block as any).isSpecial ? "bg-teal-400/10 text-teal-300" : "bg-primary/10 text-primary")}>
+          <span className={cn("inline-block rounded-full px-3 py-1 text-sm font-semibold", block.isSpecial ? "bg-teal-400/10 text-teal-300" : "bg-primary/10 text-primary")}>
             {block.suiteName}
           </span>
-          <h2 className={cn("text-3xl md:text-4xl font-bold font-headline", (block as any).isSpecial ? "text-slate-100" : "text-slate-800 dark:text-slate-100")}>
+          <h2 className={cn("text-3xl md:text-4xl font-bold font-headline", block.isSpecial ? "text-slate-100" : "text-slate-800 dark:text-slate-100")}>
             {block.headline}
           </h2>
-          <p className={cn("text-lg", (block as any).isSpecial ? "text-slate-300" : "text-slate-600 dark:text-slate-300")}>
+          <p className={cn("text-lg", block.isSpecial ? "text-slate-300" : "text-slate-600 dark:text-slate-300")}>
             {block.description}
           </p>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
             {block.checklist.map((item, index) => (
-              <li key={index} className={cn("flex items-center gap-2", (block as any).isSpecial ? "text-slate-200" : "text-slate-700 dark:text-slate-200")}>
+              <li key={index} className={cn("flex items-center gap-2", block.isSpecial ? "text-slate-200" : "text-slate-700 dark:text-slate-200")}>
                 <CheckCircle className="h-5 w-5 text-teal-500 flex-shrink-0" />
                 <span>{item}</span>
               </li>
@@ -154,7 +154,7 @@ const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] }) => {
                 ))}
               </div>
           )}
-          <Button variant="link" asChild className={cn("text-lg p-0 h-auto group", (block as any).isSpecial ? "text-teal-400 hover:text-teal-300" : "text-primary")}>
+          <Button variant="link" asChild className={cn("text-lg p-0 h-auto group", block.isSpecial ? "text-teal-400 hover:text-teal-300" : "text-primary")}>
             <Link href={block.href}>
               {block.cta}
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
