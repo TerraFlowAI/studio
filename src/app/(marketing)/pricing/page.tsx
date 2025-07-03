@@ -1,16 +1,29 @@
 
 "use client";
 
-import { useState } from "react";
-import { PricingCard, type PricingPlan } from "@/components/pricing/PricingCard";
-import { ContactFormPricing } from "@/components/pricing/ContactFormPricing";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import Confetti from 'react-confetti';
+
+import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { CheckCircle, ClipboardCheck, Plug, Zap } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { PricingCard, type PricingPlan } from "@/components/pricing/PricingCard";
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+
 
 const monthlyPlans: PricingPlan[] = [
   {
@@ -206,6 +219,83 @@ export default function PricingPage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   };
+  
+  const OnboardingProcessSection = () => {
+    const ref = useRef(null);
+    const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end center"] });
+
+    const steps = [
+        { icon: ClipboardCheck, title: "Choose Your Plan", description: "Select the plan that fits your business. Start with a 14-day free trial—no credit card required." },
+        { icon: Plug, title: "Connect Your Data", description: "Easily import your property listings and leads. Our guided setup gets you running in minutes." },
+        { icon: Zap, title: "Activate Your AI", description: "Enable your AI co-pilots and start automating workflows, generating content, and closing deals." }
+    ];
+
+    return (
+        <section ref={ref} className="mt-24">
+            <div className="text-center mb-16">
+                <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 mb-4">
+                    Get Started in <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Minutes</span>
+                </h2>
+                <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+                    Launch your journey to higher conversions and streamlined operations. TerraFlow is designed for a seamless onboarding experience.
+                </p>
+            </div>
+            <div className="relative max-w-lg mx-auto">
+                {/* The animated line */}
+                <motion.div
+                    className="absolute left-7 top-7 h-[calc(100%-56px)] w-0.5 bg-gradient-to-b from-teal-400 to-blue-500 origin-top"
+                    style={{ scaleY: scrollYProgress }}
+                />
+
+                {steps.map((step, index) => {
+                    const Icon = step.icon;
+                    return (
+                        <motion.div
+                            key={index}
+                            className="flex items-start gap-6 mb-12 last:mb-0"
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.5 }}
+                            transition={{ duration: 0.6, delay: index * 0.2 }}
+                        >
+                            {/* Icon with glowing effect */}
+                            <div className="relative z-10">
+                                <motion.div
+                                    className="flex h-14 w-14 items-center justify-center rounded-full bg-background border-2 border-primary/20 shadow-lg"
+                                    initial={{ scale: 0.8 }}
+                                    whileInView={{ scale: 1, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                                    viewport={{ once: true, amount: 0.5 }}
+                                >
+                                    <Icon className="h-7 w-7 text-primary" />
+                                </motion.div>
+                                {/* Pulsing glow */}
+                                <motion.div
+                                    className="absolute inset-0 h-14 w-14 rounded-full bg-primary/50"
+                                    animate={{
+                                        scale: [1, 1.2, 1],
+                                        opacity: [0, 0.5, 0],
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        repeatType: "loop",
+                                        delay: index * 0.5
+                                    }}
+                                    style={{ filter: 'blur(10px)' }}
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-bold font-headline text-foreground mb-1">{step.title}</h3>
+                                <p className="text-slate-600">{step.description}</p>
+                            </div>
+                        </motion.div>
+                    );
+                })}
+            </div>
+        </section>
+    );
+};
+
 
   return (
     <div className="bg-background">
@@ -264,64 +354,7 @@ export default function PricingPage() {
           ))}
         </motion.div>
         
-        <motion.section
-            className="mt-24"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={sectionVariants}
-        >
-            <div className="text-center mb-12">
-                <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 mb-4">
-                    Get Started in <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Minutes</span>
-                </h2>
-                <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
-                    Launch your journey to higher conversions and streamlined operations. TerraFlow is designed for a seamless onboarding experience.
-                </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[
-                    {
-                        icon: ClipboardCheck,
-                        title: "Choose Your Plan",
-                        description: "Select the plan that fits your business. Start with a 14-day free trial—no credit card required."
-                    },
-                    {
-                        icon: Plug,
-                        title: "Connect Your Data",
-                        description: "Easily import your property listings and leads. Our guided setup gets you running in minutes."
-                    },
-                    {
-                        icon: Zap,
-                        title: "Activate Your AI",
-                        description: "Enable your AI co-pilots and start automating workflows, generating content, and closing deals."
-                    }
-                ].map((step, index) => {
-                    const Icon = step.icon;
-                    return (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.3 }}
-                            transition={{ duration: 0.5, delay: index * 0.15 }}
-                        >
-                            <Card className="h-full text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group bg-background/80 backdrop-blur-sm border-border">
-                                <CardHeader className="items-center">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
-                                        <Icon className="h-6 w-6" />
-                                    </div>
-                                </CardHeader>
-                                <CardContent>
-                                    <CardTitle className="font-headline text-xl text-foreground mb-2">{step.title}</CardTitle>
-                                    <CardDescription>{step.description}</CardDescription>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    );
-                })}
-            </div>
-        </motion.section>
+        <OnboardingProcessSection />
 
         <motion.div
              initial="hidden"
