@@ -67,21 +67,29 @@ export default function LoginForm() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-              redirectTo: `${window.location.origin}/auth/callback`,
-            },
-        });
-        if (error) throw error;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          // This tells Supabase where to send the user after Google auth is complete.
+          // It must be an authorized URL in your Supabase project settings.
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) {
+        throw error; // Let the catch block handle it
+      }
+      // Note: The user will be redirected away from this page by Supabase, so a router.push() here is not needed.
+
     } catch (error: any) {
-        toast({
-            variant: "destructive",
-            title: "Sign-In Failed",
-            description: "Could not sign in with Google. Please try again.",
-        });
+      console.error("Google Sign-In Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Sign-In Failed",
+        description: "Could not sign in with Google. Please try again.",
+      });
     } finally {
-        setIsGoogleLoading(false);
+      setIsGoogleLoading(false);
     }
   };
 
