@@ -61,19 +61,26 @@ export function TrustAndSocialProof() {
     <section ref={ref} className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title and Description */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+        <div
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800">
+          <motion.h2
+             initial={{ opacity: 0, y: 20 }}
+             animate={isInView ? { opacity: 1, y: 0 } : {}}
+             transition={{ duration: 0.6, ease: "easeOut" }}
+             className="text-3xl md:text-4xl font-bold font-headline text-slate-800"
+          >
             Built on a Foundation of <span className="animate-text-shimmer bg-gradient-to-r from-teal-500 to-blue-600">Trust & Security</span>
-          </h2>
-          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+            className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto"
+          >
             Our commitment to excellence is reflected in our certifications, ensuring your business operates on a secure and compliant platform.
-          </p>
-        </motion.div>
+          </motion.p>
+        </div>
         
         {/* Trust Badges */}
         <motion.div
