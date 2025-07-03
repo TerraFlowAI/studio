@@ -1,65 +1,106 @@
 
-// src/app/context/AuthContext.tsx
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createClient } from '@/lib/supabase';
+import type { SupabaseClient, User } from '@supabase/supabase-js';
 
-// Define the shape of the context data
-interface AuthContextType {
+// Define the shape of the user profile data stored in your 'users' table
+export type UserProfile = {
+  id: string;
+  display_name: string;
+  email: string;
+  role: 'admin' | 'customer';
+  has_completed_onboarding: boolean;
+};
+
+// Define the shape of the context
+type AuthContextType = {
+  supabase: SupabaseClient;
   user: User | null;
+  profile: UserProfile | null;
   isLoading: boolean;
   isAdmin: boolean;
-}
+};
 
-// Create the context with a default value
+// Create the context with a default undefined value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Create a provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // This is the core Firebase listener for authentication state
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      try {
-        if (user) {
-          // User is signed in, get their token to check for custom claims
-          const tokenResult = await user.getIdTokenResult();
-          // Set admin status based on the 'role' custom claim
-          setIsAdmin(tokenResult.claims.role === 'admin');
-          setUser(user);
+    // This function handles fetching the user's profile from your public 'users' table.
+    const fetchUserProfile = async (currentUser: User) => {
+      const { data: userProfile, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching user profile:', error);
+        setProfile(null);
+      } else {
+        setProfile(userProfile);
+      }
+    };
+
+    // Subscribe to authentication state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setIsLoading(true);
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+
+        if (currentUser) {
+          await fetchUserProfile(currentUser);
         } else {
-          // User is signed out
-          setUser(null);
-          setIsAdmin(false);
+          setProfile(null);
         }
-      } catch (error) {
-        console.error("Error during auth state change, signing out:", error);
-        // If there's an error getting the token, treat as logged out
-        setUser(null);
-        setIsAdmin(false);
-      } finally {
-        // This ensures the loading state is always turned off, even on error
         setIsLoading(false);
       }
-    });
+    );
 
-    // Cleanup the listener when the component unmounts
-    return () => unsubscribe();
-  }, []);
+    // Initial check on component mount
+    const initializeAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+        await fetchUserProfile(session.user);
+      }
+      setIsLoading(false);
+    };
+
+    initializeAuth();
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  const isAdmin = profile?.role === 'admin';
+
+  const value = {
+    supabase,
+    user,
+    profile,
+    isLoading,
+    isAdmin,
+  };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, isAdmin }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Create a custom hook to easily use the auth context
+// Custom hook to use the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

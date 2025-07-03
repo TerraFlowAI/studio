@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,9 +7,7 @@ import * as z from "zod";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, firestore } from "@/lib/firebase"; // import firestore
-import { doc, setDoc } from "firebase/firestore"; // import doc and setDoc
+import { useAuth } from "@/app/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -25,6 +24,7 @@ const formSchema = z.object({
 
 export default function RegisterForm() {
   const router = useRouter();
+  const { supabase } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,29 +36,40 @@ export default function RegisterForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      // 1. Create user in Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      
-      // 2. Update their Auth profile
-      await updateProfile(userCredential.user, {
-        displayName: `${values.firstName} ${values.lastName}`.trim(),
-      });
-      
-      // 3. Create a corresponding user document in Firestore
-      const userDocRef = doc(firestore, "users", userCredential.user.uid);
-      await setDoc(userDocRef, {
-        uid: userCredential.user.uid,
+      const { data, error } = await supabase.auth.signUp({
         email: values.email,
-        displayName: `${values.firstName} ${values.lastName}`.trim(),
-        role: 'customer', // default role
-        hasCompletedOnboarding: false, // Onboarding flag
-        createdAt: new Date(),
+        password: values.password,
+        options: {
+          data: {
+            display_name: `${values.firstName} ${values.lastName}`.trim(),
+          }
+        }
       });
+      if (error) throw error;
 
-      router.push("/dashboard");
+      if (data.user) {
+        // Best practice is to create the user profile via a Supabase DB trigger.
+        // This client-side insert is a fallback to fulfill the user story.
+        const { error: profileError } = await supabase
+          .from('users')
+          .insert({ 
+              id: data.user.id, 
+              display_name: `${values.firstName} ${values.lastName}`.trim(),
+              email: values.email,
+              role: 'customer',
+              has_completed_onboarding: false 
+          });
+
+        if (profileError) throw profileError;
+        
+        // Refresh the page to update the auth state via the layout
+        router.push("/dashboard");
+        router.refresh();
+      }
+
     } catch (error: any) {
       let description = "An unexpected error occurred. Please try again.";
-      if (error.code === 'auth/email-already-in-use') {
+      if (error.message.includes('User already registered')) {
         description = "This email address is already in use.";
       }
       toast({

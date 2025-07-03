@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,8 +7,7 @@ import * as z from "zod";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { useAuth } from "@/app/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -31,9 +31,9 @@ const GoogleIcon = () => (
     </svg>
 );
 
-
 export default function LoginForm() {
   const router = useRouter();
+  const { supabase } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -46,8 +46,13 @@ export default function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+      if (error) throw error;
       router.push("/dashboard");
+      router.refresh(); // To trigger layout refetch for auth state
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -61,28 +66,20 @@ export default function LoginForm() {
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
-    const provider = new GoogleAuthProvider();
     try {
-        await signInWithPopup(auth, provider);
-        router.push('/dashboard');
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: `${window.location.origin}/auth/callback`,
+            },
+        });
+        if (error) throw error;
     } catch (error: any) {
-        if (error.code === 'auth/popup-closed-by-user') {
-            // Silently ignore this error
-            return;
-        }
-        if (error.code === 'auth/unauthorized-domain') {
-            toast({
-                variant: "destructive",
-                title: "Domain Not Authorized",
-                description: "This domain is not authorized for Google Sign-In. Please contact support.",
-            });
-        } else {
-            toast({
-                variant: "destructive",
-                title: "Sign-In Failed",
-                description: "Could not sign in with Google. Please try again.",
-            });
-        }
+        toast({
+            variant: "destructive",
+            title: "Sign-In Failed",
+            description: "Could not sign in with Google. Please try again.",
+        });
     } finally {
         setIsGoogleLoading(false);
     }

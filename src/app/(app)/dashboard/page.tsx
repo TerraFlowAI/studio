@@ -16,8 +16,6 @@ import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
-import { firestore } from "@/lib/firebase";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import type { Step, CallBackProps } from "react-joyride";
 import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
 import { SetupChecklist } from "@/components/onboarding/SetupChecklist";
@@ -31,7 +29,6 @@ const OnboardingTour = dynamic(
 
 type OnboardingStatus = 'loading' | 'pending_welcome' | 'tour_active' | 'checklist_active' | 'complete';
 
-// Extended mock property type for the dashboard
 type MockProperty = { 
     id: string; 
     title: string; 
@@ -45,7 +42,6 @@ type MockProperty = {
     hasVrTour: boolean;
 };
 
-// Mock data as the hook was removed
 const mockDashboardData = {
     kpiData: {
         activeListings: { value: '74', trend: '+5 since last week' },
@@ -86,12 +82,11 @@ const onboardingSteps: Step[] = [
 ];
 
 function DashboardPageContent() {
-    const { user, isLoading } = useAuth();
+    const { user, profile, supabase, isLoading } = useAuth();
     const searchParams = useSearchParams();
     const data = mockDashboardData;
     const [onboardingStatus, setOnboardingStatus] = React.useState<OnboardingStatus>('loading');
     
-    // Logic to force start the tour if query param is present
     React.useEffect(() => {
         if (searchParams.get('tour') === 'true') {
             setOnboardingStatus('tour_active');
@@ -99,30 +94,24 @@ function DashboardPageContent() {
     }, [searchParams]);
 
     React.useEffect(() => {
-        if (user && searchParams.get('tour') !== 'true') {
-            const checkOnboardingStatus = async () => {
-                const userDocRef = doc(firestore, 'users', user.uid);
-                const userDoc = await getDoc(userDocRef);
-                if (userDoc.exists() && userDoc.data().hasCompletedOnboarding) {
-                    setOnboardingStatus('complete');
-                } else {
-                    if (!userDoc.exists()) {
-                      await setDoc(userDocRef, { hasCompletedOnboarding: false });
-                    }
-                    setOnboardingStatus('pending_welcome');
-                }
-            };
-            checkOnboardingStatus();
-        } else if (user && searchParams.get('tour') === 'true') {
-             // If tour is forced, we know the user exists
-             setOnboardingStatus('tour_active');
+      if (!isLoading && user && profile && searchParams.get('tour') !== 'true') {
+        if (profile.has_completed_onboarding) {
+          setOnboardingStatus('complete');
+        } else {
+          setOnboardingStatus('pending_welcome');
         }
-    }, [user, searchParams]);
+      } else if (!isLoading && user && searchParams.get('tour') === 'true') {
+        setOnboardingStatus('tour_active');
+      }
+    }, [user, profile, isLoading, searchParams]);
 
     const markOnboardingComplete = async () => {
         if (user) {
-            const userDocRef = doc(firestore, 'users', user.uid);
-            await updateDoc(userDocRef, { hasCompletedOnboarding: true });
+            const { error } = await supabase
+                .from('users')
+                .update({ has_completed_onboarding: true })
+                .eq('id', user.id);
+            if (error) console.error("Error updating onboarding status", error);
         }
         setOnboardingStatus('complete');
     };
@@ -133,7 +122,7 @@ function DashboardPageContent() {
 
         if (finishedStatuses.includes(status)) {
             if (searchParams.get('tour') === 'true') {
-                setOnboardingStatus('complete'); // If tour was forced, just complete it
+                setOnboardingStatus('complete');
             } else {
                 setOnboardingStatus('checklist_active');
             }
@@ -145,7 +134,7 @@ function DashboardPageContent() {
     }
 
     const { kpiData, salesData, recentProperties, growthData } = data;
-    const userName = user?.displayName?.split(' ')[0] || 'Agent';
+    const userName = profile?.display_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Agent';
 
     return (
         <>

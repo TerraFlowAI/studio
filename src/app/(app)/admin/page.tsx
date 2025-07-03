@@ -5,7 +5,6 @@ import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { getFunctions, httpsCallable } from "firebase/functions";
 import { useToast } from "@/hooks/use-toast";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +24,7 @@ const formSchema = z.object({
 type RoleFormValues = z.infer<typeof formSchema>;
 
 export default function AdminPage() {
-  const { isAdmin, isLoading: isAuthLoading } = useAuth();
+  const { isAdmin, isLoading: isAuthLoading, supabase } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -35,24 +34,26 @@ export default function AdminPage() {
     defaultValues: { email: "", role: "customer" },
   });
 
-  // Redirect if user is not an admin after auth state is resolved
   React.useEffect(() => {
     if (!isAuthLoading && !isAdmin) {
       router.push('/dashboard');
     }
   }, [isAdmin, isAuthLoading, router]);
 
-
   const onSubmit = async (values: RoleFormValues) => {
     setIsSubmitting(true);
     try {
-      const functions = getFunctions();
-      const setAdminRole = httpsCallable(functions, 'setAdminRole');
-      const result = await setAdminRole({ email: values.email, role: values.role });
+      // Invoke the Supabase Edge Function to set the user's role.
+      // NOTE: You will need to create a 'set-user-role' Edge Function in your Supabase project.
+      const { data, error } = await supabase.functions.invoke('set-user-role', {
+        body: { email: values.email, role: values.role },
+      });
+
+      if (error) throw error;
       
       toast({
         title: "Success!",
-        description: (result.data as { message: string }).message,
+        description: data.message || "User role updated successfully.",
       });
       form.reset();
     } catch (error: any) {
@@ -75,7 +76,6 @@ export default function AdminPage() {
     );
   }
 
-  // Render nothing or a redirect message if not admin, effect will handle redirect
   if (!isAdmin) {
     return null; 
   }
