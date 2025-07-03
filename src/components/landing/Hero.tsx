@@ -10,7 +10,7 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 import Link from 'next/link';
 
 const STATIC_HEADLINE_PART = "AI-Powered Real Estate is Here. ";
-const TYPING_PHRASES = ["Business on Auto-pilot with AI", "Start Closing More Deals", "Reclaim Your Time", "Automate- Analyze- Accelerate"];
+const TYPING_PHRASES = ["Business on Auto-pilot with AI", "Start Closing More Deals Faster", "Reclaim Your Time", "Automate- Analyze- Accelerate"];
 const TYPING_SPEED_MS = 100;
 const DELETING_SPEED_MS = 50;
 const DELAY_BETWEEN_PHRASES_MS = 2000;
