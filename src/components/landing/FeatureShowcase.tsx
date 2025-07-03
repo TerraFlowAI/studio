@@ -4,7 +4,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight, Bot, BarChart3, PenSquare, ShieldCheck, Target, Phone, CalendarCheck2, Users } from "lucide-react";
+import { CheckCircle, ArrowRight, Bot, BarChart3, PenSquare, ShieldCheck, Target, Phone, CalendarCheck2, Users, GanttChartSquare, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
 
@@ -12,16 +12,16 @@ import Link from 'next/link';
 const featureBlocks = [
   {
     suiteName: "TerraLead™ Suite",
-    headline: "Deploy Your 24/7 AI Sales Agent.",
-    description: "Stop chasing cold inquiries. Our autonomous voice agent, Terra, proactively calls every new lead within minutes, qualifies their interest, and books confirmed appointments directly into your calendar. This isn't just lead management; it's your sales pipeline on autopilot.",
+    headline: "Supercharge Your Sales Pipeline with an AI Co-Pilot.",
+    description: "Stop chasing cold inquiries. Our intelligent AI system works 24/7 to capture, qualify, score, and nurture prospects across multiple channels. We turn your entire lead management process into a high-efficiency conversion engine.",
     checklist: [
-      { text: "Autonomous AI Cold Calling", bold: true },
-      { text: "AI-Powered Lead Scoring", bold: false },
-      { text: "Automated Appointment Setting", bold: false },
-      { text: "24/7 Chatbot Qualification", bold: false },
+      { text: "AI-powered Lead Scoring" },
+      { text: "24/7 Chatbot Qualification" },
+      { text: "Automated Follow-up Sequences" },
+      { text: "Omni-channel Communication" },
     ],
-    metrics: ["100% Lead Engagement Rate", "95% Less Manual Work"],
-    cta: "Launch Your AI Sales Agent",
+    metrics: ["10x More Qualified Leads", "95% Less Manual Work"],
+    cta: "Explore Lead Automation",
     layout: "text-left",
     visual: (
       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
@@ -39,52 +39,19 @@ const featureBlocks = [
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
       </div>
     ),
-    href: "/leads",
+    href: "/solutions/agents",
   },
   {
-    suiteName: "TerraValuate™ & MarketIntel™",
-    headline: "Make Data-Driven Decisions with Unbeatable Market Insights.",
-    description: "Go beyond guesswork. Leverage our powerful analytics engine for precise, real-time property valuations and predictive market forecasts that give you a decisive competitive edge in any negotiation.",
+    suiteName: "TerraScribe™ Suite",
+    headline: "Generate Compliant Documents & Marketing Copy Instantly.",
+    description: "Eliminate writer's block and legal uncertainty. Generate professional marketing content in seconds, and create error-free, RERA-compliant documents like sale agreements with our AI, ensuring speed and peace of mind.",
     checklist: [
-      { text: "AI-Powered Property Valuation (AVM)", bold: false },
-      { text: "Predictive Market Analytics", bold: false },
-      { text: "Dynamic Pricing Optimization", bold: false },
-      { text: "Compelling CMA Reports", bold: false },
+      { text: "AI Marketing Copywriting" },
+      { text: "Automated RERA Document Generation" },
     ],
-    metrics: ["99% Valuation Accuracy", "50k+ Properties Analyzed"],
-    cta: "Discover Valuation Tools",
+    metrics: [],
+    cta: "Explore Content Tools",
     layout: "text-right",
-    visual: (
-      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
-        <video
-          key="/videos/terravaluate-showcase.mp4"
-          className="w-full h-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="/videos/terravaluate-showcase.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-      </div>
-    ),
-    href: "/terravaluate",
-  },
-  {
-    suiteName: "TerraScribe™ & TerraVision™",
-    headline: "Generate Professional Content & Showcase Properties in VR.",
-    description: "Reclaim hours of your time. Instantly create compelling marketing copy, social media posts, and even RERA-compliant legal documents. Then, captivate buyers with integrated, immersive 3D/VR tours.",
-    checklist: [
-      { text: "AI Marketing Copywriting", bold: false },
-      { text: "Automated RERA Document Generation", bold: false },
-      { text: "Virtual & Augmented Reality Tours", bold: false },
-      { text: "Multi-channel Content Distribution", bold: false },
-    ],
-    metrics: ["10x Faster Content Creation", "100% RERA-Ready Docs"],
-    cta: "Explore Content Automation",
-    layout: "text-left",
     visual: (
       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
         <video
@@ -103,18 +70,45 @@ const featureBlocks = [
     ),
     href: "/scribe",
   },
-  {
-    suiteName: "TerraSmartFlow™ & TerraSecure™",
-    headline: "Automate Your Operations with Bulletproof Security.",
-    description: "Build custom workflows to automate routine tasks and manage developer projects with ease. Our TerraSecure™ engine works in the background to verify documents like E-Khata, detect fraud, and ensure every transaction is compliant.",
+   {
+    suiteName: "TerraIntel™ Suite",
+    headline: "Make Data-Driven Decisions with Predictive Analytics.",
+    description: "Go beyond simple reports. Leverage our powerful analytics engine for precise, real-time property valuations and predictive market forecasts that give you a decisive competitive edge.",
     checklist: [
-      { text: "Visual Workflow Builder", bold: false },
-      { text: "Developer Project Management", bold: false },
-      { text: "AI Fraud Detection", bold: false },
-      { text: "E-Khata & Document Verification", bold: false },
+      { text: "AI-Powered Property Valuation" },
+      { text: "Predictive Market Forecasting" },
     ],
-    metrics: ["95% Task Automation", "100% Secure Transactions"],
-    cta: "Configure Your Workflows",
+    metrics: [],
+    cta: "Discover Valuation Tools",
+    layout: "text-left",
+     visual: (
+      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video
+          key="/videos/terravaluate-showcase.mp4"
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/videos/terravaluate-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+      </div>
+    ),
+    href: "/terravaluate",
+  },
+  {
+    suiteName: "TerraConstruct™ Suite",
+    headline: "Streamline Your Projects from Groundbreaking to Handover.",
+    description: "Designed for developers. Manage your entire project lifecycle in one place. Track construction milestones, manage inventory, and automate post-sales processes like payment reminders and handovers.",
+    checklist: [
+      { text: "Real-time Inventory Management" },
+      { text: "Automated Payment & Demand Notes" },
+    ],
+    metrics: [],
+    cta: "Explore Developer Tools",
     layout: "text-right",
     visual: (
       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
@@ -132,11 +126,37 @@ const featureBlocks = [
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
       </div>
     ),
-    href: "/smartflow",
+    href: "/solutions/developers",
+  },
+  {
+    suiteName: "Featuring Terra, your AI Agent",
+    headline: "Your Autonomous Team Member is Here.",
+    description: "This is what sets TerraFlow apart. Use voice or chat to command Terra, your AI agent. Tell it to call leads, generate reports, or schedule meetings, and it gets done. It's not just a tool; it's a new way to run your business.",
+    checklist: [
+      { text: "Autonomous Outbound Voice Calls" },
+      { text: "Conversational UI (Voice & Chat)" },
+    ],
+    metrics: [],
+    cta: "Meet Your AI Agent",
+    layout: "text-left",
+    isSpecial: true,
+    visual: (
+       <div className="relative w-full aspect-video flex items-center justify-center overflow-hidden">
+        {/* Placeholder for the AI Orb visual */}
+        <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full flex items-center justify-center bg-slate-800/50">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-700 via-sky-900/30 to-slate-800 rounded-full animate-pulse-subtle"></div>
+          <div className="absolute inset-2 rounded-full shadow-[inset_0_4px_15px_rgba(0,0,0,0.4)]"></div>
+          <Bot className="h-24 w-24 text-teal-400 z-10" style={{ filter: 'drop-shadow(0 0 10px hsl(var(--primary)))' }}/>
+          <div className="absolute w-20 h-20 bg-primary/20 rounded-full blur-2xl"></div>
+        </div>
+      </div>
+    ),
+    href: "/#",
   },
 ];
 
-const FeatureBlock = ({ block }: { block: typeof featureBlocks[0] }) => {
+
+const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] & { isSpecial?: boolean } }) => {
   const isTextLeft = block.layout === 'text-left';
 
   return (
@@ -145,42 +165,60 @@ const FeatureBlock = ({ block }: { block: typeof featureBlocks[0] }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className="py-12"
+      className={cn("py-12", block.isSpecial && "bg-slate-900 text-white rounded-3xl my-12 py-16 px-4 sm:px-8")}
     >
       <div className={cn(
-        "grid grid-cols-1 md:grid-cols-2 items-center gap-12 lg:gap-24"
+        "grid grid-cols-1 md:grid-cols-2 items-center gap-12 lg:gap-24",
+        block.isSpecial ? "container mx-auto" : ""
       )}>
         {/* Text Content */}
         <div className={cn(
             "space-y-6",
             !isTextLeft && "md:col-start-2"
         )}>
-          <span className={cn("inline-block rounded-full px-3 py-1 text-sm font-semibold bg-primary/10 text-primary")}>
+          <span className={cn(
+              "inline-block rounded-full px-3 py-1 text-sm font-semibold",
+              block.isSpecial ? "bg-teal-400/10 text-teal-300" : "bg-primary/10 text-primary"
+          )}>
             {block.suiteName}
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold font-headline text-slate-800 dark:text-slate-100">
+          <h2 className={cn(
+              "text-3xl md:text-4xl font-bold font-headline",
+              block.isSpecial ? "text-slate-100" : "text-slate-800 dark:text-slate-100"
+          )}>
             {block.headline}
           </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-300">
+          <p className={cn(
+              "text-lg",
+               block.isSpecial ? "text-slate-300" : "text-slate-600 dark:text-slate-300"
+          )}>
             {block.description}
           </p>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
             {block.checklist.map((item, index) => (
-              <li key={index} className="flex items-center gap-2 text-slate-700 dark:text-slate-200">
+              <li key={index} className={cn(
+                "flex items-center gap-2",
+                block.isSpecial ? "text-slate-200" : "text-slate-700 dark:text-slate-200"
+              )}>
                 <CheckCircle className="h-5 w-5 text-teal-500 flex-shrink-0" />
-                <span className={cn(item.bold && "font-bold text-slate-800 dark:text-slate-100")}>{item.text}</span>
+                <span>{item.text}</span>
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-4 pt-2">
-            {block.metrics.map((metric, index) => (
-              <div key={index} className="text-center bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2">
-                <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">{metric.split(' ')[0]}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{metric.substring(metric.indexOf(' ') + 1)}</p>
+          {block.metrics && block.metrics.length > 0 && (
+             <div className="flex items-center gap-4 pt-2">
+                {block.metrics.map((metric, index) => (
+                  <div key={index} className="text-center bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2">
+                    <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">{metric.split(' ')[0]}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{metric.substring(metric.indexOf(' ') + 1)}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <Button variant="link" asChild className="text-primary text-lg p-0 h-auto group">
+          )}
+          <Button variant="link" asChild className={cn(
+            "text-lg p-0 h-auto group",
+             block.isSpecial ? "text-teal-400 hover:text-teal-300" : "text-primary"
+          )}>
             <Link href={block.href}>
               {block.cta}
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -193,16 +231,7 @@ const FeatureBlock = ({ block }: { block: typeof featureBlocks[0] }) => {
             "flex items-center justify-center p-2",
             !isTextLeft && "md:col-start-1 md:row-start-1"
         )}>
-           {block.visual ? block.visual : (
-            <Image
-                src={block.image!.src}
-                alt={block.image!.alt}
-                width={600}
-                height={450}
-                className="rounded-lg shadow-2xl object-cover"
-                data-ai-hint={block.image!.hint}
-            />
-          )}
+           {block.visual}
         </div>
       </div>
     </motion.div>
@@ -228,7 +257,7 @@ export function FeatureShowcase() {
             </span>
           </h2>
           <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mt-4">
-            Explore how each component of TerraFlowAI works together to automate your workflow, from initial lead to final closing.
+            Explore how each component of the TerraFlowAI ecosystem works together to automate your workflow, from initial lead to final closing.
           </p>
         </motion.div>
         
