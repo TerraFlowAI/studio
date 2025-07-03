@@ -2,9 +2,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight, Bot, BarChart3, PenSquare, ShieldCheck, Target, Phone, CalendarCheck2, Users, GanttChartSquare, Zap } from "lucide-react";
+import { CheckCircle, ArrowRight, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
 
@@ -15,10 +14,10 @@ const featureBlocks = [
     headline: "Supercharge Your Sales Pipeline with an AI Co-Pilot.",
     description: "Stop chasing cold inquiries. Our intelligent AI system works 24/7 to capture, qualify, score, and nurture prospects across multiple channels. We turn your entire lead management process into a high-efficiency conversion engine.",
     checklist: [
-      { text: "AI-powered Lead Scoring" },
-      { text: "24/7 Chatbot Qualification" },
-      { text: "Automated Follow-up Sequences" },
-      { text: "Omni-channel Communication" },
+      "AI-powered Lead Scoring",
+      "24/7 Chatbot Qualification",
+      "Automated Follow-up Sequences",
+      "Omni-channel Communication",
     ],
     metrics: ["10x More Qualified Leads", "95% Less Manual Work"],
     cta: "Explore Lead Automation",
@@ -46,8 +45,8 @@ const featureBlocks = [
     headline: "Generate Compliant Documents & Marketing Copy Instantly.",
     description: "Eliminate writer's block and legal uncertainty. Generate professional marketing content in seconds, and create error-free, RERA-compliant documents like sale agreements with our AI, ensuring speed and peace of mind.",
     checklist: [
-      { text: "AI Marketing Copywriting" },
-      { text: "Automated RERA Document Generation" },
+      "AI Marketing Copywriting",
+      "Automated RERA Document Generation",
     ],
     metrics: [],
     cta: "Explore Content Tools",
@@ -75,8 +74,8 @@ const featureBlocks = [
     headline: "Make Data-Driven Decisions with Predictive Analytics.",
     description: "Go beyond simple reports. Leverage our powerful analytics engine for precise, real-time property valuations and predictive market forecasts that give you a decisive competitive edge.",
     checklist: [
-      { text: "AI-Powered Property Valuation" },
-      { text: "Predictive Market Forecasting" },
+      "AI-Powered Property Valuation",
+      "Predictive Market Forecasting",
     ],
     metrics: [],
     cta: "Discover Valuation Tools",
@@ -104,8 +103,8 @@ const featureBlocks = [
     headline: "Streamline Your Projects from Groundbreaking to Handover.",
     description: "Designed for developers. Manage your entire project lifecycle in one place. Track construction milestones, manage inventory, and automate post-sales processes like payment reminders and handovers.",
     checklist: [
-      { text: "Real-time Inventory Management" },
-      { text: "Automated Payment & Demand Notes" },
+      "Real-time Inventory Management",
+      "Automated Payment & Demand Notes",
     ],
     metrics: [],
     cta: "Explore Developer Tools",
@@ -133,8 +132,8 @@ const featureBlocks = [
     headline: "Your Autonomous Team Member is Here.",
     description: "This is what sets TerraFlow apart. Use voice or chat to command Terra, your AI agent. Tell it to call leads, generate reports, or schedule meetings, and it gets done. It's not just a tool; it's a new way to run your business.",
     checklist: [
-      { text: "Autonomous Outbound Voice Calls" },
-      { text: "Conversational UI (Voice & Chat)" },
+      "Autonomous Outbound Voice Calls",
+      "Conversational UI (Voice & Chat)",
     ],
     metrics: [],
     cta: "Meet Your AI Agent",
@@ -201,7 +200,7 @@ const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] & { isSpecia
                 block.isSpecial ? "text-slate-200" : "text-slate-700 dark:text-slate-200"
               )}>
                 <CheckCircle className="h-5 w-5 text-teal-500 flex-shrink-0" />
-                <span>{item.text}</span>
+                <span>{item}</span>
               </li>
             ))}
           </ul>
