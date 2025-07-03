@@ -1,7 +1,7 @@
 // src/components/landing/FeaturesSection.tsx
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "@/lib/client-motion"; // Updated import
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Users, PenSquare, Calculator, Zap, FileSignature, BarChart3 } from "lucide-react";
 

@@ -1,7 +1,6 @@
-
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "@/lib/client-motion";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Bot, Mail, Users, Zap, BadgeCheck, FileText, BarChart3, GanttChartSquare, Map, LineChart as LineChartIcon, Globe, Phone, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";

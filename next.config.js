@@ -21,6 +21,17 @@ const nextConfig = {
       },
     ],
   },
+  transpilePackages: ['framer-motion'],
+
+  experimental: {
+    // This setting prevents the specified packages from being bundled by Webpack
+    // on the server, which is a common workaround for issues with native Node.js APIs
+    // used by libraries like OpenTelemetry (a dependency of Genkit).
+    serverComponentsExternalPackages: [
+      '@opentelemetry/instrumentation',
+      'require-in-the-middle',
+    ],
+  },
 
   // Custom webpack configuration to fix build issues.
   webpack: (config, { isServer }) => {

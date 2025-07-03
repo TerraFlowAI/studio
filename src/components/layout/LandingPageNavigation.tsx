@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -19,7 +18,6 @@ import {
 } from "@/components/ui/navigation-menu";
 import { StarBorder } from "@/components/ui/star-border";
 
-
 const navLinks = [
   { name: "Features", href: "#features" },
   { name: "Solutions", href: "#solutions", dropdown: true },
@@ -30,8 +28,8 @@ const navLinks = [
 const solutionsDropdownLinks = {
   byRole: [
     { name: "For Agents", description: "AI tools to boost individual agent productivity.", href: "/solutions/agents", icon: Users },
-    { name: "For Developers", description: "Streamline project management and sales cycles.", href: "/solutions/developers", icon: Building },
-    { name: "For Brokerages", description: "Scale your business with an end-to-end OS.", href: "/solutions/brokerages", icon: Code },
+    { name: "For Developers", description: "Streamline project management and sales cycles.", href: "/solutions/developers", icon: Code },
+    { name: "For Brokerages", description: "Scale your business with an end-to-end OS.", href: "/solutions/brokerages", icon: Building },
   ],
   byService: [
     { name: "TerraLead™", href: "#", icon: Zap, description: "Capture, qualify, and nurture leads automatically." },
@@ -40,7 +38,6 @@ const solutionsDropdownLinks = {
     { name: "TerraSmartFlow™ & TerraSecure™", href: "#", icon: ShieldCheck, description: "Automate workflows with bank-grade security." },
   ],
 };
-
 
 export function LandingPageNavigation() {
   const { scrollY } = useScroll();
@@ -75,7 +72,7 @@ export function LandingPageNavigation() {
 
           {/* Center: Desktop Nav */}
           <nav className="hidden md:flex">
-             <NavigationMenu>
+            <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
@@ -91,27 +88,27 @@ export function LandingPageNavigation() {
                       <div className="space-y-1">
                         <h3 className="font-semibold text-sm text-primary px-3">By Role</h3>
                         {solutionsDropdownLinks.byRole.map(({ name, description, href, icon: Icon }) => (
-                           <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
+                          <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
                         ))}
                       </div>
                       <div className="space-y-1">
                         <h3 className="font-semibold text-sm text-primary px-3">By Service</h3>
                         {solutionsDropdownLinks.byService.map(({ name, description, href, icon: Icon }) => (
-                           <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
+                          <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
                         ))}
                       </div>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
-                 <NavigationMenuItem>
-                   <NavigationMenuLink asChild>
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
                     <Link href="/pricing" className={cn(navigationMenuTriggerStyle(), "rounded-full text-base font-medium")}>
                       Pricing
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                   <NavigationMenuLink asChild>
+                  <NavigationMenuLink asChild>
                     <Link href="/about" className={cn(navigationMenuTriggerStyle(), "rounded-full text-base font-medium")}>
                       Company
                     </Link>
@@ -156,18 +153,17 @@ const DropdownListItem: React.FC<{ href: string; title: string; children?: React
   <NavigationMenuLink asChild>
     <Link href={href} className="group block rounded-lg p-3 text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-800">
       <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white shrink-0">
-              <Icon className="h-5 w-5" />
-          </div>
-          <div>
-              <p className="font-semibold text-slate-900 dark:text-white">{title}</p>
-              {children && <p className="text-slate-500 dark:text-slate-400 text-xs leading-snug">{children}</p>}
-          </div>
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white shrink-0">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div>
+          <p className="font-semibold text-slate-900 dark:text-white">{title}</p>
+          {children && <p className="text-slate-500 dark:text-slate-400 text-xs leading-snug">{children}</p>}
+        </div>
       </div>
     </Link>
   </NavigationMenuLink>
 );
-
 
 const mobileMenuVariants = {
   hidden: { opacity: 0, y: "-20%" },
@@ -202,14 +198,14 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
       ))}
     </nav>
     <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
-        <Button asChild className="w-full text-lg py-3">
-            <Link href="#contact" onClick={onDismiss}>
-                Request a Demo
-            </Link>
-        </Button>
-        <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
-            <Link href="/login" onClick={onDismiss}>Login</Link>
-        </Button>
+      <Button asChild className="w-full text-lg py-3">
+        <Link href="#contact" onClick={onDismiss}>
+          Request a Demo
+        </Link>
+      </Button>
+      <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
+        <Link href="/login" onClick={onDismiss}>Login</Link>
+      </Button>
     </div>
   </motion.div>
 );

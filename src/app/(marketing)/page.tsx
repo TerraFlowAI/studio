@@ -1,6 +1,24 @@
 
-// This page's content has been moved to src/app/page.tsx to resolve routing conflicts.
-// This file can now be safely removed.
+import { Hero } from "@/components/landing/Hero";
+import TrustAndSocialProof from "@/components/landing/TrustAndSocialProof";
+import { FeatureShowcase } from "@/components/landing/FeatureShowcase";
+import { ThreeStepProcess } from "@/components/landing/ThreeStepProcess";
+import { CoreServicesGrid } from "@/components/landing/CoreServicesGrid";
+import RoiCalculator from "@/components/landing/RoiCalculator";
+import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
+import { FinalCTA } from "@/components/landing/FinalCTA";
+
 export default function LandingPage() {
-  return null;
+  return (
+    <>
+      <Hero />
+      <TrustAndSocialProof />
+      <FeatureShowcase />
+      <ThreeStepProcess />
+      <CoreServicesGrid />
+      <RoiCalculator />
+      <TestimonialsSection />
+      <FinalCTA />
+    </>
+  );
 }
