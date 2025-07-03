@@ -3,11 +3,114 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight, Bot } from "lucide-react";
+import { CheckCircle, ArrowRight, Bot, MessageCircle, BarChart3, GanttChartSquare, Mail, Map, Phone, Calendar, FileText, BadgeCheck, TrendingUp, Sparkles, Zap, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
 
-// Data structure defining each feature block for easy management
+// --- Visual Components for each Feature Block ---
+
+const TerraLeadVisual = () => (
+  <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+    <div className="absolute w-full h-full bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.3),rgba(255,255,255,0))]"></div>
+    <div className="relative flex flex-col items-center">
+      {/* Lead Sources */}
+      <div className="flex gap-8 mb-6">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><MessageCircle className="h-6 w-6 text-green-500" /></motion.div>
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.4, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Zap className="h-6 w-6 text-blue-500" /></motion.div>
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.6, duration: 0.5 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Users className="h-6 w-6 text-purple-500" /></motion.div>
+      </div>
+      {/* Flowing Lines */}
+      <motion.svg width="200" height="50" viewBox="0 0 200 50" className="mb-6">
+        <motion.path d="M 30 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
+        <motion.path d="M 100 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
+        <motion.path d="M 170 0 V 50" stroke="url(#grad1)" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1, transition: { delay: 0.8, duration: 0.7 } }} />
+        <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" /><stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="1" /></linearGradient></defs>
+      </motion.svg>
+      {/* Central AI Processor */}
+      <motion.div initial={{ scale: 0 }} animate={{ scale: 1, transition: { delay: 1.5, type: 'spring' } }} className="flex flex-col items-center gap-4">
+        <div className="p-4 bg-primary text-primary-foreground rounded-xl shadow-lg"><Bot className="h-8 w-8" /></div>
+        {/* Output Actions */}
+        <div className="flex items-center gap-4">
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0, transition: { delay: 2.0 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md text-sm font-bold text-green-500">92</motion.div>
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0, transition: { delay: 2.2 } }} className="p-3 bg-white dark:bg-slate-700 rounded-full shadow-md"><Mail className="h-6 w-6 text-orange-500" /></motion.div>
+        </div>
+      </motion.div>
+    </div>
+  </div>
+);
+
+const TerraScribeVisual = () => (
+    <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+        <div className="flex items-center gap-6">
+            <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }} className="relative p-8 bg-white dark:bg-slate-700 rounded-lg shadow-lg">
+                <FileText className="h-16 w-16 text-primary" />
+                <motion.div initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0, transition: { delay: 0.8, type: 'spring' } }} className="absolute -bottom-4 -right-4">
+                    <BadgeCheck className="h-12 w-12 text-green-500 fill-white dark:fill-slate-800" />
+                </motion.div>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0, transition: { delay: 1.2 } }} className="w-48 bg-white dark:bg-slate-700 p-3 rounded-lg shadow-lg space-y-2">
+                <div className="w-3/4 h-2 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+                <div className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+                <div className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+                <div className="w-1/2 h-2 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+            </motion.div>
+        </div>
+    </div>
+);
+
+const TerraIntelVisual = () => (
+    <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+        <Map className="absolute inset-0 w-full h-full text-slate-200 dark:text-slate-700 opacity-50" strokeWidth={1}/>
+        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }} className="w-full max-w-sm bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-lg shadow-2xl p-4 border border-slate-300 dark:border-slate-600">
+            <h4 className="font-semibold text-sm mb-2 text-foreground">Market Price Trend</h4>
+            <div className="h-32">
+                <ResponsiveContainer width="100%" height="100%">
+                    <BarChart3 className="w-full h-full text-primary/30" />
+                </ResponsiveContainer>
+            </div>
+            <div className="flex justify-between text-xs mt-2 text-muted-foreground">
+                <span>Last 6 Mo.</span>
+                <span>Next 6 Mo. (Predicted)</span>
+            </div>
+        </motion.div>
+    </div>
+);
+
+const TerraConstructVisual = () => (
+    <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+        <div className="w-full max-w-md space-y-3">
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1, transition: { delay: 0.2 } }} className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md">
+                <div className="p-2 bg-green-100 dark:bg-green-800/50 rounded-full"><CheckCircle className="h-5 w-5 text-green-500" /></div>
+                <p className="font-medium text-sm text-foreground">Foundation Complete</p>
+            </motion.div>
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1, transition: { delay: 0.4 } }} className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md">
+                <div className="p-2 bg-green-100 dark:bg-green-800/50 rounded-full"><CheckCircle className="h-5 w-5 text-green-500" /></div>
+                <p className="font-medium text-sm text-foreground">Phase 1 Sold Out</p>
+                <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.8 } }} className="ml-auto p-2 bg-blue-100 dark:bg-blue-800/50 rounded-md"><FileText className="h-5 w-5 text-blue-500" /></motion.div>
+            </motion.div>
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1, transition: { delay: 0.6 } }} className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md">
+                <div className="p-2 bg-slate-200 dark:bg-slate-600 rounded-full"><GanttChartSquare className="h-5 w-5 text-slate-500" /></div>
+                <p className="font-medium text-sm text-muted-foreground">Handover Phase</p>
+            </motion.div>
+        </div>
+    </div>
+);
+
+const TerraCoreVisual = () => (
+    <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden">
+        <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full flex items-center justify-center bg-slate-800/50">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-700 via-sky-900/30 to-slate-800 rounded-full animate-pulse-subtle"></div>
+            <div className="absolute inset-2 rounded-full shadow-[inset_0_4px_15px_rgba(0,0,0,0.4)]"></div>
+            <Bot className="h-24 w-24 text-teal-400 z-10" style={{ filter: 'drop-shadow(0 0 10px hsl(var(--primary)))' }}/>
+            <div className="absolute w-20 h-20 bg-primary/20 rounded-full blur-2xl"></div>
+            <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 1, type: 'spring' } }} className="absolute -right-4 top-12 p-3 bg-slate-700 rounded-full shadow-lg"><Phone className="h-6 w-6 text-green-400"/></motion.div>
+            <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 1.2, type: 'spring' } }} className="absolute -left-4 bottom-12 p-3 bg-slate-700 rounded-full shadow-lg"><Calendar className="h-6 w-6 text-purple-400"/></motion.div>
+        </div>
+    </div>
+);
+
+
+// Data structure defining each feature block
 const featureBlocks = [
   {
     suiteName: "TerraLead™ Suite",
@@ -17,15 +120,7 @@ const featureBlocks = [
     metrics: ["10x More Qualified Leads", "95% Less Manual Work"],
     cta: "Explore Lead Automation",
     layout: "text-left",
-    visual: (
-      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
-        <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/terralead-showcase.mp4">
-          <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-      </div>
-    ),
+    visual: <TerraLeadVisual />,
     href: "/solutions/agents",
   },
   {
@@ -33,35 +128,19 @@ const featureBlocks = [
     headline: "Generate Compliant Documents & Marketing Copy Instantly.",
     description: "Eliminate writer's block and legal uncertainty. Generate professional marketing content in seconds, and create error-free, RERA-compliant documents like sale agreements with our AI, ensuring speed and peace of mind.",
     checklist: [ "AI Marketing Copywriting", "Automated RERA Document Generation" ],
-    metrics: [],
     cta: "Explore Content Tools",
     layout: "text-right",
-    visual: (
-      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
-        <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/terrascribe-showcase.mp4">
-          <source src="/videos/terrascribe-showcase.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-      </div>
-    ),
+    visual: <TerraScribeVisual />,
     href: "/scribe",
   },
-  {
+   {
     suiteName: "TerraIntel™ Suite",
     headline: "Make Data-Driven Decisions with Predictive Analytics.",
     description: "Go beyond simple reports. Leverage our powerful analytics engine for precise, real-time property valuations and predictive market forecasts that give you a decisive competitive edge.",
     checklist: [ "AI-Powered Property Valuation", "Predictive Market Forecasting" ],
-    metrics: [],
     cta: "Discover Valuation Tools",
     layout: "text-left",
-    visual: (
-       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
-        <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/terravaluate-showcase.mp4">
-          <source src="/videos/terravaluate-showcase.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-      </div>
-    ),
+    visual: <TerraIntelVisual />,
     href: "/analytics",
   },
   {
@@ -69,17 +148,9 @@ const featureBlocks = [
     headline: "Streamline Your Projects from Groundbreaking to Handover.",
     description: "Designed for developers. Manage your entire project lifecycle in one place. Track construction milestones, manage inventory, and automate post-sales processes like payment reminders and handovers.",
     checklist: [ "Real-time Inventory Management", "Automated Payment & Demand Notes" ],
-    metrics: [],
     cta: "Explore Developer Tools",
     layout: "text-right",
-    visual: (
-      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
-        <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/smartflow-showcase.mp4">
-          <source src="/videos/smartflow-showcase.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-      </div>
-    ),
+    visual: <TerraConstructVisual />,
     href: "/solutions/developers",
   },
   {
@@ -87,20 +158,10 @@ const featureBlocks = [
     headline: "Your Autonomous Team Member is Here.",
     description: "This is what sets TerraFlow apart. Use voice or chat to command Terra, your AI agent. Tell it to call leads, generate reports, or schedule meetings, and it gets done. It's not just a tool; it's a new way to run your business.",
     checklist: [ "Autonomous Outbound Voice Calls", "Conversational UI (Voice & Chat)" ],
-    metrics: [],
     cta: "Meet Your AI Agent",
     layout: "text-left",
-    isSpecial: true, // Special flag for unique styling
-    visual: (
-       <div className="relative w-full aspect-video flex items-center justify-center overflow-hidden">
-        <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full flex items-center justify-center bg-slate-800/50">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-700 via-sky-900/30 to-slate-800 rounded-full animate-pulse-subtle"></div>
-          <div className="absolute inset-2 rounded-full shadow-[inset_0_4px_15px_rgba(0,0,0,0.4)]"></div>
-          <Bot className="h-24 w-24 text-teal-400 z-10" style={{ filter: 'drop-shadow(0 0 10px hsl(var(--primary)))' }}/>
-          <div className="absolute w-20 h-20 bg-primary/20 rounded-full blur-2xl"></div>
-        </div>
-      </div>
-    ),
+    isSpecial: true,
+    visual: <TerraCoreVisual />,
     href: "/#",
   },
 ];
@@ -118,7 +179,7 @@ const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] & { isSpecia
       transition={{ duration: 0.7, ease: "easeOut" }}
       className={cn(
         "py-12",
-        block.isSpecial && "bg-slate-900 text-white rounded-3xl my-12 py-16 px-4 sm:px-8" // Special styling
+        block.isSpecial && "bg-slate-900 text-white rounded-3xl my-12 py-16 px-4 sm:px-8"
       )}
     >
       <div className={cn(
