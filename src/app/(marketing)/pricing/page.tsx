@@ -222,80 +222,57 @@ export default function PricingPage() {
   };
   
   const OnboardingProcessSection = () => {
-    const ref = useRef(null);
-    const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end center"] });
-
     const steps = [
-        { icon: ClipboardCheck, title: "Choose Your Plan", description: "Select the plan that fits your business. Start with a 14-day free trial—no credit card required." },
-        { icon: Plug, title: "Connect Your Data", description: "Easily import your property listings and leads. Our guided setup gets you running in minutes." },
-        { icon: Zap, title: "Activate Your AI", description: "Enable your AI co-pilots and start automating workflows, generating content, and closing deals." }
+      { icon: ClipboardCheck, title: "1. Choose Your Plan", description: "Select the plan that fits your business. Start with a 14-day free trial—no credit card required." },
+      { icon: Plug, title: "2. Connect Your Data", description: "Easily import your property listings and leads. Our guided setup gets you running in minutes." },
+      { icon: Zap, title: "3. Activate Your AI", description: "Enable your AI co-pilots and start automating workflows, generating content, and closing deals." }
     ];
-
+  
     return (
-        <section ref={ref} className="mt-24">
-            <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 mb-4">
-                    Get Started in <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Minutes</span>
-                </h2>
-                <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
-                    Launch your journey to higher conversions and streamlined operations. TerraFlow is designed for a seamless onboarding experience.
-                </p>
-            </div>
-            <div className="relative max-w-lg mx-auto">
-                {/* The animated line */}
-                <motion.div
-                    className="absolute left-7 top-7 h-[calc(100%-56px)] w-0.5 bg-gradient-to-b from-teal-400 to-blue-500 origin-top"
-                    style={{ scaleY: scrollYProgress }}
-                />
-
-                {steps.map((step, index) => {
-                    const Icon = step.icon;
-                    return (
-                        <motion.div
-                            key={index}
-                            className="flex items-start gap-6 mb-12 last:mb-0"
-                            initial={{ opacity: 0, x: -30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true, amount: 0.5 }}
-                            transition={{ duration: 0.6, delay: index * 0.2 }}
-                        >
-                            {/* Icon with glowing effect */}
-                            <div className="relative z-10">
-                                <motion.div
-                                    className="flex h-14 w-14 items-center justify-center rounded-full bg-background border-2 border-primary/20 shadow-lg"
-                                    initial={{ scale: 0.8 }}
-                                    whileInView={{ scale: 1, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
-                                    viewport={{ once: true, amount: 0.5 }}
-                                >
-                                    <Icon className="h-7 w-7 text-primary" />
-                                </motion.div>
-                                {/* Pulsing glow */}
-                                <motion.div
-                                    className="absolute inset-0 h-14 w-14 rounded-full bg-primary/50"
-                                    animate={{
-                                        scale: [1, 1.2, 1],
-                                        opacity: [0, 0.5, 0],
-                                    }}
-                                    transition={{
-                                        duration: 2,
-                                        repeat: Infinity,
-                                        repeatType: "loop",
-                                        delay: index * 0.5
-                                    }}
-                                    style={{ filter: 'blur(10px)' }}
-                                />
-                            </div>
-                            <div>
-                                <h3 className="text-2xl font-bold font-headline text-foreground mb-1">{step.title}</h3>
-                                <p className="text-slate-600">{step.description}</p>
-                            </div>
-                        </motion.div>
-                    );
-                })}
-            </div>
-        </section>
+      <section className="mt-24">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold font-headline text-slate-800 mb-4">
+            Get Started in <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Minutes</span>
+          </h2>
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+            Launch your journey to higher conversions and streamlined operations. TerraFlow is designed for a seamless onboarding experience.
+          </p>
+        </div>
+        <div className="relative grid md:grid-cols-3 gap-8">
+          {/* Dotted lines connecting the cards */}
+          <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-0 right-0 h-px">
+            <svg width="100%" height="2" className="px-16">
+              <line x1="0" y1="1" x2="100%" y2="1" stroke="hsl(var(--border))" strokeWidth="2" strokeDasharray="5 5" />
+            </svg>
+          </div>
+  
+          {steps.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
+                className="relative"
+              >
+                <Card className="h-full text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group bg-background/80 backdrop-blur-sm border-border z-10 relative">
+                  <CardContent className="p-6">
+                    <div className="mb-4 inline-flex items-center justify-center p-3 bg-primary/10 rounded-full border-2 border-primary/20">
+                      <Icon className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="font-headline text-xl text-slate-800 mb-2">{step.title}</h3>
+                    <p className="text-slate-600 text-sm">{step.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+      </section>
     );
-};
+  };
 
 
   return (
