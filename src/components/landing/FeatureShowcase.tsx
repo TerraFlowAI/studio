@@ -175,7 +175,7 @@ const FeatureBlock = ({ block }: { block: (typeof featureBlocks)[0] }) => {
 // The main exportable component for your landing page
 export function FeatureShowcase() {
   return (
-    <section id="features" className="bg-white dark:bg-black py-16 md:py-24">
+    <section id="features" className="bg-white dark:bg-slate-900 py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
