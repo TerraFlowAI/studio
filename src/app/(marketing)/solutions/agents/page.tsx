@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -36,7 +37,15 @@ const agentSpecificFeatureBlocks = [
       "Intelligent Appointment Setting: Fills your calendar with promising clients.",
       "AI Lead Scoring: Know who to focus on before you even meet.",
     ],
-    videoSrc: "/videos/terralead-showcase.mp4",
+    visual: (
+      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+        <video key="/videos/terralead-showcase.mp4" className="w-full h-full object-cover" autoPlay loop muted playsInline>
+            <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     layout: "text-left",
   },
   {
@@ -48,7 +57,15 @@ const agentSpecificFeatureBlocks = [
       "Email & Social Media Templates: Generate engaging content for any channel.",
       "RERA-Compliant Clauses: Ensure your documentation is professional and compliant.",
     ],
-    videoSrc: "/videos/terrascribe-showcase.mp4",
+    visual: (
+       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+        <video key="/videos/terrascribe-showcase.mp4" className="w-full h-full object-cover" autoPlay loop muted playsInline>
+            <source src="/videos/terrascribe-showcase.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     layout: "text-right",
   },
   {
@@ -60,7 +77,15 @@ const agentSpecificFeatureBlocks = [
       "Professional CMA Reports: Impress sellers and justify your pricing strategy.",
       "Neighborhood Trend Analysis: Become the undisputed local market expert.",
     ],
-    videoSrc: "/videos/terravaluate-showcase.mp4",
+     visual: (
+       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+        <video key="/videos/terravaluate-showcase.mp4" className="w-full h-full object-cover" autoPlay loop muted playsInline>
+            <source src="/videos/terravaluate-showcase.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     layout: "text-left",
   },
 ];
@@ -127,7 +152,7 @@ const annualPlans: PricingPlan[] = [
     priceFrequency: "/month (inc. 5 users), billed annually",
     description: "For growing brokerages and development teams needing advanced tools and collaboration.",
     features: [
-      "Everything in Professional, plus:",
+      "Everything in Business, plus:",
       "TerraLead™ AI Suite (Inc. 2,000 leads)",
       "TerraValuate™ Pro CMA Reports",
       "Advanced SmartFlow™ Automation",
@@ -196,19 +221,7 @@ const AgentFeatureBlock = ({ block }: { block: any }) => {
           </ul>
         </div>
         <div className={cn("flex items-center justify-center", !isTextLeft && "md:col-start-1 md:row-start-1")}>
-            {block.videoSrc ? (
-              <div className="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
-                <video key={block.videoSrc} className="w-full h-full object-cover" autoPlay loop muted playsInline>
-                    <source src={block.videoSrc} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
-              </div>
-            ) : (
-              <div className="p-8 bg-slate-100 rounded-2xl shadow-inner">
-                 <Image src={block.image.src} alt={block.image.alt} width={600} height={450} className="rounded-lg shadow-2xl object-cover" data-ai-hint={block.image.hint} />
-              </div>
-            )}
+            {block.visual}
         </div>
       </div>
     </motion.div>

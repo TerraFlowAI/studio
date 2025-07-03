@@ -1,4 +1,4 @@
-// src/components/landing/FeatureShowcase.tsx
+
 "use client";
 
 import { motion } from "framer-motion";
@@ -7,151 +7,6 @@ import { CheckCircle, ArrowRight, Bot, Mail, Users, Zap, BadgeCheck, FileText, B
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
 import { ResponsiveContainer, LineChart, Line, Tooltip } from 'recharts';
-
-
-// --- Visual Components for each Feature Block ---
-
-const TerraLeadVisual = () => (
-    <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
-        <video
-          key="/videos/terralead-showcase.mp4"
-          className="w-full h-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-    </div>
-);
-
-const TerraScribeVisual = () => (
-    <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center gap-6">
-            <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }} className="relative p-8 bg-white dark:bg-slate-700 rounded-lg shadow-lg">
-                <FileText className="h-16 w-16 text-primary" />
-                <motion.div initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0, transition: { delay: 0.8, type: 'spring' } }} className="absolute -bottom-4 -right-4">
-                    <BadgeCheck className="h-12 w-12 text-green-500 fill-white dark:fill-slate-800" />
-                </motion.div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0, transition: { delay: 1.2 } }} className="w-48 bg-white dark:bg-slate-700 p-3 rounded-lg shadow-lg space-y-2">
-                <div className="w-3/4 h-2 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
-                <div className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
-                <div className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
-                <div className="w-1/2 h-2 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
-            </motion.div>
-        </div>
-    </div>
-);
-
-const TerraIntelVisual = () => (
-    <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
-        <Map className="absolute inset-0 w-full h-full text-slate-200 dark:text-slate-700 opacity-50" strokeWidth={1}/>
-        <motion.div
-            className="absolute top-[30%] left-[25%] w-16 h-16 bg-teal-400/50 rounded-full blur-2xl"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 3, repeat: Infinity, repeatType: "mirror" }}
-        />
-        <motion.div
-            className="absolute bottom-[25%] right-[20%] w-20 h-20 bg-blue-400/50 rounded-full blur-2xl"
-             animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0.9, 0.6] }}
-            transition={{ duration: 4, repeat: Infinity, repeatType: "mirror", delay: 1 }}
-        />
-        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }} className="w-full max-w-sm bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-lg shadow-2xl p-4 border border-slate-300 dark:border-slate-600 z-10">
-            <h4 className="font-semibold text-sm mb-2 text-foreground">Market Price Trend</h4>
-            <div className="h-32">
-                <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={[
-                        { name: 'Jan', price: 100 }, { name: 'Feb', price: 110 }, { name: 'Mar', price: 105 },
-                        { name: 'Apr', price: 120 }, { name: 'May', price: 125 }, { name: 'Jun', price: 130 },
-                        { name: 'Jul', price: 140, predicted: 140 }, { name: 'Aug', predicted: 145 },
-                        { name: 'Sep', predicted: 155 }, { name: 'Oct', predicted: 160 }
-                    ]}
-                    margin={{ top: 5, right: 20, bottom: 5, left: -20 }}
-                    >
-                        <Tooltip contentStyle={{
-                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                            backdropFilter: 'blur(5px)',
-                            border: '1px solid hsl(var(--border))',
-                            borderRadius: '0.5rem',
-                        }}/>
-                        <Line type="monotone" dataKey="price" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} name="Historical Prices" />
-                        <Line type="monotone" dataKey="predicted" stroke="hsl(var(--primary))" strokeWidth={2} strokeDasharray="5 5" dot={false} name="AI Predicted Trend" />
-                    </LineChart>
-                </ResponsiveContainer>
-            </div>
-            <div className="flex justify-between text-xs mt-2 text-muted-foreground">
-                <span>Historical Prices</span>
-                <span>AI Predicted Trend</span>
-            </div>
-        </motion.div>
-    </div>
-);
-
-const TerraConstructVisual = () => (
-    <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
-        <div className="w-full max-w-md space-y-3">
-            <motion.div
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1, transition: { delay: 0.2 } }}
-                className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md"
-            >
-                <div className="p-2 bg-green-100 dark:bg-green-800/50 rounded-full">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                </div>
-                <p className="font-medium text-sm text-foreground">Foundation Complete</p>
-            </motion.div>
-            <motion.div
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1, transition: { delay: 0.4 } }}
-                className="flex items-center justify-between gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md"
-            >
-                <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-100 dark:bg-green-800/50 rounded-full">
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                    </div>
-                    <p className="font-medium text-sm text-foreground">Phase 1 Sold Out</p>
-                </div>
-                <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1, transition: { delay: 0.8 } }}
-                    className="flex items-center gap-1 text-blue-500"
-                >
-                    <FileText className="h-5 w-5" />
-                    <ArrowRight className="h-4 w-4" />
-                    <Users className="h-5 w-5" />
-                </motion.div>
-            </motion.div>
-            <motion.div
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1, transition: { delay: 0.6 } }}
-                className="flex items-center gap-3 p-3 bg-white dark:bg-slate-700 rounded-lg shadow-md"
-            >
-                <div className="p-2 bg-slate-200 dark:bg-slate-600 rounded-full">
-                    <GanttChartSquare className="h-5 w-5 text-slate-500" />
-                </div>
-                <p className="font-medium text-sm text-muted-foreground">Handover Phase</p>
-            </motion.div>
-        </div>
-    </div>
-);
-
-const TerraCoreVisual = () => (
-    <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden">
-        <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full flex items-center justify-center bg-slate-800/50">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-700 via-sky-900/30 to-slate-800 rounded-full animate-pulse-subtle"></div>
-            <div className="absolute inset-2 rounded-full shadow-[inset_0_4px_15px_rgba(0,0,0,0.4)]"></div>
-            <Bot className="h-24 w-24 text-teal-400 z-10" style={{ filter: 'drop-shadow(0 0 10px hsl(var(--primary)))' }}/>
-            <div className="absolute w-20 h-20 bg-primary/20 rounded-full blur-2xl"></div>
-            <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 1, type: 'spring' } }} className="absolute -right-4 top-12 p-3 bg-slate-700 rounded-full shadow-lg"><Phone className="h-6 w-6 text-green-400"/></motion.div>
-            <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 1.2, type: 'spring' } }} className="absolute -left-4 bottom-12 p-3 bg-slate-700 rounded-full shadow-lg"><Calendar className="h-6 w-6 text-purple-400"/></motion.div>
-        </div>
-    </div>
-);
-
 
 // Data structure defining each feature block
 const featureBlocks = [
@@ -163,7 +18,15 @@ const featureBlocks = [
     metrics: ["10x More Qualified Leads", "95% Less Manual Work"],
     cta: "Explore Lead Automation",
     layout: "text-left",
-    visual: <TerraLeadVisual />,
+    visual: (
+      <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/terralead-showcase.mp4">
+          <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     href: "/solutions/agents",
   },
   {
@@ -174,7 +37,15 @@ const featureBlocks = [
     metrics: [],
     cta: "Explore Content Tools",
     layout: "text-right",
-    visual: <TerraScribeVisual />,
+    visual: (
+       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/terrascribe-showcase.mp4">
+          <source src="/videos/terrascribe-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     href: "/scribe",
   },
    {
@@ -185,7 +56,15 @@ const featureBlocks = [
     metrics: [],
     cta: "Discover Valuation Tools",
     layout: "text-left",
-    visual: <TerraIntelVisual />,
+    visual: (
+       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/terravaluate-showcase.mp4">
+          <source src="/videos/terravaluate-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     href: "/analytics",
   },
   {
@@ -196,7 +75,15 @@ const featureBlocks = [
     metrics: [],
     cta: "Explore Developer Tools",
     layout: "text-right",
-    visual: <TerraConstructVisual />,
+     visual: (
+       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl p-0 flex items-center justify-center overflow-hidden shadow-2xl border border-slate-800">
+        <video className="w-full h-full object-cover" autoPlay loop muted playsInline key="/videos/smartflow-showcase.mp4">
+          <source src="/videos/smartflow-showcase.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+      </div>
+    ),
     href: "/solutions/developers",
   },
   {
@@ -208,7 +95,18 @@ const featureBlocks = [
     cta: "Meet Your AI Agent",
     layout: "text-left",
     isSpecial: true,
-    visual: <TerraCoreVisual />,
+    visual: (
+      <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden">
+        <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full flex items-center justify-center bg-slate-800/50">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-700 via-sky-900/30 to-slate-800 rounded-full animate-pulse-subtle"></div>
+            <div className="absolute inset-2 rounded-full shadow-[inset_0_4px_15px_rgba(0,0,0,0.4)]"></div>
+            <Bot className="h-24 w-24 text-teal-400 z-10" style={{ filter: 'drop-shadow(0 0 10px hsl(var(--primary)))' }}/>
+            <div className="absolute w-20 h-20 bg-primary/20 rounded-full blur-2xl"></div>
+            <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 1, type: 'spring' } }} className="absolute -right-4 top-12 p-3 bg-slate-700 rounded-full shadow-lg"><Phone className="h-6 w-6 text-green-400"/></motion.div>
+            <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 1.2, type: 'spring' } }} className="absolute -left-4 bottom-12 p-3 bg-slate-700 rounded-full shadow-lg"><Calendar className="h-6 w-6 text-purple-400"/></motion.div>
+        </div>
+    </div>
+    ),
     href: "/#",
   },
 ];

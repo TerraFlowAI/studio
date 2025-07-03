@@ -39,7 +39,15 @@ const developerFeatureBlocks = [
       "24/7 Chatbot Qualification",
     ],
     layout: "text-right",
-    videoSrc: "/videos/terralead-showcase.mp4",
+    visual: (
+       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+        <video key="/videos/terralead-showcase.mp4" className="w-full h-full object-cover" autoPlay loop muted playsInline>
+            <source src="/videos/terralead-showcase.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+      </div>
+    ),
   },
   {
     suiteName: "MarketIntel™ & TerraValuate™",
@@ -52,7 +60,15 @@ const developerFeatureBlocks = [
       "Optimal Unit Mix & Pricing Strategy",
     ],
     layout: "text-left",
-    videoSrc: "/videos/terravaluate-showcase.mp4",
+    visual: (
+       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+        <video key="/videos/terravaluate-showcase.mp4" className="w-full h-full object-cover" autoPlay loop muted playsInline>
+            <source src="/videos/terravaluate-showcase.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+      </div>
+    ),
   },
   {
     suiteName: "SmartFlow™ & TerraSecure™",
@@ -65,7 +81,15 @@ const developerFeatureBlocks = [
       "E-Khata & Compliance Verification",
     ],
     layout: "text-right",
-    videoSrc: "/videos/smartflow-showcase.mp4",
+    visual: (
+       <div className="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+        <video key="/videos/smartflow-showcase.mp4" className="w-full h-full object-cover" autoPlay loop muted playsInline>
+            <source src="/videos/smartflow-showcase.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+      </div>
+    ),
   },
 ];
 
@@ -205,19 +229,7 @@ const FeatureBlock = ({ block }: { block: any }) => {
           </ul>
         </div>
         <div className={cn("flex items-center justify-center", !isTextLeft && "md:col-start-1 md:row-start-1")}>
-            {block.videoSrc ? (
-               <div className="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
-                <video key={block.videoSrc} className="w-full h-full object-cover" autoPlay loop muted playsInline>
-                    <source src={block.videoSrc} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
-              </div>
-            ) : (
-                <div className="p-8 bg-slate-100 rounded-2xl shadow-inner">
-                    <Image src={block.image.src} alt={block.image.alt} width={600} height={450} className="rounded-lg shadow-2xl object-cover" data-ai-hint={block.image.hint} />
-                </div>
-            )}
+            {block.visual}
         </div>
       </div>
     </motion.div>
