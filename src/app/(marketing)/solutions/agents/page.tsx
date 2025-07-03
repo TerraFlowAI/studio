@@ -12,7 +12,7 @@ import Confetti from 'react-confetti';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CheckCircle, ArrowRight, Bot, Target, PenSquare, Calculator, Loader2, Send, Mail, Building2, Phone } from "lucide-react";
+import { CheckCircle, ArrowRight, Bot, Target, PenSquare, Calculator, Loader2, Send, Mail, Building, Phone, GanttChartSquare, ShieldCheck, AreaChart, Users, BarChart3, Star, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PricingCard, type PricingPlan } from "@/components/pricing/PricingCard";
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
@@ -304,26 +304,41 @@ export default function AgentsSolutionPage() {
 
       {/* 1. Hero Section */}
       <section className="py-16 md:py-24 bg-slate-50/50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}>
-                <h1 className="text-4xl md:text-6xl font-bold font-headline text-foreground mb-4">
-                    Supercharge Your Productivity. <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Close More Deals.</span>
-                </h1>
-                <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-8">
-                    TerraFlow provides individual agents with the AI-powered tools to automate daily tasks, intelligently nurture leads, and compete with larger firms.
-                </p>
-                <div className="flex justify-center gap-4">
-                    <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                        <Link href="#cta-form">Start Free Trial</Link>
-                    </Button>
-                    <Button asChild variant="outline" size="lg">
-                        <Link href="#pricing">View Pricing</Link>
-                    </Button>
-                </div>
-                 <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} className="relative mt-12">
-                    <Image src="https://placehold.co/1200x675.png" alt="Screenshot of the TerraFlow agent dashboard showing leads and analytics" width={1200} height={675} className="rounded-lg shadow-2xl object-cover mx-auto" data-ai-hint="agent dashboard" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+                {/* Left Column: Image */}
+                <motion.div
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="relative"
+                >
+                    <Image src="https://placehold.co/800x600.png" alt="Screenshot of the TerraFlow agent dashboard showing leads and analytics" width={800} height={600} className="rounded-lg shadow-2xl object-cover" data-ai-hint="agent dashboard" />
                 </motion.div>
-            </motion.div>
+
+                {/* Right Column: Content */}
+                <motion.div
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="text-center md:text-left"
+                >
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-headline text-foreground mb-4">
+                        Supercharge Your Productivity. <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Close More Deals.</span>
+                    </h1>
+                    <p className="text-lg md:text-xl text-muted-foreground mb-8">
+                        TerraFlow provides individual agents with the AI-powered tools to automate daily tasks, intelligently nurture leads, and compete with larger firms.
+                    </p>
+                    <div className="flex justify-center md:justify-start gap-4">
+                        <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                            <Link href="#cta-form">Start Free Trial</Link>
+                        </Button>
+                        <Button asChild variant="outline" size="lg">
+                            <Link href="#pricing">View Pricing</Link>
+                        </Button>
+                    </div>
+                </motion.div>
+            </div>
         </div>
       </section>
 
