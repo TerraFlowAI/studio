@@ -239,11 +239,26 @@ export default function PricingPage() {
           </p>
         </div>
         <div className="relative grid md:grid-cols-3 gap-8">
-          {/* Dotted lines connecting the cards */}
-          <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-0 right-0 h-px">
-            <svg width="100%" height="2" className="px-16">
-              <line x1="0" y1="1" x2="100%" y2="1" stroke="hsl(var(--border))" strokeWidth="2" strokeDasharray="5 5" />
-            </svg>
+          {/* Animated Gradient Line */}
+          <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-16 right-16 h-0.5">
+              {/* Base dashed line */}
+              <div
+                className="w-full h-full"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(to right, hsl(var(--border)), hsl(var(--border)) 4px, transparent 4px, transparent 8px)",
+                }}
+              />
+              {/* Animated gradient overlay */}
+              <div
+                className="absolute inset-0 w-full h-full animate-gradient-sweep"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, transparent, hsl(var(--primary)), transparent)",
+                  backgroundSize: "40% 100%", // The size of the gradient "comet"
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
           </div>
   
           {steps.map((step, index) => {
