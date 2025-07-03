@@ -1,0 +1,13 @@
+diff --git a/node_modules/@genkit-ai/next/package.json b/node_modules/@genkit-ai/next/package.json
+index 5410a51..cc231e2 100644
+--- a/node_modules/@genkit-ai/next/package.json
++++ b/node_modules/@genkit-ai/next/package.json
+@@ -37,7 +37,7 @@
+   "peerDependencies": {
+     "firebase-functions": "^5.0.1",
+     "genkit": "1.6.0",
+-    "next": "^15.0.0"
++    "next": "^14.0.0 || ^15.0.0"
+   },
+   "peerDependenciesMeta": {
+     "firebase-functions": {

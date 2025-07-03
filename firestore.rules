@@ -2,38 +2,23 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Helper function to check if the requesting user is the owner of a document.
-    function isOwner(docData) {
-      return request.auth.uid == docData.ownerId;
-    }
-    
-    // Helper function to check if the user is the recipient of a notification.
-    function isNotificationRecipient(docData) {
-      return request.auth.uid == docData.userId;
-    }
-    
-    // Generic rules for all collections where documents are owned by a user.
-    // This includes 'leads', 'properties', and 'documents'.
-    match /{collection}/{docId} 
-      where collection in ['leads', 'properties', 'documents'] {
-      
-      // A user can create a document only if they set themselves as the owner.
-      // This rule is checked on write operations (create).
-      allow create: if isOwner(request.resource.data);
-
-      // A user can read, update, or delete their own documents.
-      // This rule is checked on read, update, and delete operations.
-      // For 'list' (query) operations to succeed, the client-side query
-      // MUST include a `where("ownerId", "==", request.auth.uid)` clause.
-      allow read, update, delete: if isOwner(resource.data);
+    // User documents are keyed by user ID.
+    // A user can create, read, and update their own document.
+    match /users/{userId} {
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Notifications are special: client can only read them.
-    // They are created by backend functions, not the client.
-    match /notifications/{notificationId} {
-      allow read: if isNotificationRecipient(resource.data);
-      allow write: if false; // Deny all client-side writes
+    // Leads are owned by a user.
+    match /leads/{leadId} {
+      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+      allow read, update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Properties are owned by a user.
+    match /properties/{propertyId} {
+      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+      allow read, update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
     }
   }
 }

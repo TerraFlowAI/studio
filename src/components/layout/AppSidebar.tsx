@@ -79,6 +79,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar
+        id="onboarding-step-4"
         collapsible={isMobile ? "offcanvas" : "icon"}
         variant="sidebar"
         side="left"

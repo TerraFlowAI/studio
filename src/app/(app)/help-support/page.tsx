@@ -1,19 +1,19 @@
-
 "use client";
 
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, BookOpen, MessageSquare, Info, Users, Search, ExternalLink, Construction } from "lucide-react"; // Added ExternalLink, Info, Users, Search
+import { HelpCircle, BookOpen, MessageSquare, Info, Users, Search, ExternalLink, Construction, PlayCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Link from 'next/link';
 
 interface SupportResource {
   icon: React.ElementType;
   title: string;
   description: string;
   ctaText: string;
-  action: () => void;
+  action: (() => void) | string;
   isComingSoon?: boolean;
 }
 
@@ -28,6 +28,14 @@ export default function HelpSupportPage() {
   };
 
   const supportResources: SupportResource[] = [
+    {
+      icon: PlayCircle,
+      title: "Restart Onboarding Tour",
+      description: "Re-take the interactive guided tour to refresh your memory of the dashboard's key features.",
+      ctaText: "Start Tour",
+      action: "/dashboard?tour=true",
+      isComingSoon: false,
+    },
     {
       icon: BookOpen,
       title: "Knowledge Base",
@@ -112,14 +120,23 @@ export default function HelpSupportPage() {
             </CardHeader>
             <CardFooter className="mt-auto pt-4 border-t">
               <Button 
+                asChild={typeof resource.action === 'string'}
                 variant="outline" 
                 className="w-full" 
-                onClick={resource.action}
+                onClick={() => typeof resource.action === 'function' && resource.action()}
                 disabled={resource.isComingSoon}
               >
-                {resource.ctaText}
-                {!resource.isComingSoon && <ExternalLink className="ml-2 h-4 w-4" />}
-                {resource.isComingSoon && <Construction className="ml-2 h-4 w-4 opacity-50" />}
+                {typeof resource.action === 'string' ? (
+                  <Link href={resource.action}>
+                    {resource.ctaText}
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Link>
+                ) : (
+                  <>
+                    {resource.ctaText}
+                    {resource.isComingSoon && <Construction className="ml-2 h-4 w-4 opacity-50" />}
+                  </>
+                )}
               </Button>
             </CardFooter>
           </Card>

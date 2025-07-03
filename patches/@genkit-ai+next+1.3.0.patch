@@ -1,0 +1,13 @@
+--- a/node_modules/@genkit-ai/next/package.json
++++ b/node_modules/@genkit-ai/next/package.json
+@@ -37,8 +37,8 @@
+   "peerDependencies": {
+     "firebase-functions": "^5.0.0",
+     "handlebars": "^4.7.7",
+-    "next": "^15.0.0",
+-    "react": "18.3.1",
++    "next": ">=14.0.0",
++    "react": "^18.0.0",
+     "zod": "^3.22.4"
+   },
+   "devDependencies": {

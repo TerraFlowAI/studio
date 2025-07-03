@@ -2,6 +2,8 @@
 "use client";
 
 import * as React from "react";
+import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { SalesStatisticsCard } from "@/components/dashboard/SalesStatisticsCard";
 import { GrowthStatisticsCard } from "@/components/dashboard/GrowthStatisticsCard";
@@ -9,11 +11,25 @@ import { AiCoPilots } from "@/components/dashboard/AiCoPilots";
 import { ListingBoard } from "@/components/dashboard/ListingBoard";
 import { AiAssistantCard } from "@/components/dashboard/AiAssistantCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp, FileSignature } from "lucide-react";
+import { PlusCircle, Users, Briefcase, DollarSign, TrendingUp, FileSignature, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
+import { firestore } from "@/lib/firebase";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import type { Step, CallBackProps } from "react-joyride";
+import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
+import { SetupChecklist } from "@/components/onboarding/SetupChecklist";
+
+const OnboardingTour = dynamic(
+  () => import('@/components/onboarding/OnboardingTour').then(mod => mod.OnboardingTour),
+  { 
+    ssr: false,
+  }
+);
+
+type OnboardingStatus = 'loading' | 'pending_welcome' | 'tour_active' | 'checklist_active' | 'complete';
 
 // Extended mock property type for the dashboard
 type MockProperty = { 
@@ -57,27 +73,74 @@ const mockDashboardData = {
     growthData: {
         totalRevenue: '₹7.32Cr',
         monthlyData: [
-            { month: "Jan", sale: 180000, rent: 90000 },
-            { month: "Feb", sale: 210000, rent: 100000 },
-            { month: "Mar", sale: 250000, rent: 110000 },
-            { month: "Apr", sale: 230000, rent: 115000 },
-            { month: "May", sale: 270000, rent: 120000 },
-            { month: "Jun", sale: 300000, rent: 130000 },
-            { month: "Jul", sale: 280000, rent: 125000 },
-            { month: "Aug", sale: 310000, rent: 135000 },
-            { month: "Sep", sale: 340000, rent: 140000 },
-            { month: "Oct", sale: 370000, rent: 150000 },
-            { month: "Nov", sale: 350000, rent: 145000 },
-            { month: "Dec", sale: 400000, rent: 160000 },
+            { month: "Jan", sale: 180000, rent: 90000 }, { month: "Feb", sale: 210000, rent: 100000 }, { month: "Mar", sale: 250000, rent: 110000 }, { month: "Apr", sale: 230000, rent: 115000 }, { month: "May", sale: 270000, rent: 120000 }, { month: "Jun", sale: 300000, rent: 130000 }, { month: "Jul", sale: 280000, rent: 125000 }, { month: "Aug", sale: 310000, rent: 135000 }, { month: "Sep", sale: 340000, rent: 140000 }, { month: "Oct", sale: 370000, rent: 150000 }, { month: "Nov", sale: 350000, rent: 145000 }, { month: "Dec", sale: 400000, rent: 160000 },
         ]
     }
 };
 
-export default function DashboardPage() {
+const onboardingSteps: Step[] = [
+    { target: '#onboarding-step-1', content: "This is the heart of TerraFlow. Each card is a launchpad into a powerful suite of tools. Let's start here.", title: "Your Command Center", disableBeacon: true },
+    { target: '#onboarding-step-2', content: "This is your personal AI assistant. Use voice or chat to command your entire business—from adding leads to making calls. Try asking it, 'What can you do?' later on.", title: "Meet Terra, Your AI Agent" },
+    { target: '#onboarding-step-3', content: "Use this button to quickly add a new lead or property from anywhere in the app. This is the fastest way to get your data into the system.", title: "Create Anything" },
+    { target: '#onboarding-step-4', content: "Your sidebar contains all your main workspaces. You'll spend most of your time in 'Leads' and 'Properties'.", title: "Navigate Your Business" },
+];
+
+function DashboardPageContent() {
     const { user, isLoading } = useAuth();
-    const data = mockDashboardData; // Use mock data
+    const searchParams = useSearchParams();
+    const data = mockDashboardData;
+    const [onboardingStatus, setOnboardingStatus] = React.useState<OnboardingStatus>('loading');
     
-    if (isLoading || !data) {
+    // Logic to force start the tour if query param is present
+    React.useEffect(() => {
+        if (searchParams.get('tour') === 'true') {
+            setOnboardingStatus('tour_active');
+        }
+    }, [searchParams]);
+
+    React.useEffect(() => {
+        if (user && searchParams.get('tour') !== 'true') {
+            const checkOnboardingStatus = async () => {
+                const userDocRef = doc(firestore, 'users', user.uid);
+                const userDoc = await getDoc(userDocRef);
+                if (userDoc.exists() && userDoc.data().hasCompletedOnboarding) {
+                    setOnboardingStatus('complete');
+                } else {
+                    if (!userDoc.exists()) {
+                      await setDoc(userDocRef, { hasCompletedOnboarding: false });
+                    }
+                    setOnboardingStatus('pending_welcome');
+                }
+            };
+            checkOnboardingStatus();
+        } else if (user && searchParams.get('tour') === 'true') {
+             // If tour is forced, we know the user exists
+             setOnboardingStatus('tour_active');
+        }
+    }, [user, searchParams]);
+
+    const markOnboardingComplete = async () => {
+        if (user) {
+            const userDocRef = doc(firestore, 'users', user.uid);
+            await updateDoc(userDocRef, { hasCompletedOnboarding: true });
+        }
+        setOnboardingStatus('complete');
+    };
+
+    const handleJoyrideCallback = (data: CallBackProps) => {
+        const { status } = data;
+        const finishedStatuses: string[] = ['finished', 'skipped'];
+
+        if (finishedStatuses.includes(status)) {
+            if (searchParams.get('tour') === 'true') {
+                setOnboardingStatus('complete'); // If tour was forced, just complete it
+            } else {
+                setOnboardingStatus('checklist_active');
+            }
+        }
+    };
+    
+    if (isLoading || onboardingStatus === 'loading' || !data) {
         return <DashboardSkeleton />;
     }
 
@@ -85,75 +148,81 @@ export default function DashboardPage() {
     const userName = user?.displayName?.split(' ')[0] || 'Agent';
 
     return (
-        <div className="container mx-auto">
-            <PageHeader title={`Welcome, ${userName}!`} description="Here's a snapshot of your real estate business.">
-                <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground h-10">
-                    <Link href="/properties/new"><PlusCircle className="mr-2 h-4 w-4"/> Add New Property</Link>
-                </Button>
-            </PageHeader>
-            
-            <div className="mb-8">
-                <AiCoPilots />
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <KpiCard title="Active Listings" value={kpiData.activeListings.value} trend={kpiData.activeListings.trend} icon={Briefcase} />
-                <KpiCard title="New Leads" value={kpiData.leadsGenerated.value} trend={kpiData.leadsGenerated.trend} icon={Users} />
-                <KpiCard title="Contracts Signed" value={kpiData.contractsSigned.value} trend={kpiData.contractsSigned.trend} trendDirection="down" icon={FileSignature} />
-                <KpiCard title="Total Sales (Month)" value={kpiData.totalSales.value} trend={kpiData.totalSales.trend} icon={DollarSign} />
-            </div>
+        <>
+            {onboardingStatus === 'pending_welcome' && (
+                <WelcomeModal
+                    userName={userName}
+                    onStartTour={() => setOnboardingStatus('tour_active')}
+                    onSkipTour={markOnboardingComplete}
+                />
+            )}
+            <OnboardingTour
+                run={onboardingStatus === 'tour_active'}
+                steps={onboardingSteps}
+                onCallback={handleJoyrideCallback}
+            />
+            {onboardingStatus === 'checklist_active' && (
+                <SetupChecklist onComplete={markOnboardingComplete} />
+            )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
-                <div className="lg:col-span-3">
-                    <SalesStatisticsCard chartData={salesData} />
+            <div className="container mx-auto">
+                <PageHeader title={`Welcome, ${userName}!`} description="Here's a snapshot of your real estate business.">
+                    <div id="onboarding-step-3">
+                      <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground h-10">
+                          <Link href="/properties/new"><PlusCircle className="mr-2 h-4 w-4"/> Add New Property</Link>
+                      </Button>
+                    </div>
+                </PageHeader>
+                
+                <div className="mb-8" id="onboarding-step-1">
+                    <AiCoPilots />
                 </div>
-                <div className="lg:col-span-2">
-                    <GrowthStatisticsCard totalRevenue={growthData.totalRevenue} monthlyData={growthData.monthlyData} />
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <KpiCard title="Active Listings" value={kpiData.activeListings.value} trend={kpiData.activeListings.trend} icon={Briefcase} />
+                    <KpiCard title="New Leads" value={kpiData.leadsGenerated.value} trend={kpiData.leadsGenerated.trend} icon={Users} />
+                    <KpiCard title="Contracts Signed" value={kpiData.contractsSigned.value} trend={kpiData.contractsSigned.trend} trendDirection="down" icon={FileSignature} />
+                    <KpiCard title="Total Sales (Month)" value={kpiData.totalSales.value} trend={kpiData.totalSales.trend} icon={DollarSign} />
                 </div>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                <div className="lg:col-span-2">
-                    <ListingBoard properties={recentProperties} />
-                </div>
-                <div>
-                    <AiAssistantCard userName={userName} />
-                </div>
-            </div>
 
-        </div>
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+                    <div className="lg:col-span-3">
+                        <SalesStatisticsCard chartData={salesData} />
+                    </div>
+                    <div className="lg:col-span-2">
+                        <GrowthStatisticsCard totalRevenue={growthData.totalRevenue} monthlyData={growthData.monthlyData} />
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <div className="lg:col-span-2">
+                        <ListingBoard properties={recentProperties} />
+                    </div>
+                    <div id="onboarding-step-2">
+                        <AiAssistantCard userName={userName} />
+                    </div>
+                </div>
+
+            </div>
+        </>
     )
 }
+
+// Wrapper component to use Suspense for useSearchParams
+export default function DashboardPage() {
+  return (
+    <React.Suspense fallback={<DashboardSkeleton />}>
+      <DashboardPageContent />
+    </React.Suspense>
+  );
+}
+
 
 function DashboardSkeleton() {
     return (
         <div className="container mx-auto animate-pulse">
-            <div className="mb-8">
-                <Skeleton className="h-9 w-64" />
-                <Skeleton className="h-5 w-80 mt-2" />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <Skeleton className="h-28 rounded-lg" />
-                <Skeleton className="h-28 rounded-lg" />
-                <Skeleton className="h-28 rounded-lg" />
-                <Skeleton className="h-28 rounded-lg" />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
-                 <Skeleton className="h-96 rounded-lg lg:col-span-3" />
-                 <Skeleton className="h-96 rounded-lg lg:col-span-2" />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                <div className="lg:col-span-2">
-                    <Skeleton className="h-8 w-48 mb-4" />
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <Skeleton className="h-56 rounded-lg" />
-                        <Skeleton className="h-56 rounded-lg" />
-                        <Skeleton className="h-56 rounded-lg" />
-                    </div>
-                </div>
-                <div>
-                    <Skeleton className="h-64 rounded-2xl" />
-                </div>
+            <div className="flex items-center justify-center h-screen">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </div>
         </div>
     );

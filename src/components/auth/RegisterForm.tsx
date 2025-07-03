@@ -7,7 +7,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth, firestore } from "@/lib/firebase"; // import firestore
+import { doc, setDoc } from "firebase/firestore"; // import doc and setDoc
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -35,10 +36,25 @@ export default function RegisterForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
+      // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      
+      // 2. Update their Auth profile
       await updateProfile(userCredential.user, {
         displayName: `${values.firstName} ${values.lastName}`.trim(),
       });
+      
+      // 3. Create a corresponding user document in Firestore
+      const userDocRef = doc(firestore, "users", userCredential.user.uid);
+      await setDoc(userDocRef, {
+        uid: userCredential.user.uid,
+        email: values.email,
+        displayName: `${values.firstName} ${values.lastName}`.trim(),
+        role: 'customer', // default role
+        hasCompletedOnboarding: false, // Onboarding flag
+        createdAt: new Date(),
+      });
+
       router.push("/dashboard");
     } catch (error: any) {
       let description = "An unexpected error occurred. Please try again.";
