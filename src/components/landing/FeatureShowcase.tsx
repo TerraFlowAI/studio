@@ -3,15 +3,23 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight, Bot, MessageCircle, BarChart3, GanttChartSquare, Mail, Map, Phone, Calendar, FileText, BadgeCheck, TrendingUp, Sparkles, Zap, Users } from "lucide-react";
+import { CheckCircle, ArrowRight, Bot, Mail, Phone, Calendar, MessageCircle, Sparkles, Zap, Users, BadgeCheck, FileText, BarChart3, GanttChartSquare, Map } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
-import { ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
 
 // --- Visual Components for each Feature Block ---
 
 const TerraLeadVisual = () => (
-  <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+    <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
     <div className="absolute w-full h-full bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.3),rgba(255,255,255,0))]"></div>
     <div className="relative flex flex-col items-center">
       {/* Lead Sources */}
@@ -62,16 +70,45 @@ const TerraScribeVisual = () => (
 const TerraIntelVisual = () => (
     <div className="relative w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-6 flex items-center justify-center overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
         <Map className="absolute inset-0 w-full h-full text-slate-200 dark:text-slate-700 opacity-50" strokeWidth={1}/>
-        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }} className="w-full max-w-sm bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-lg shadow-2xl p-4 border border-slate-300 dark:border-slate-600">
+        {/* Glowing hotspots */}
+        <motion.div
+            className="absolute top-[30%] left-[25%] w-16 h-16 bg-teal-400/50 rounded-full blur-2xl"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 3, repeat: Infinity, repeatType: "mirror" }}
+        />
+        <motion.div
+            className="absolute bottom-[25%] right-[20%] w-20 h-20 bg-blue-400/50 rounded-full blur-2xl"
+             animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0.9, 0.6] }}
+            transition={{ duration: 4, repeat: Infinity, repeatType: "mirror", delay: 1 }}
+        />
+        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }} className="w-full max-w-sm bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-lg shadow-2xl p-4 border border-slate-300 dark:border-slate-600 z-10">
             <h4 className="font-semibold text-sm mb-2 text-foreground">Market Price Trend</h4>
             <div className="h-32">
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart3 className="w-full h-full text-primary/30" />
+                    <LineChart data={[
+                        { name: 'Jan', price: 100 }, { name: 'Feb', price: 110 }, { name: 'Mar', price: 105 },
+                        { name: 'Apr', price: 120 }, { name: 'May', price: 125 }, { name: 'Jun', price: 130 },
+                        { name: 'Jul', price: 140, predicted: 140 }, { name: 'Aug', predicted: 145 },
+                        { name: 'Sep', predicted: 155 }, { name: 'Oct', predicted: 160 }
+                    ]}
+                    margin={{ top: 5, right: 20, bottom: 5, left: -20 }}
+                    >
+                        <Tooltip contentStyle={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                            backdropFilter: 'blur(5px)',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '0.5rem',
+                        }}/>
+                        <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} hide/>
+                        <Line type="monotone" dataKey="price" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="predicted" stroke="hsl(var(--primary))" strokeWidth={2} strokeDasharray="5 5" dot={false}/>
+                    </LineChart>
                 </ResponsiveContainer>
             </div>
             <div className="flex justify-between text-xs mt-2 text-muted-foreground">
-                <span>Last 6 Mo.</span>
-                <span>Next 6 Mo. (Predicted)</span>
+                <span>Historical Prices</span>
+                <span>AI Predicted Trend</span>
             </div>
         </motion.div>
     </div>
@@ -129,6 +166,7 @@ const featureBlocks = [
     headline: "Generate Compliant Documents & Marketing Copy Instantly.",
     description: "Eliminate writer's block and legal uncertainty. Generate professional marketing content in seconds, and create error-free, RERA-compliant documents like sale agreements with our AI, ensuring speed and peace of mind.",
     checklist: [ "AI Marketing Copywriting", "Automated RERA Document Generation" ],
+    metrics: [],
     cta: "Explore Content Tools",
     layout: "text-right",
     visual: <TerraScribeVisual />,
@@ -139,6 +177,7 @@ const featureBlocks = [
     headline: "Make Data-Driven Decisions with Predictive Analytics.",
     description: "Go beyond simple reports. Leverage our powerful analytics engine for precise, real-time property valuations and predictive market forecasts that give you a decisive competitive edge.",
     checklist: [ "AI-Powered Property Valuation", "Predictive Market Forecasting" ],
+    metrics: [],
     cta: "Discover Valuation Tools",
     layout: "text-left",
     visual: <TerraIntelVisual />,
@@ -149,6 +188,7 @@ const featureBlocks = [
     headline: "Streamline Your Projects from Groundbreaking to Handover.",
     description: "Designed for developers. Manage your entire project lifecycle in one place. Track construction milestones, manage inventory, and automate post-sales processes like payment reminders and handovers.",
     checklist: [ "Real-time Inventory Management", "Automated Payment & Demand Notes" ],
+    metrics: [],
     cta: "Explore Developer Tools",
     layout: "text-right",
     visual: <TerraConstructVisual />,
@@ -159,6 +199,7 @@ const featureBlocks = [
     headline: "Your Autonomous Team Member is Here.",
     description: "This is what sets TerraFlow apart. Use voice or chat to command Terra, your AI agent. Tell it to call leads, generate reports, or schedule meetings, and it gets done. It's not just a tool; it's a new way to run your business.",
     checklist: [ "Autonomous Outbound Voice Calls", "Conversational UI (Voice & Chat)" ],
+    metrics: [],
     cta: "Meet Your AI Agent",
     layout: "text-left",
     isSpecial: true,
