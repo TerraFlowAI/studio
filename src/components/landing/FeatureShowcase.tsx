@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Bot, MessageCircle, BarChart3, GanttChartSquare, Mail, Map, Phone, Calendar, FileText, BadgeCheck, TrendingUp, Sparkles, Zap, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
+import { ResponsiveContainer } from "recharts";
 
 // --- Visual Components for each Feature Block ---
 
