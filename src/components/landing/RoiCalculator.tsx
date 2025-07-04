@@ -60,7 +60,7 @@ const cityTierDefaults = {
   "other-cities": 75000,
 };
 
-const RoiCalculator: React.FC = () => {
+export const RoiCalculator: React.FC = () => {
   const [cityTier, setCityTier] = useState<string>("mumbai-delhi");
   const [leadsPerMonth, setLeadsPerMonth] = useState<number>(100);
   const [dailyMissedCalls, setDailyMissedCalls] = useState<number>(10);
@@ -408,5 +408,3 @@ const RoiCalculator: React.FC = () => {
     </section>
   );
 };
-
-export default RoiCalculator;
