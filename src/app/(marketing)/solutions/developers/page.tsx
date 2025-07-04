@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -23,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { FaqSection } from "@/components/shared/FaqSection";
 
 
 // --- PAGE-SPECIFIC DATA ---
@@ -200,6 +200,21 @@ const developerTestimonials = [
 const firstColumn = developerTestimonials.slice(0, 1);
 const secondColumn = developerTestimonials.slice(1, 2);
 const thirdColumn = developerTestimonials.slice(2, 3);
+
+const developersPageFaqs = [
+  {
+    question: "Can TerraFlow handle the legal complexities of the Indian market?",
+    answer: "Yes, this is one of our core strengths. Our TerraScribe™ and TerraSecure™ suites are specifically designed to help you generate RERA-compliant documents and verify land documents like E-Khata, mitigating risk significantly."
+  },
+  {
+    question: "How does the Project Management feature work?",
+    answer: "Our SmartFlow™ suite includes a project management dashboard with tools like Gantt charts and automated milestone tracking. It gives you a high-level, real-time overview of your project's health, helping you identify bottlenecks before they become costly problems."
+  },
+  {
+    question: "Can I get market data for a potential new site?",
+    answer: "Absolutely. Our MarketIntel™ suite is built for this. You can analyze demand hotspots, check historical price trends, and even get AI-powered predictive forecasts on the future growth potential of a specific locality to inform your acquisition decisions."
+  }
+];
 
 
 // --- REUSABLE COMPONENTS (LOCALIZED) ---
@@ -436,6 +451,8 @@ export default function DevelopersSolutionPage() {
             </div>
         </div>
       </section>
+
+      <FaqSection title="Questions from Developers & Builders" faqs={developersPageFaqs} />
 
       {/* 6. Final CTA */}
       <section id="contact" className="py-16 md:py-24 bg-background">

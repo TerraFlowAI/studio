@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -23,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { FaqSection } from "@/components/shared/FaqSection";
 
 
 // --- PAGE-SPECIFIC DATA ---
@@ -192,6 +192,21 @@ const agentTestimonials = [
 const firstColumn = agentTestimonials.slice(0, 1);
 const secondColumn = agentTestimonials.slice(1, 2);
 const thirdColumn = agentTestimonials.slice(2, 3);
+
+const agentsPageFaqs = [
+  {
+    question: "How quickly can I get started with lead automation?",
+    answer: "You can be up and running in minutes. Our platform includes pre-built SmartFlow™ templates for common tasks like welcoming new leads and sending follow-ups. You can activate them with a single click."
+  },
+  {
+    question: "Will the AI-generated content sound like me?",
+    answer: "Yes. TerraScribe™ is designed to be your co-pilot. You can provide it with key points and then use simple commands to refine the tone—whether you want it to be more professional, luxurious, or urgent—to match your personal brand."
+  },
+  {
+    question: "How does the AI Voice Agent help me as a solo agent?",
+    answer: "Terra acts as your personal assistant. It can make those initial, time-consuming calls to new leads to gauge their interest, freeing you up to focus only on conversations with pre-qualified, high-intent prospects."
+  }
+];
 
 
 // --- REUSABLE COMPONENTS (LOCALIZED) ---
@@ -433,6 +448,8 @@ export default function AgentsSolutionPage() {
             </div>
         </div>
       </section>
+      
+      <FaqSection title="Questions from Agents Like You" faqs={agentsPageFaqs} />
 
       {/* 6. Final CTA */}
       <section id="cta-form" className="py-16 md:py-24 bg-background">

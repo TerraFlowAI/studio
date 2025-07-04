@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useRef } from "react";
@@ -24,6 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ContactFormPricing } from "@/components/pricing/ContactFormPricing";
+import { FaqSection } from "@/components/shared/FaqSection";
 
 
 const monthlyPlans: PricingPlan[] = [
@@ -210,6 +210,25 @@ const testimonials = [
 const firstColumn = testimonials.slice(0, 3);
 const secondColumn = testimonials.slice(3, 6);
 const thirdColumn = testimonials.slice(6, 9);
+
+const pricingPageFaqs = [
+  {
+    question: "Is there a free trial available?",
+    answer: "Yes! We offer a 14-day, no-obligation free trial for our Professional and Business plans. You can explore the full suite of features and see the value for yourself before committing. No credit card required to start."
+  },
+  {
+    question: "Can I upgrade or downgrade my plan at any time?",
+    answer: "Of course. You can easily change your plan directly from your account settings. When you upgrade, you'll be charged a prorated amount for the remainder of the billing cycle. Downgrades take effect at the end of your current cycle."
+  },
+  {
+    question: "What happens if I exceed the limits of my plan (e.g., lead count)?",
+    answer: "We believe in flexible growth. If you approach your plan's limits, we will notify you with clear options to upgrade to the next tier. We never cut off your service unexpectedly."
+  },
+  {
+    question: "Do you offer discounts for annual billing?",
+    answer: "Yes! We offer a significant discount, equivalent to getting two months free, when you choose to pay annually. This is a great option for users who are ready to commit and want the best value."
+  }
+];
 
 
 export default function PricingPage() {
@@ -401,6 +420,8 @@ export default function PricingPage() {
             </div>
         </motion.section>
         
+        <FaqSection title="Pricing & Billing Questions" faqs={pricingPageFaqs} />
+
         <motion.div
             id="contact" 
             className="mt-24"

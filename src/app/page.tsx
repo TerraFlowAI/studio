@@ -1,7 +1,7 @@
-// This file is intentionally left blank to allow the marketing homepage
-// at src/app/(marketing)/page.tsx to be the root page for the site.
-// This resolves the routing conflict.
 
+// This file is intentionally left blank to resolve a routing conflict.
+// The main homepage content is now in src/app/(marketing)/page.tsx,
+// which is the standard Next.js convention for a homepage within a route group.
 export default function Page() {
   return null;
 }

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -23,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { FaqSection } from "@/components/shared/FaqSection";
 
 
 // --- PAGE-SPECIFIC DATA ---
@@ -202,6 +202,21 @@ const brokerageTestimonials = [
 const firstColumn = brokerageTestimonials.slice(0, 1);
 const secondColumn = brokerageTestimonials.slice(1, 2);
 const thirdColumn = brokerageTestimonials.slice(2, 3);
+
+const brokeragesPageFaqs = [
+  {
+    question: "How does TerraFlow help me manage my team of agents?",
+    answer: "Our platform includes robust team management features. You can automatically assign leads, track individual agent performance through our analytics dashboards, and ensure brand consistency with shared content templates."
+  },
+  {
+    question: "Can I ensure all leads are contacted instantly, even if an agent is busy?",
+    answer: "Yes. This is a key benefit. You can set up a SmartFlow where our AI Voice Agent, Terra, makes an initial contact call to every single new lead that enters your system, guaranteeing zero lead leakage and a professional first impression every time."
+  },
+  {
+    question: "Is there a way to see which of my marketing channels provides the best ROI?",
+    answer: "Yes. Our Lead Analytics dashboard breaks down lead sources not just by volume, but by conversion rate. You can clearly see whether Google Ads, social media, or referrals are bringing in the leads that actually turn into closed deals."
+  }
+];
 
 
 // --- REUSABLE COMPONENTS (LOCALIZED) ---
@@ -424,6 +439,8 @@ export default function BrokeragesSolutionPage() {
             </div>
         </div>
       </section>
+
+      <FaqSection title="Questions from Brokerage Owners" faqs={brokeragesPageFaqs} />
 
       {/* 6. Final CTA */}
       <section id="contact" className="py-16 md:py-24 bg-background">
