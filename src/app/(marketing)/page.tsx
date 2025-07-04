@@ -1,13 +1,61 @@
 
-import { Hero } from "@/components/landing/Hero";
-import { TrustAndSocialProof } from "@/components/landing/TrustAndSocialProof";
-import { FeatureShowcase } from "@/components/landing/FeatureShowcase";
-import { ThreeStepProcess } from "@/components/landing/ThreeStepProcess";
-import { CoreServicesGrid } from "@/components/landing/CoreServicesGrid";
-import { RoiCalculator } from "@/components/landing/RoiCalculator";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
-import { FinalCTA } from "@/components/landing/FinalCTA";
-import { FaqSection } from "@/components/shared/FaqSection";
+"use client";
+
+import dynamic from 'next/dynamic';
+import { Loader2 } from 'lucide-react';
+
+// Lazy-load heavy components with SSR disabled to prevent server-side rendering issues.
+const Hero = dynamic(
+  () => import('@/components/landing/Hero').then(mod => mod.Hero),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-screen w-full bg-slate-50">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    ),
+  }
+);
+
+const TrustAndSocialProof = dynamic(
+  () => import('@/components/landing/TrustAndSocialProof').then(mod => mod.TrustAndSocialProof), 
+  { ssr: false }
+);
+
+const FeatureShowcase = dynamic(
+  () => import('@/components/landing/FeatureShowcase').then(mod => mod.FeatureShowcase), 
+  { ssr: false }
+);
+
+const ThreeStepProcess = dynamic(
+  () => import('@/components/landing/ThreeStepProcess').then(mod => mod.ThreeStepProcess), 
+  { ssr: false }
+);
+
+const CoreServicesGrid = dynamic(
+  () => import('@/components/landing/CoreServicesGrid').then(mod => mod.CoreServicesGrid), 
+  { ssr: false }
+);
+
+const RoiCalculator = dynamic(
+  () => import('@/components/landing/RoiCalculator').then(mod => mod.RoiCalculator), 
+  { ssr: false }
+);
+
+const TestimonialsSection = dynamic(
+  () => import('@/components/landing/TestimonialsSection').then(mod => mod.TestimonialsSection), 
+  { ssr: false }
+);
+
+const FaqSection = dynamic(
+  () => import('@/components/shared/FaqSection').then(mod => mod.FaqSection), 
+  { ssr: false }
+);
+
+const FinalCTA = dynamic(
+  () => import('@/components/landing/FinalCTA').then(mod => mod.FinalCTA), 
+  { ssr: false }
+);
 
 const landingPageFaqs = [
   {

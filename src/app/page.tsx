@@ -1,7 +1,4 @@
 
 // This file is intentionally left blank to resolve a routing conflict.
-// The main homepage content is now in src/app/(marketing)/page.tsx,
-// which is the standard Next.js convention for a homepage within a route group.
-export default function Page() {
-  return null;
-}
+// The homepage is now served from /src/app/(marketing)/page.tsx
+// By not exporting a default component, Next.js will not create a route for this file.
