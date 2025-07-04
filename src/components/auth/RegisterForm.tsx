@@ -81,7 +81,7 @@ export default function RegisterForm() {
 
     } catch (error: any) {
       let description = "An unexpected error occurred. Please try again.";
-      if (error.message.includes('User already registered')) {
+      if (error && error.message && error.message.includes('User already registered')) {
         description = "This email address is already in use.";
       }
       toast({
