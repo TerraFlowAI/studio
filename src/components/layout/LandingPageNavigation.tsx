@@ -16,7 +16,6 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
-import { StarBorder } from "@/components/ui/star-border";
 
 const navLinks = [
   { name: "Features", href: "#features" },
@@ -47,7 +46,9 @@ export function LandingPageNavigation() {
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
+    // Hide on scroll down, show on scroll up for non-mobile
     setHidden(latest > previous && latest > 150);
+    // Change style after scrolling past a small threshold
     setScrolled(latest > 50);
   });
   
@@ -56,87 +57,88 @@ export function LandingPageNavigation() {
   return (
     <>
       <motion.header
-        variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
+        variants={{
+          visible: { y: 0 },
+          hidden: { y: "-100%" },
+        }}
         animate={hidden ? "hidden" : "visible"}
         transition={{ duration: 0.35, ease: "easeInOut" }}
-        className={cn(
-          "fixed top-0 z-50 w-full transition-all duration-300",
-          scrolled ? "border-b border-slate-200/50 bg-background/80 backdrop-blur-lg" : "bg-transparent"
-        )}
+        className="fixed top-0 z-50 w-full"
       >
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Left: Logo */}
-          <div className="flex-shrink-0">
-            <Logo href="/" size={56} />
-          </div>
+        <div className={cn("container mx-auto transition-all duration-300", scrolled ? "py-2" : "py-4")}>
+          <div className={cn(
+            "flex items-center justify-between transition-all duration-300",
+            scrolled ? "bg-background/80 backdrop-blur-lg shadow-md border border-slate-200/50 px-4 py-2 rounded-full" : "bg-transparent px-2 py-1"
+          )}>
+            {/* Left: Logo */}
+            <div className="flex-shrink-0">
+              <Logo href="/" size={40} />
+            </div>
 
-          {/* Center: Desktop Nav */}
-          <nav className="hidden md:flex">
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link href="#features" className={cn(navigationMenuTriggerStyle(), "rounded-full text-base font-medium")}>
-                      Features
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="rounded-full text-base font-medium">Solutions</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="grid grid-cols-2 gap-4 p-4 w-[600px]">
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-sm text-primary px-3">By Role</h3>
-                        {solutionsDropdownLinks.byRole.map(({ name, description, href, icon: Icon }) => (
-                          <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
-                        ))}
+            {/* Center: Desktop Nav */}
+            <nav className="hidden md:flex">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink asChild>
+                      <Link href="#features" className={cn(navigationMenuTriggerStyle(), "rounded-full bg-transparent text-sm font-medium")}>
+                        Features
+                      </Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="rounded-full bg-transparent text-sm font-medium">Solutions</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="grid grid-cols-2 gap-4 p-4 w-[600px]">
+                        <div className="space-y-1">
+                          <h3 className="font-semibold text-xs text-primary px-3">BY ROLE</h3>
+                          {solutionsDropdownLinks.byRole.map(({ name, description, href, icon: Icon }) => (
+                            <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
+                          ))}
+                        </div>
+                        <div className="space-y-1">
+                          <h3 className="font-semibold text-xs text-primary px-3">BY SERVICE</h3>
+                          {solutionsDropdownLinks.byService.map(({ name, description, href, icon: Icon }) => (
+                            <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
+                          ))}
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-sm text-primary px-3">By Service</h3>
-                        {solutionsDropdownLinks.byService.map(({ name, description, href, icon: Icon }) => (
-                          <DropdownListItem key={name} href={href} title={name} icon={Icon}>{description}</DropdownListItem>
-                        ))}
-                      </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link href="/pricing" className={cn(navigationMenuTriggerStyle(), "rounded-full text-base font-medium")}>
-                      Pricing
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link href="/about" className={cn(navigationMenuTriggerStyle(), "rounded-full text-base font-medium")}>
-                      Company
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-          </nav>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink asChild>
+                      <Link href="/pricing" className={cn(navigationMenuTriggerStyle(), "rounded-full bg-transparent text-sm font-medium")}>
+                        Pricing
+                      </Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink asChild>
+                      <Link href="/about" className={cn(navigationMenuTriggerStyle(), "rounded-full bg-transparent text-sm font-medium")}>
+                        Company
+                      </Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+            </nav>
 
-          {/* Right: CTAs */}
-          <div className="hidden md:flex items-center space-x-2">
-            <StarBorder
-              as="a"
-              href="#contact"
-              className="[&>div:last-child]:text-base [&>div:last-child]:font-semibold [&>div:last-child]:py-3 [&>div:last-child]:px-5 [&>div:last-child]:bg-gradient-to-r [&>div:last-child]:from-teal-500 [&>div:last-child]:to-blue-600 [&>div:last-child]:text-white [&>div:last-child]:border-transparent [&>div:last-child]:hover:from-teal-600 [&>div:last-child]:hover:to-blue-700"
-            >
-              Request a Demo
-            </StarBorder>
-            <Button asChild variant="ghost" size="lg" className="rounded-full text-base font-semibold">
-              <Link href="/login">Login</Link>
-            </Button>
-          </div>
+            {/* Right: CTAs */}
+            <div className="hidden md:flex items-center space-x-2">
+              <Button asChild variant="ghost" className="rounded-full text-sm font-semibold">
+                <Link href="/login">Login</Link>
+              </Button>
+               <Button asChild className="rounded-full text-sm font-semibold bg-slate-800 hover:bg-slate-900 text-white shadow-md">
+                <Link href="/#contact">Get Started</Link>
+              </Button>
+            </div>
 
-          {/* Mobile: Hamburger Menu */}
-          <div className="md:hidden">
-            <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
-              <Menu className="h-6 w-6" />
-            </Button>
+            {/* Mobile: Hamburger Menu */}
+            <div className="md:hidden">
+              <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
+                <Menu className="h-6 w-6" />
+              </Button>
+            </div>
           </div>
         </div>
       </motion.header>
@@ -149,9 +151,12 @@ export function LandingPageNavigation() {
   );
 }
 
-const DropdownListItem: React.FC<{ href: string; title: string; children?: React.ReactNode; icon: React.ElementType }> = ({ href, title, children, icon: Icon }) => (
+const DropdownListItem = React.forwardRef<
+  React.ElementRef<typeof Link>,
+  React.ComponentPropsWithoutRef<typeof Link> & { title: string, children?: React.ReactNode, icon: React.ElementType }
+>(({ href, title, children, icon: Icon, ...props }, ref) => (
   <NavigationMenuLink asChild>
-    <Link href={href} className="group block rounded-lg p-3 text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-800">
+    <Link href={href} ref={ref} className="group block rounded-lg p-3 text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-800" {...props}>
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white shrink-0">
           <Icon className="h-5 w-5" />
@@ -163,7 +168,8 @@ const DropdownListItem: React.FC<{ href: string; title: string; children?: React
       </div>
     </Link>
   </NavigationMenuLink>
-);
+));
+DropdownListItem.displayName = "DropdownListItem";
 
 const mobileMenuVariants = {
   hidden: { opacity: 0, y: "-20%" },
@@ -198,9 +204,9 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
       ))}
     </nav>
     <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
-      <Button asChild className="w-full text-lg py-3">
+      <Button asChild className="w-full text-lg py-3 bg-slate-800 hover:bg-slate-900 text-white">
         <Link href="#contact" onClick={onDismiss}>
-          Request a Demo
+          Get Started
         </Link>
       </Button>
       <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">

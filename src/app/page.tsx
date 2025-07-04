@@ -10,7 +10,7 @@ import { TerraChatBubble } from "@/components/chatbot/TerraChatBubble";
 // Lazy-loaded components to improve initial load time
 const Hero = dynamic(
   () => import('@/components/landing/Hero').then(mod => mod.Hero),
-  { 
+  {
     ssr: false,
     loading: () => (
       <div className="flex items-center justify-center h-screen w-full bg-slate-50">
@@ -21,22 +21,22 @@ const Hero = dynamic(
 );
 
 const TrustAndSocialProof = dynamic(
-  () => import('@/components/landing/TrustAndSocialProof').then(mod => mod.TrustAndSocialProof), 
+  () => import('@/components/landing/TrustAndSocialProof').then(mod => mod.TrustAndSocialProof),
   { ssr: false }
 );
 
 const FeatureShowcase = dynamic(
-  () => import('@/components/landing/FeatureShowcase').then(mod => mod.FeatureShowcase), 
+  () => import('@/components/landing/FeatureShowcase').then(mod => mod.FeatureShowcase),
   { ssr: false }
 );
 
 const ThreeStepProcess = dynamic(
-  () => import('@/components/landing/ThreeStepProcess').then(mod => mod.ThreeStepProcess), 
+  () => import('@/components/landing/ThreeStepProcess').then(mod => mod.ThreeStepProcess),
   { ssr: false }
 );
 
 const CoreServicesGrid = dynamic(
-  () => import('@/components/landing/CoreServicesGrid').then(mod => mod.CoreServicesGrid), 
+  () => import('@/components/landing/CoreServicesGrid').then(mod => mod.CoreServicesGrid),
   { ssr: false }
 );
 
@@ -46,17 +46,17 @@ const RoiCalculator = dynamic(
 );
 
 const TestimonialsSection = dynamic(
-  () => import('@/components/landing/TestimonialsSection').then(mod => mod.TestimonialsSection), 
+  () => import('@/components/landing/TestimonialsSection').then(mod => mod.TestimonialsSection),
   { ssr: false }
 );
 
 const FaqSection = dynamic(
-  () => import('@/components/shared/FaqSection').then(mod => mod.FaqSection), 
+  () => import('@/components/shared/FaqSection').then(mod => mod.FaqSection),
   { ssr: false }
 );
 
 const FinalCTA = dynamic(
-  () => import('@/components/landing/FinalCTA').then(mod => mod.FinalCTA), 
+  () => import('@/components/landing/FinalCTA').then(mod => mod.FinalCTA),
   { ssr: false }
 );
 

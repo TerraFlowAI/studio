@@ -2,8 +2,8 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { ArrowDown, Sparkles, Zap, TrendingUp } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { ArrowDown, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { Particles } from '@/components/ui/particles';
 import Image from 'next/image';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
