@@ -9,7 +9,7 @@ import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 
 // This is the definitive homepage for the application.
-// It is automatically wrapped by the layout in src/app/(marketing)/layout.tsx
+// It uses the layout from (marketing)/layout.tsx.
 export default function MarketingHomePage() {
   return (
     <>
