@@ -18,6 +18,7 @@ import {
   navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { useMounted } from "@/hooks/useMounted"; // Import the hook
 
 const navLinks = [
   { name: "Features", href: "#features" },
@@ -45,6 +46,7 @@ export function LandingPageNavigation() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mounted = useMounted(); // Use the hook
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -125,9 +127,15 @@ export function LandingPageNavigation() {
               <Button asChild variant="ghost" className="rounded-full text-sm font-semibold">
                 <Link href="/login">Login</Link>
               </Button>
-              <RainbowButton asChild className="text-sm font-semibold">
-                  <Link href="/#contact">Book a free Demo</Link>
-              </RainbowButton>
+              {mounted ? (
+                <RainbowButton asChild className="text-sm font-semibold">
+                    <Link href="/#contact">Book a free Demo</Link>
+                </RainbowButton>
+              ) : (
+                <Button asChild className="rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Link href="/#contact">Book a free Demo</Link>
+                </Button>
+              )}
             </div>
 
             <div className="md:hidden">
@@ -172,41 +180,52 @@ const mobileMenuVariants = {
   exit: { opacity: 0, y: "-20%", transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } },
 };
 
-const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
-  <motion.div
-    initial="hidden"
-    animate="visible"
-    exit="exit"
-    variants={mobileMenuVariants}
-    className="fixed inset-0 z-40 h-screen w-screen bg-background/95 backdrop-blur-xl p-4 md:hidden"
-  >
-    <div className="flex h-16 items-center justify-between">
-      <Logo />
-      <Button variant="ghost" size="icon" onClick={onDismiss}>
-        <X className="h-6 w-6" />
-      </Button>
-    </div>
-    <nav className="mt-8 flex flex-col space-y-2">
-      {navLinks.map((link) => (
-        <Link 
-          key={link.name} 
-          href={link.href}
-          onClick={onDismiss}
-          className="rounded-lg px-4 py-3 text-lg font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-        >
-          {link.name}
-        </Link>
-      ))}
-    </nav>
-    <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
-      <RainbowButton asChild className="w-full text-lg py-3">
-        <Link href="#contact" onClick={onDismiss}>
-          Book a free Demo
-        </Link>
-      </RainbowButton>
-      <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
-        <Link href="/login" onClick={onDismiss}>Login</Link>
-      </Button>
-    </div>
-  </motion.div>
-);
+const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => {
+  const mounted = useMounted();
+  return (
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      variants={mobileMenuVariants}
+      className="fixed inset-0 z-40 h-screen w-screen bg-background/95 backdrop-blur-xl p-4 md:hidden"
+    >
+      <div className="flex h-16 items-center justify-between">
+        <Logo />
+        <Button variant="ghost" size="icon" onClick={onDismiss}>
+          <X className="h-6 w-6" />
+        </Button>
+      </div>
+      <nav className="mt-8 flex flex-col space-y-2">
+        {navLinks.map((link) => (
+          <Link 
+            key={link.name} 
+            href={link.href}
+            onClick={onDismiss}
+            className="rounded-lg px-4 py-3 text-lg font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            {link.name}
+          </Link>
+        ))}
+      </nav>
+      <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
+        <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
+          <Link href="/login" onClick={onDismiss}>Login</Link>
+        </Button>
+        {mounted ? (
+          <RainbowButton asChild className="w-full text-lg py-3">
+            <Link href="#contact" onClick={onDismiss}>
+              Book a free Demo
+            </Link>
+          </RainbowButton>
+        ) : (
+          <Button asChild className="w-full text-lg py-3 bg-primary text-primary-foreground hover:bg-primary/90">
+             <Link href="#contact" onClick={onDismiss}>
+              Book a free Demo
+            </Link>
+          </Button>
+        )}
+      </div>
+    </motion.div>
+  );
+};
