@@ -124,9 +124,6 @@ export function LandingPageNavigation() {
             </nav>
 
             <div className="hidden md:flex items-center space-x-2">
-              <Button asChild variant="ghost" className="rounded-full text-sm font-semibold">
-                <Link href="/login">Login</Link>
-              </Button>
               {mounted ? (
                 <RainbowButton asChild className="text-sm font-semibold">
                     <Link href="/#contact">Book a free Demo</Link>
@@ -136,6 +133,9 @@ export function LandingPageNavigation() {
                     <Link href="/#contact">Book a free Demo</Link>
                 </Button>
               )}
+              <Button asChild variant="ghost" className="rounded-full text-sm font-semibold">
+                <Link href="/login">Login</Link>
+              </Button>
             </div>
 
             <div className="md:hidden">
@@ -209,9 +209,6 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => {
         ))}
       </nav>
       <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
-        <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
-          <Link href="/login" onClick={onDismiss}>Login</Link>
-        </Button>
         {mounted ? (
           <RainbowButton asChild className="w-full text-lg py-3">
             <Link href="#contact" onClick={onDismiss}>
@@ -225,6 +222,9 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => {
             </Link>
           </Button>
         )}
+        <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
+          <Link href="/login" onClick={onDismiss}>Login</Link>
+        </Button>
       </div>
     </motion.div>
   );

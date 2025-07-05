@@ -22,11 +22,11 @@ export function RainbowButton({
       className={cn(
         "group relative inline-flex h-11 animate-rainbow cursor-pointer items-center justify-center rounded-xl border-0 bg-[length:200%] px-8 py-2 font-medium text-primary-foreground transition-colors [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.08*1rem)_solid_transparent] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
         // before styles for the glow effect
-        `before:absolute before:bottom-[-20%] before:left-1/2 before:z-0 before:h-1/5 before:w-3/5 before:-translate-x-1/2 before:animate-rainbow before:bg-[linear-gradient(90deg,hsl(173_80%_40%),hsl(24_95%_53%),hsl(262_83%_58%),hsl(343_91%_69%),hsl(221_83%_53%))] before:bg-[length:200%] before:[filter:blur(calc(0.8*1rem))]`,
+        "before:absolute before:bottom-[-20%] before:left-1/2 before:z-0 before:h-1/5 before:w-3/5 before:-translate-x-1/2 before:animate-rainbow before:bg-[linear-gradient(90deg,hsl(173,80%,40%),hsl(24,95%,53%),hsl(262,83%,58%),hsl(343,91%,69%),hsl(221,83%,53%))] before:bg-[length:200%] before:[filter:blur(calc(0.8*1rem))]",
         // light mode border gradient
-        `bg-[linear-gradient(#121213,#121213),linear-gradient(#121213_50%,rgba(18,18,19,0.6)_80%,rgba(18,18,19,0)),linear-gradient(90deg,hsl(173_80%_40%),hsl(24_95%_53%),hsl(262_83%_58%),hsl(343_91%_69%),hsl(221_83%_53%))]`,
-        // dark mode border gradient (with corrected dark colors)
-        `dark:bg-[linear-gradient(#fff,#fff),linear-gradient(#fff_50%,rgba(255,255,255,0.6)_80%,rgba(0,0,0,0)),linear-gradient(90deg,hsl(173_75%_55%),hsl(24_95%_63%),hsl(262_83%_68%),hsl(343_91%_79%),hsl(221_83%_63%))]`,
+        "bg-[linear-gradient(#121213,#121213),linear-gradient(rgba(18,18,19,1)_50%,rgba(18,18,19,0.6)_80%,rgba(18,18,19,0)),linear-gradient(90deg,hsl(173,80%,40%),hsl(24,95%,53%),hsl(262,83%,58%),hsl(343,91%,69%),hsl(221,83%,53%))]",
+        // dark mode border gradient (corrected syntax)
+        "dark:bg-[linear-gradient(#fff,#fff),linear-gradient(rgba(255,255,255,1)_50%,rgba(255,255,255,0.6)_80%,rgba(255,255,255,0)),linear-gradient(90deg,hsl(173,75%,55%),hsl(24,95%,63%),hsl(262,83%,68%),hsl(343,91%,79%),hsl(221,83%,63%))]",
         className
       )}
       {...props}
