@@ -39,6 +39,13 @@
     --chart-3: 262 83% 58%; /* Purple */
     --chart-4: 343 91% 69%; /* Pink */
     --chart-5: 24 95% 53%;  /* Orange */
+
+    /* Colors for rainbow effects */
+    --color-1: 173 80% 40%;
+    --color-2: 221 83% 53%;
+    --color-3: 262 83% 58%;
+    --color-4: 343 91% 69%;
+    --color-5: 24 95% 53%;
     
     --radius: 0.75rem; /* Slightly larger radius for softer feel */
 
@@ -74,6 +81,19 @@
     --border: 222 47% 18%;
     --input: 222 47% 11%;
     --ring: 173 75% 55%;
+
+    --chart-1: 173 75% 55%;
+    --chart-2: 221 83% 63%;
+    --chart-3: 262 83% 68%;
+    --chart-4: 343 91% 79%;
+    --chart-5: 24 95% 63%;
+
+    /* Colors for rainbow effects */
+    --color-1: 173 75% 55%;
+    --color-2: 221 83% 63%;
+    --color-3: 262 83% 68%;
+    --color-4: 343 91% 79%;
+    --color-5: 24 95% 63%;
 
     --sidebar-background: 224 71% 4%;
     --sidebar-foreground: 210 20% 90%;

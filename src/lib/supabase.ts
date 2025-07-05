@@ -1,4 +1,4 @@
-
+// src/lib/supabase.ts
 import { createBrowserClient } from '@supabase/ssr'
 
 // Define a function to create a Supabase client for client-side usage.

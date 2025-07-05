@@ -17,6 +17,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 const navLinks = [
   { name: "Features", href: "#features" },
@@ -47,9 +48,7 @@ export function LandingPageNavigation() {
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
-    // Hide on scroll down, show on scroll up for non-mobile
     setHidden(latest > previous && latest > 150);
-    // Change style after scrolling past a small threshold
     setScrolled(latest > 50);
   });
   
@@ -71,12 +70,10 @@ export function LandingPageNavigation() {
             "flex items-center justify-between transition-all duration-300",
             scrolled ? "bg-background/80 backdrop-blur-lg shadow-md border border-slate-200/50 px-4 py-2 rounded-full" : "bg-transparent px-2 py-1"
           )}>
-            {/* Left: Logo */}
             <div className="flex-shrink-0">
               <Logo href="/" size={40} />
             </div>
 
-            {/* Center: Desktop Nav */}
             <nav className="hidden md:flex">
               <NavigationMenu>
                 <NavigationMenuList>
@@ -124,17 +121,15 @@ export function LandingPageNavigation() {
               </NavigationMenu>
             </nav>
 
-            {/* Right: CTAs */}
             <div className="hidden md:flex items-center space-x-2">
-              <Button asChild className="rounded-full text-sm font-semibold bg-slate-800 hover:bg-slate-900 text-white shadow-md">
-                <Link href="/#contact">Book a free Demo</Link>
-              </Button>
               <Button asChild variant="ghost" className="rounded-full text-sm font-semibold">
                 <Link href="/login">Login</Link>
               </Button>
+              <RainbowButton asChild className="text-sm font-semibold">
+                  <Link href="/#contact">Book a free Demo</Link>
+              </RainbowButton>
             </div>
 
-            {/* Mobile: Hamburger Menu */}
             <div className="md:hidden">
               <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
                 <Menu className="h-6 w-6" />
@@ -144,7 +139,6 @@ export function LandingPageNavigation() {
         </div>
       </motion.header>
 
-      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && <MobileMenu onDismiss={toggleMobileMenu} />}
       </AnimatePresence>
@@ -205,11 +199,11 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
       ))}
     </nav>
     <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
-      <Button asChild className="w-full text-lg py-3 bg-slate-800 hover:bg-slate-900 text-white">
+      <RainbowButton asChild className="w-full text-lg py-3">
         <Link href="#contact" onClick={onDismiss}>
           Book a free Demo
         </Link>
-      </Button>
+      </RainbowButton>
       <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">
         <Link href="/login" onClick={onDismiss}>Login</Link>
       </Button>

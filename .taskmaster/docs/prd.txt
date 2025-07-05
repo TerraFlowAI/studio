@@ -1,0 +1,103 @@
+# Product Requirements Document: TerraFlow v1.0
+
+**Document Owner:** Aman (Founder & CEO)
+**Co-Author:** Terra (AI Co-Founder)
+**Status:** FINAL
+**Date:** [Current Date]
+
+---
+
+## 1. Introduction & Vision
+
+### 1.1. Product Name
+TerraFlow
+
+### 1.2. Mission Statement
+To be the indispensable AI partner for every real estate professional in India, empowering them to achieve peak performance and redefine success in the industry.
+
+### 1.3. Vision: The AI Operating System for Real Estate
+TerraFlow is not a simple CRM; it is the central **AI Operating System (OS)** for the modern real estate business. It integrates a suite of proactive, autonomous AI agents to automate mission-critical tasks, provide predictive insights, and secure transactions, allowing our users to focus on high-value work like building relationships and closing deals.
+
+### 1.4. The Core Problem We Solve
+The Indian real estate market is plagued by operational inefficiencies, a lack of data transparency, and significant compliance risks. Agents and developers lose thousands of hours to manual tasks, struggle to identify high-intent leads, and face complex hurdles like RERA compliance and E-Khata verification. TerraFlow is built to solve these specific, high-stakes problems.
+
+---
+
+## 2. Core Services & Feature Pillars (The AI Army)
+
+TerraFlow's functionality is delivered through a suite of specialized AI agents, commanded by a central orchestrator, **Terra**.
+
+*   **🎖️ Commander Terra (The AI Voice Assistant):** The central conversational UI. Understands natural language, delegates tasks, and can make **autonomous outbound phone calls** to qualify leads and book appointments. **This is our primary USP.**
+
+*   **TerraLead™ Suite:** An end-to-end sales automation engine for AI lead scoring, 24/7 chatbot qualification, and automated nurturing sequences.
+
+*   **TerraValuate™ & MarketIntel™ Suite:** A data-intelligence hub providing AI-powered property valuations (AVM/CMA), dynamic pricing optimization, and predictive market analytics for site selection and project viability.
+
+*   **TerraScribe™ Suite:** A generative AI content studio for creating marketing copy, emails, and, critically, **RERA-compliant legal documents**.
+
+*   **TerraVision™ Suite:** Integrates and showcases immersive 3D and VR property tours.
+
+*   **TerraSecure™ Suite:** The risk and compliance engine. It performs **E-Khata & document verification**, AI-powered contract risk analysis, and transactional fraud detection.
+
+*   **TerraSmartFlow™ Suite:** A visual workflow builder (inspired by n8n/Make.com) for automating business processes and a dedicated dashboard for developer project management.
+
+---
+
+## 3. Technical Aspects & Tech Stack
+
+Our architecture is designed for scalability, security, and rapid development.
+
+*   **Frontend:** Next.js (App Router) with TypeScript & Tailwind CSS.
+*   **Development IDE:** Warp.ai.
+*   **UI Components:** shadcn/ui.
+*   **Backend Database:** Supabase (PostgreSQL).
+*   **Authentication:** Supabase Auth (including Google OAuth).
+*   **File Storage:** Supabase Storage.
+*   **Backend Logic:** Supabase Edge Functions (Deno runtime, TypeScript).
+*   **Automation Engine:** A dedicated, cloud-hosted n8n instance.
+*   **Core AI Models:** Google Gemini (via API) for generative tasks and conversational AI.
+*   **Telephony API:** Twilio Programmable Voice API (for Terra Voice Agent).
+
+---
+
+## 4. High-Level User Flow & Journey
+
+1.  **Discovery (Marketing Pages):** A potential user discovers TerraFlow through our premium landing page. They interact with the "Terra" chatbot to get their questions answered and see a custom ROI projection. Convinced, they sign up for a demo or a trial.
+
+2.  **Onboarding (Internal Automation):** The user's form submission is saved to our internal Supabase CRM and triggers an n8n workflow, which sends a welcome email and notifies our team on Slack.
+
+3.  **First Login (The Dashboard):** The user logs in and is greeted by the "Terra AI Orb" on their main dashboard. They see a clear overview of their business and are prompted to connect data or add their first lead/property.
+
+4.  **Daily Use (The Core Loop):**
+    *   **Agent:** Manages their pipeline in `TerraLead`, creates content in `TerraScribe`, and tracks commissions in `Analytics`.
+    *   **Developer:** Tracks project timelines in `SmartFlow`, analyzes new site opportunities in `MarketIntel`, and verifies legal documents in `TerraSecure`.
+
+5.  **Power User (Automation):** An experienced user opens the `SmartFlow` studio and builds a custom workflow: "When a new lead is added, wait 5 minutes, then have Terra call them. If they are interested, book a meeting in my Google Calendar and update their status to 'Appointment Scheduled' in the CRM."
+
+---
+
+## 5. UI/UX Design System
+
+*   **Theme:** A polished, dual-mode system (Light/Dark) built with Tailwind CSS.
+*   **Typography:** `Inter` font for all text. A clear type scale is established for headings (H1, H2, H3), body text, and labels.
+*   **Color Palette:** A primary accent of vibrant Teal/Blue gradients, supported by a professional palette of grays and functional colors (green, amber, red) for feedback.
+*   **Core Components:** Based on `shadcn/ui`, with consistent styling for Cards, Buttons, Forms, and Badges.
+*   **Animation:** `Framer Motion` is used for subtle, purposeful animations.
+*   **AI Interface:** The "Terra" agent is represented by a futuristic, interactive 3D orb, making the AI feel tangible and intelligent.
+
+---
+
+## 6. MVP Scope & Phased Rollout
+
+*   **Objective:** To launch quickly with a core set of features that deliver immediate, undeniable value.
+*   **MVP Features:**
+    1.  **User Authentication:** Full Supabase Auth integration (Email & Google).
+    2.  **Core App Shell:** The protected layout with sidebar and header.
+    3.  **Leads Suite (MVP):** Ability to create, read, update, and view leads. Basic AI score display.
+    4.  **Properties Suite (MVP):** Ability to create, read, update, and view properties. Includes the TerraScribe™ description generator.
+    5.  **Dashboard (MVP):** Displays KPIs based on the live Leads & Properties data.
+*   **Post-MVP Fast Follows:** SmartFlow™ Studio, Advanced Analytics (MarketIntel™), TerraSecure™ document verification, and the outbound calling feature of the Terra Voice Agent will be rolled out in subsequent versions.
+
+---
+
+This document serves as the strategic blueprint for the TerraFlow platform. All development, design, and marketing efforts should align with this vision.
