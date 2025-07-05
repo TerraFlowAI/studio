@@ -22,7 +22,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, Loader2, Send } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
-import Confetti from 'react-confetti';
 
 // Form Validation Schema
 const formSchema = z.object({
@@ -169,7 +168,6 @@ export function FinalCTA() {
               <CardContent>
                 {isSubmitted ? (
                   <>
-                    <Confetti recycle={false} numberOfPieces={250} />
                     <div className="flex flex-col items-center justify-center text-center h-96">
                       <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
                       <h3 className="text-2xl font-bold text-slate-800">Thank You!</h3>

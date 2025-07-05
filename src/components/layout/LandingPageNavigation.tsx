@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -125,11 +126,11 @@ export function LandingPageNavigation() {
 
             {/* Right: CTAs */}
             <div className="hidden md:flex items-center space-x-2">
+              <Button asChild className="rounded-full text-sm font-semibold bg-slate-800 hover:bg-slate-900 text-white shadow-md">
+                <Link href="/#contact">Book a free Demo</Link>
+              </Button>
               <Button asChild variant="ghost" className="rounded-full text-sm font-semibold">
                 <Link href="/login">Login</Link>
-              </Button>
-               <Button asChild className="rounded-full text-sm font-semibold bg-slate-800 hover:bg-slate-900 text-white shadow-md">
-                <Link href="/#contact">Get Started</Link>
               </Button>
             </div>
 
@@ -206,7 +207,7 @@ const MobileMenu = ({ onDismiss }: { onDismiss: () => void }) => (
     <div className="mt-8 space-y-4 border-t border-slate-200 pt-6 dark:border-slate-800">
       <Button asChild className="w-full text-lg py-3 bg-slate-800 hover:bg-slate-900 text-white">
         <Link href="#contact" onClick={onDismiss}>
-          Get Started
+          Book a free Demo
         </Link>
       </Button>
       <Button asChild variant="ghost" className="w-full justify-center py-3 text-lg">

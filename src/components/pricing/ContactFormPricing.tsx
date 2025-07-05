@@ -21,7 +21,6 @@ import { useState } from "react";
 import { Loader2, Send, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import Confetti from 'react-confetti';
 
 
 const formSchema = z.object({
@@ -135,7 +134,6 @@ export function ContactFormPricing() {
           <CardContent className="p-6 md:p-8 pt-2">
              {isSubmitted ? (
                   <>
-                    <Confetti recycle={false} numberOfPieces={250} />
                     <div className="flex flex-col items-center justify-center text-center h-[480px]">
                       <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
                       <h3 className="text-2xl font-bold text-slate-800">Thank You!</h3>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -7,7 +8,6 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import Confetti from 'react-confetti';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -473,7 +473,6 @@ export default function DevelopersSolutionPage() {
                     <CardContent>
                       {isSubmitted ? (
                         <>
-                          <Confetti recycle={false} numberOfPieces={250} />
                           <div className="flex flex-col items-center justify-center text-center h-80">
                             <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
                             <h3 className="text-2xl font-bold text-slate-800">Request Sent!</h3>
